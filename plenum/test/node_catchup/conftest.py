@@ -21,26 +21,6 @@ logger = getlogger()
 
 
 @pytest.fixture(scope="module")
-def sdk_node_created_after_some_txns_not_started(looper, testNodeClass, do_post_node_creation,
-                                     vdr_pool_handle, vdr_wallet_client, vdr_wallet_steward,
-                                     txnPoolNodeSet, tdir, tconf, allPluginsPath, request):
-    txnCount = getValueFromModule(request, "txnCount", 5)
-    vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle,
-                              vdr_wallet_client,
-                              txnCount)
-    new_steward_name = randomString()
-    new_node_name = "Epsilon"
-    new_steward_wallet_handle, new_node = vdr_add_new_steward_and_node(
-        looper, vdr_pool_handle, vdr_wallet_steward,
-        new_steward_name, new_node_name, tdir, tconf, nodeClass=testNodeClass,
-        allPluginsPath=allPluginsPath, autoStart=False,
-        do_post_node_creation=do_post_node_creation)
-    vdr_pool_refresh(looper, vdr_pool_handle)
-    yield looper, new_node, vdr_pool_handle, new_steward_wallet_handle
-
-
-@pytest.fixture(scope="module")
 def poolAfterSomeTxns(
         looper,
         txnPoolNodeSet,

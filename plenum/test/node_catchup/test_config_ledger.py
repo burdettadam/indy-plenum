@@ -54,38 +54,6 @@ def testNodeBootstrapClass():
 
 
 @pytest.fixture(scope="module")
-def sdk_node_created_after_some_txns(looper, testNodeClass, do_post_node_creation,
-                                     vdr_pool_handle, vdr_wallet_client, vdr_wallet_steward,
-                                     txnPoolNodeSet, tdir, tconf, allPluginsPath, request, setup):
-    def post_node_creation(node):
-        write_rh = WriteConfHandler(node.db_manager)
-        read_rh = ReadConfHandler(node.db_manager)
-        node.write_manager.register_req_handler(write_rh)
-        node.read_manager.register_req_handler(read_rh)
-
-        ca = node.clientAuthNr.core_authenticator
-        ca._write_types.add(write_rh.txn_type)
-        ca._query_types.add(read_rh.txn_type)
-        do_post_node_creation(node)
-        return node
-
-    txnCount = getValueFromModule(request, "txnCount", 5)
-    vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle,
-                              vdr_wallet_client,
-                              txnCount)
-    new_steward_name = randomString()
-    new_node_name = "Epsilon"
-    new_steward_wallet_handle, new_node = vdr_add_new_steward_and_node(
-        looper, vdr_pool_handle, vdr_wallet_steward,
-        new_steward_name, new_node_name, tdir, tconf, nodeClass=testNodeClass,
-        allPluginsPath=allPluginsPath, autoStart=True,
-        do_post_node_creation=post_node_creation)
-    vdr_pool_refresh(looper, vdr_pool_handle)
-    yield looper, new_node, vdr_pool_handle, new_steward_wallet_handle
-
-
-@pytest.fixture(scope="module")
 def setup(testNodeClass, txnPoolNodeSet):
     for node in txnPoolNodeSet:
         ca = node.clientAuthNr.core_authenticator

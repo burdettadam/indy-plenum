@@ -17,13 +17,6 @@ from typing import Dict, Any, List
 from plenum.test.wallet_helper import vdr_create_and_store_did, vdr_wallet_helper, vdr_pool_helper
 from indy_vdr import set_protocol_version
 
-from indy.pool import create_pool_ledger_config, open_pool_ledger, close_pool_ledger
-from indy.wallet import create_wallet as sdk_create_wallet
-from indy.wallet import open_wallet as sdk_open_wallet
-from indy.wallet import close_wallet as sdk_close_wallet
-from indy.did import create_and_store_my_did as sdk_create_and_store_my_did
-
-
 from ledger.genesis_txn.genesis_txn_file_util import create_genesis_txn_init_ledger
 from plenum.bls.bls_crypto_factory import create_default_bls_crypto_factory
 from plenum.common.member.member import Member
@@ -41,8 +34,7 @@ from plenum.common.keygen_utils import initNodeKeysForBothStacks
 from plenum.test.greek import genNodeNames
 from plenum.test.grouped_load_scheduling import GroupedLoadScheduling
 from plenum.test.node_catchup.helper import waitNodeDataEquality, check_last_3pc_master
-from plenum.test.pool_transactions.helper import vdr_add_new_nym, vdr_pool_refresh, vdr_add_new_steward_and_node, \
-    sdk_pool_refresh, sdk_add_new_nym, sdk_add_new_steward_and_node
+from plenum.test.pool_transactions.helper import vdr_add_new_nym, vdr_pool_refresh, vdr_add_new_steward_and_node
 from plenum.test.simulation.sim_random import DefaultSimRandom
 from plenum.test.spy_helpers import getAllReturnVals
 from plenum.test.view_change.helper import ensure_view_change
@@ -68,7 +60,7 @@ from plenum.test.helper import checkLastClientReqForNode, \
     mockDistributions, mockImportModule, chk_all_funcs, \
     create_new_test_node, vdr_json_to_request_object, vdr_send_random_requests, \
     vdr_get_and_check_replies, vdr_set_protocol_version, vdr_send_random_and_check, MockTimer, \
-    create_pool_txn_data, sdk_set_protocol_version, sdk_send_random_and_check
+    create_pool_txn_data, vdr_send_random_and_check
 from plenum.test.node_request.node_request_helper import checkPrePrepared, \
     checkPropagated, checkPrepared, checkCommitted
 from plenum.test.plugin.helper import getPluginPath

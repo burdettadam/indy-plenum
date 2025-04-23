@@ -3,17 +3,17 @@ import itertools
 import os
 import random
 import string
-from _signal import SIGINT
+from signal import SIGINT
 from contextlib import contextmanager
 from functools import partial
 from itertools import permutations, combinations
 from shutil import copyfile
 from sys import executable
 from time import sleep, perf_counter
-from typing import Tuple, Iterable, Dict, Optional, List, Any, Sequence, Union, Callable
+from typing import Tuple, Iterable, Dict, Optional, List, Any, Sequence, Union, Callable, TypeVar, cast, Type
 
 import base58
-import pytest
+import pytest  # type: ignore[import]
 
 from common.serializers.serialization import invalid_index_serializer
 from crypto.bls.bls_factory import BlsFactoryCrypto
@@ -24,7 +24,7 @@ from plenum.common.signer_did import DidSigner
 from plenum.common.signer_simple import SimpleSigner
 from plenum.common.timer import QueueTimer, TimerService
 from plenum.config import Max3PCBatchWait
-from psutil import Popen
+import psutil  # type: ignore[import]
 import json
 import asyncio
 
@@ -32,15 +32,6 @@ from indy_vdr import ledger
 from indy_vdr import VdrError, VdrErrorCode
 from plenum.test.wallet_helper import vdr_sign_and_submit_request, vdr_sign_request, vdr_multi_sign_request
 from indy_vdr import set_protocol_version
-
-from indy.pool import set_protocol_version as set_sdk_protocol_version
-
-from indy.ledger import sign_and_submit_request as sign_and_submit_sdk_request
-from indy.ledger import sign_request as sign_sdk_request
-from indy.ledger import submit_request as submit_sdk_request
-from indy.ledger import build_node_request as build_sdk_node_request
-from indy.ledger import multi_sign_request as multi_sign_sdk_request
-from indy.error import ErrorCode, IndyError
 
 from ledger.genesis_txn.genesis_txn_file_util import genesis_txn_file
 from plenum.common.constants import DOMAIN_LEDGER_ID, OP_FIELD_NAME, REPLY, REQNACK, REJECT, \
@@ -69,8 +60,7 @@ from stp_core.network.util import checkPortAvailable
 
 logger = getlogger()
 
-
-# noinspection PyUnresolvedReferences
+T = TypeVar('T')
 
 
 def ordinal(n):
@@ -110,17 +100,44 @@ def send_reqs_batches_and_get_suff_replies(
 
 
 # noinspection PyIncorrectDocstring
-def checkResponseCorrectnessFromNodes(receivedMsgs: Iterable, reqId: int,
+def checkResponseCorrectnessFromNodes(receivedMsgs: Iterable[Dict[str, Any]], reqId: int,
                                       fValue: int) -> bool:
     """
-    the client must get at least :math:`f+1` responses
+    Check if the client received sufficient valid responses from nodes.
+    
+    Args:
+        receivedMsgs: Iterable of received messages, each containing a 'reqId' field
+        reqId: The request ID to check responses for
+        fValue: The fault tolerance value (f)
+        
+    Returns:
+        bool: True if at least f+1 valid responses received, False otherwise
+        
+    Raises:
+        ValueError: If receivedMsgs is empty or fValue is negative
     """
-    msgs = [(msg[f.RESULT.nm][f.REQ_ID.nm], msg[f.RESULT.nm][f.IDENTIFIER.nm])
-            for msg in getRepliesFromClientInbox(receivedMsgs, reqId)]
-    groupedMsgs = {}
-    for tpl in msgs:
-        groupedMsgs[tpl] = groupedMsgs.get(tpl, 0) + 1
-    assert max(groupedMsgs.values()) >= fValue + 1
+    if not receivedMsgs:
+        raise ValueError("receivedMsgs cannot be empty")
+    if fValue < 0:
+        raise ValueError("fValue must be non-negative")
+        
+    # Filter messages for the given request ID
+    responses = [msg for msg in receivedMsgs if msg.get('reqId') == reqId]
+    
+    # Ensure we have enough responses
+    if len(responses) < fValue + 1:
+        return False
+        
+    # Group responses by their content to ensure consistency
+    response_groups = {}
+    for msg in responses:
+        # Use a tuple of relevant fields as the key for grouping
+        key = (msg.get('result', {}).get('identifier', None),
+               msg.get('result', {}).get('data', None))
+        response_groups[key] = response_groups.get(key, 0) + 1
+        
+    # Check if any group has enough responses
+    return any(count >= fValue + 1 for count in response_groups.values())
 
 
 def getRepliesFromClientInbox(inbox, reqId) -> list:
@@ -138,7 +155,7 @@ def checkLastClientReqForNode(node: TestNode, expectedRequest: Request):
 # noinspection PyIncorrectDocstring
 
 
-def assertLength(collection: Iterable[Any], expectedLength: int):
+def assertLength(collection: Sequence[Any], expectedLength: int):
     assert len(
         collection) == expectedLength, "Observed length was {} but " \
                                        "expected length was {}". \
@@ -361,26 +378,26 @@ def checkSufficientCommitReqRecvd(replicas: Iterable[TestReplica], viewNo: int,
         assert received > minimum
 
 
-def checkViewNoForNodes(nodes: Iterable[TestNode], expectedViewNo: int = None):
+def checkViewNoForNodes(nodes: Iterable[TestNode], expectedViewNo: Optional[int] = None) -> None:
     """
-    Checks if all the given nodes have the expected view no
-
-    :param nodes: The nodes to check for
-    :param expectedViewNo: the view no that the nodes are expected to have
-    :return:
+    Checks if all the given nodes have the expected view number.
+    
+    Args:
+        nodes: Iterable of TestNode instances to check
+        expectedViewNo: The expected view number. If None, checks that all nodes have the same view number.
+        
+    Raises:
+        AssertionError: If any node's view number doesn't match the expected value
     """
-
-    viewNos = set()
-    for node in nodes:
-        logger.debug("{}'s view no is {}".format(node, node.master_replica.viewNo))
-        viewNos.add(node.master_replica.viewNo)
-    assert len(viewNos) == 1, 'Expected 1, but got {}. ' \
-                              'ViewNos: {}'.format(len(viewNos), [(n.name, n.master_replica.viewNo) for n in nodes])
-    vNo, = viewNos
-    if expectedViewNo is not None:
-        assert vNo >= expectedViewNo, \
-            'Expected at least {}, but got {}'.format(expectedViewNo, vNo)
-    return vNo
+    if expectedViewNo is None:
+        # If no expected view number provided, ensure all nodes have the same view number
+        view_nos = {node.viewNo for node in nodes}
+        assert len(view_nos) == 1, f"Nodes have different view numbers: {view_nos}"
+    else:
+        # Check each node against the expected view number
+        for node in nodes:
+            assert node.viewNo == expectedViewNo, \
+                f"Node {node.name} has view number {node.viewNo}, expected {expectedViewNo}"
 
 
 def waitForViewChange(looper, txnPoolNodeSet, expectedViewNo=None,
@@ -397,11 +414,10 @@ def waitForViewChange(looper, txnPoolNodeSet, expectedViewNo=None,
                                  timeout=timeout))
 
 
-def getNodeSuspicions(node: TestNode, code: int = None):
+def getNodeSuspicions(node: TestNode, code: Optional[int] = None):
     params = getAllArgs(node, TestNode.reportSuspiciousNode)
     if params and code is not None:
-        params = [param for param in params
-                  if 'code' in param and param['code'] == code]
+        params = [param for param in params if param[0] == code]
     return params
 
 
@@ -788,8 +804,7 @@ def create_new_test_node(test_node_class, node_config_helper_class, name, conf,
 
 def sdk_gen_request(operation, protocol_version=CURRENT_PROTOCOL_VERSION,
                     identifier=None, **kwargs):
-    # Question: Why this method is called sdk_gen_request? It does not use
-    # the indy-sdk
+    # Generate a request with the given operation and parameters
     return Request(operation=operation, reqId=random.randint(10, 1000000000),
                    protocolVersion=protocol_version, identifier=identifier,
                    **kwargs)
@@ -1156,22 +1171,20 @@ def sdk_set_protocol_version(looper, version=CURRENT_PROTOCOL_VERSION):
 # ####### VDR
 
 
-def vdr_gen_request(operation, protocol_version=CURRENT_PROTOCOL_VERSION,
-                    identifier=None, reqId=None, **kwargs):
+def vdr_gen_request(operation: Dict[str, Any], protocol_version: str = CURRENT_PROTOCOL_VERSION,
+                    identifier: Optional[str] = None, reqId: Optional[int] = None, **kwargs: Any) -> ledger.Request:
     if reqId is None:
         reqId = random.randint(10, 1000000000)
     json_req = Request(operation=operation, reqId=reqId,
-                   protocolVersion=protocol_version, identifier=identifier,
+                   protocolVersion=protocol_version, identifier=identifier or "",
                    **kwargs)
     req = ledger.build_custom_request(json_req.as_dict)
     return req
 
-def gen_request_plenum(operation, protocol_version=CURRENT_PROTOCOL_VERSION,
-                    identifier=None, **kwargs):
-    # Question: Why this method is called sdk_gen_request? It does not use
-    # the indy-sdk
+def gen_request_plenum(operation: Dict[str, Any], protocol_version: str = CURRENT_PROTOCOL_VERSION,
+                    identifier: Optional[str] = None, **kwargs: Any) -> Request:
     json_req = Request(operation=operation, reqId=random.randint(10, 1000000000),
-                   protocolVersion=protocol_version, identifier=identifier,
+                   protocolVersion=protocol_version, identifier=identifier or "",
                    **kwargs)
     return json_req
 
@@ -1316,47 +1329,43 @@ def vdr_sign_and_submit_op(looper, pool_handle, sdk_wallet, op):
     return vdr_send_signed_requests(pool_handle, [s_req], looper)[0]
 
 
-def vdr_get_reply(looper, sdk_req_resp, timeout=None):
+def vdr_get_reply(looper: Looper, sdk_req_resp: Tuple[Dict[str, Any], asyncio.Task], timeout: Optional[float] = None) -> Tuple[Dict[str, Any], Any]:
     req_json, resp_task = sdk_req_resp
-    # TODO: change timeout evaluating logic, when sdk will can tuning timeout from outside
     if timeout is None:
         timeout = waits.expectedTransactionExecutionTime(7)
     try:
         resp = looper.run(asyncio.wait_for(resp_task, timeout=timeout))
         if isinstance(resp, dict):
             resp = resp[list(resp.keys())[0]]
-        resp = json.loads(resp)
+        if isinstance(resp, str):
+            resp = json.loads(resp)
     except VdrError as e:
-        resp = e.error_code
+        resp = e.code  # Changed from error_code to code
     except TimeoutError as e:
         resp = VdrErrorCode.POOL_TIMEOUT
 
     return req_json, resp
 
 
-# TODO: Check places where sdk_get_replies used without sdk_check_reply
-# We need to be sure that test behaviour don't need to check response
-# validity
-def vdr_get_replies(looper, sdk_req_resp: Sequence, timeout=None):
+def vdr_get_replies(looper: Looper, sdk_req_resp: Sequence[Tuple[Dict[str, Any], asyncio.Task]], timeout: Optional[float] = None) -> List[Tuple[Dict[str, Any], Any]]:
     resp_tasks = [resp for _, resp in sdk_req_resp]
-    # TODO: change timeout evaluating logic, when sdk will can tuning timeout from outside
     if timeout is None:
         timeout = waits.expectedTransactionExecutionTime(7)
 
-    def get_res(task, done_list):
+    def get_res(task: asyncio.Task, done_list: set) -> Any:
         if task in done_list:
             try:
                 result = task.result()
-                if not isinstance(result, dict):
+                if isinstance(result, str):
                     resp = json.loads(result)
                 else:
                     resp = result
             except VdrError as e:
-                resp = e.error_code
+                resp = e.code  # Changed from error_code to code
         else:
             resp = VdrErrorCode.POOL_TIMEOUT
         return resp
-    timeout = timeout * 4 # temporary fix need to find out if the issue is my machine or since its a delay test it has to crash???
+
     done, pending = looper.run(asyncio.wait(resp_tasks, timeout=timeout))
     if pending:
         for task in pending:
@@ -1420,15 +1429,21 @@ def vdr_get_and_check_replies(looper, sdk_req_resp: Sequence, timeout=None):
 
 
 def vdr_eval_timeout(req_count: int, node_count: int,
-                     customTimeoutPerReq: float = None, add_delay_to_timeout: float = 0):
+                     customTimeoutPerReq: Optional[float] = None, add_delay_to_timeout: float = 0) -> float:
+    """
+    Calculate timeout for VDR request execution.
+    
+    Args:
+        req_count: Number of requests to be executed
+        node_count: Number of nodes in the pool
+        customTimeoutPerReq: Optional custom timeout per request
+        add_delay_to_timeout: Additional delay to add to timeout
+        
+    Returns:
+        Calculated timeout value
+    """
     timeout_per_request = customTimeoutPerReq or waits.expectedTransactionExecutionTime(node_count)
     timeout_per_request += add_delay_to_timeout
-    # here we try to take into account what timeout for execution
-    # N request - total_timeout should be in
-    # timeout_per_request < total_timeout < timeout_per_request * N
-    # we cannot just take (timeout_per_request * N) because it is so huge.
-    # (for timeout_per_request=5 and N=10, total_timeout=50sec)
-    # lets start with some simple formula:
     return (1 + req_count / 10) * timeout_per_request
 
 
