@@ -804,141 +804,69 @@ def create_new_test_node(test_node_class, node_config_helper_class, name, conf,
 
 def sdk_gen_request(operation, protocol_version=CURRENT_PROTOCOL_VERSION,
                     identifier=None, **kwargs):
-    # Generate a request with the given operation and parameters
-    return Request(operation=operation, reqId=random.randint(10, 1000000000),
-                   protocolVersion=protocol_version, identifier=identifier,
-                   **kwargs)
+    """Deprecated - use vdr_gen_request instead"""
+    return vdr_gen_request(operation, protocol_version, identifier, **kwargs)
 
 
 def sdk_random_request_objects(count, protocol_version, identifier=None,
                                **kwargs):
-    ops = random_requests(count)
-    return [sdk_gen_request(op, protocol_version=protocol_version,
-                            identifier=identifier, **kwargs) for op in ops]
+    """Deprecated - use vdr_random_request_objects instead"""
+    return vdr_random_request_objects(count, protocol_version, identifier, **kwargs)
 
 
 def sdk_sign_request_objects(looper, sdk_wallet, reqs: Sequence):
-    wallet_h, did = sdk_wallet
-    reqs_str = [json.dumps(req.as_dict) for req in reqs]
-    reqs = [looper.loop.run_until_complete(sign_sdk_request(wallet_h, did, req))
-            for req in reqs_str]
-    return reqs
+    """Deprecated - use vdr_sign_request_objects instead"""
+    return vdr_sign_request_objects(looper, sdk_wallet, reqs)
 
 
 def sdk_signed_random_requests(looper, sdk_wallet, count):
-    _, did = sdk_wallet
-    reqs_obj = sdk_random_request_objects(count, identifier=did,
-                                          protocol_version=CURRENT_PROTOCOL_VERSION)
-    return sdk_sign_request_objects(looper, sdk_wallet, reqs_obj)
+    """Deprecated - use vdr_signed_random_requests instead"""
+    return vdr_signed_random_requests(looper, sdk_wallet, count)
 
 
 def sdk_send_signed_requests(looper, pool_h, signed_reqs: Sequence):
-    return [(json.loads(req),
-             asyncio.ensure_future(submit_sdk_request(pool_h, req), loop=looper.loop))
-            for req in signed_reqs]
+    """Deprecated - use vdr_send_signed_requests instead"""
+    return vdr_send_signed_requests(pool_h, signed_reqs, looper)
 
 
 def sdk_send_random_requests(looper, pool_h, sdk_wallet, count: int):
-    reqs = sdk_signed_random_requests(looper, sdk_wallet, count)
-    return sdk_send_signed_requests(looper, pool_h, reqs)
+    """Deprecated - use vdr_send_random_requests instead"""
+    return vdr_send_random_requests(looper, pool_h, sdk_wallet, count)
 
 
-# TODO: Check places where sdk_get_replies used without sdk_check_reply
-# We need to be sure that test behaviour don't need to check response
-# validity
 def sdk_get_replies(looper, sdk_req_resp: Sequence, timeout=None):
-    resp_tasks = [resp for _, resp in sdk_req_resp]
-    # TODO: change timeout evaluating logic, when sdk will can tuning timeout from outside
-    if timeout is None:
-        timeout = waits.expectedTransactionExecutionTime(7)
-
-    def get_res(task, done_list):
-        if task in done_list:
-            try:
-                resp = json.loads(task.result())
-            except IndyError as e:
-                resp = e.error_code
-        else:
-            resp = ErrorCode.PoolLedgerTimeout
-        return resp
-
-    done, pending = looper.run(asyncio.wait(resp_tasks, timeout=timeout))
-    if pending:
-        for task in pending:
-            task.cancel()
-    ret = [(req, get_res(resp, done)) for req, resp in sdk_req_resp]
-    return ret
+    """Deprecated - use vdr_get_replies instead"""
+    return vdr_get_replies(looper, sdk_req_resp, timeout)
 
 
 def sdk_check_reply(req_res):
-    req, res = req_res
-    if isinstance(res, ErrorCode):
-        if res == ErrorCode.PoolLedgerTimeout:
-            raise PoolLedgerTimeoutException('Got PoolLedgerTimeout for request {}'
-                                             .format(req))
-        else:
-            raise CommonSdkIOException('Got an error with code {} for request {}'
-                                       .format(res, req))
-    if not isinstance(res, dict):
-        raise CommonSdkIOException("Unexpected response format {}".format(res))
-
-    def _parse_op(res_dict):
-        if res_dict['op'] == REQNACK:
-            raise RequestNackedException('ReqNack of id {}. Reason: {}'
-                                         .format(req['reqId'], res_dict['reason']))
-        if res_dict['op'] == REJECT:
-            raise RequestRejectedException('Reject of id {}. Reason: {}'
-                                           .format(req['reqId'], res_dict['reason']))
-
-    if 'op' in res:
-        _parse_op(res)
-    else:
-        for resps in res.values():
-            if isinstance(resps, str):
-                _parse_op(json.loads(resps))
-            elif isinstance(resps, dict):
-                _parse_op(resps)
-            else:
-                raise CommonSdkIOException("Unexpected response format {}".format(res))
+    """Deprecated - use vdr_check_reply instead"""
+    return vdr_check_reply(req_res)
 
 
 def sdk_get_and_check_replies(looper, sdk_req_resp: Sequence, timeout=None):
-    rets = []
-    reqs_res = sdk_get_replies(looper, sdk_req_resp, timeout)
-    for req_res in reqs_res:
-        sdk_check_reply(req_res)
-        rets.append(req_res)
-    return rets
+    """Deprecated - use vdr_get_and_check_replies instead"""
+    return vdr_get_and_check_replies(looper, sdk_req_resp, timeout)
 
 
 def sdk_eval_timeout(req_count: int, node_count: int,
                      customTimeoutPerReq: float = None, add_delay_to_timeout: float = 0):
-    timeout_per_request = customTimeoutPerReq or waits.expectedTransactionExecutionTime(node_count)
-    timeout_per_request += add_delay_to_timeout
-    # here we try to take into account what timeout for execution
-    # N request - total_timeout should be in
-    # timeout_per_request < total_timeout < timeout_per_request * N
-    # we cannot just take (timeout_per_request * N) because it is so huge.
-    # (for timeout_per_request=5 and N=10, total_timeout=50sec)
-    # lets start with some simple formula:
-    return (1 + req_count / 10) * timeout_per_request
+    """Deprecated - use vdr_eval_timeout instead"""
+    return vdr_eval_timeout(req_count, node_count, customTimeoutPerReq, add_delay_to_timeout)
 
 
 def sdk_send_random_and_check(looper, txnPoolNodeSet, sdk_pool, sdk_wallet, count,
                               customTimeoutPerReq: float = None, add_delay_to_timeout: float = 0,
                               override_timeout_limit=False, total_timeout=None):
-    sdk_reqs = sdk_send_random_requests(looper, sdk_pool, sdk_wallet, count)
-    if not total_timeout:
-        total_timeout = sdk_eval_timeout(len(sdk_reqs), len(txnPoolNodeSet),
-                                         customTimeoutPerReq=customTimeoutPerReq,
-                                         add_delay_to_timeout=add_delay_to_timeout)
-    sdk_replies = sdk_get_replies(looper, sdk_reqs, timeout=total_timeout)
-    for req_res in sdk_replies:
-        sdk_check_reply(req_res)
-    return sdk_replies
+    """Deprecated - use vdr_send_random_and_check instead"""
+    return vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool, sdk_wallet, count,
+                                    customTimeoutPerReq, add_delay_to_timeout,
+                                    override_timeout_limit, total_timeout)
+
 
 def sdk_set_protocol_version(looper, version=CURRENT_PROTOCOL_VERSION):
-    looper.loop.run_until_complete(set_sdk_protocol_version(version))
+    """Deprecated - use vdr_set_protocol_version instead"""
+    return vdr_set_protocol_version(looper, version)
 
 # ####### VDR
 
@@ -1291,7 +1219,7 @@ def vdr_send_batches_of_random(looper, txnPoolNodeSet, sdk_pool, sdk_wallet,
 def vdr_sign_request_from_dict(looper, sdk_wallet, op, reqId=None, taa_acceptance=None, endorser=None):
     wallet_h, did = sdk_wallet
     reqId = reqId or random.randint(10, 100000)
-    request = Request(operation=op, reqId=random.randint(10, 1000000000),
+    request = Request(operation=op, reqId=reqId,
                       protocolVersion=CURRENT_PROTOCOL_VERSION, identifier=did)
     req = ledger.build_custom_request(request.as_dict)
     resp = looper.loop.run_until_complete(vdr_sign_request(wallet_h, did, req))
