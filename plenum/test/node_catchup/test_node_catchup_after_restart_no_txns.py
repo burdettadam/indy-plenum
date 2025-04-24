@@ -22,14 +22,14 @@ def test_node_catchup_after_restart_no_txns(
         txnPoolNodeSet,
         tdir,
         tconf,
-        sdk_node_set_with_node_added_after_some_txns,
+        vdr_node_set_with_node_added_after_some_txns,
         tdirWithPoolTxns,
         allPluginsPath):
     """
     A node restarts but no transactions have happened while it was down.
     It would then use the `LedgerStatus` to catchup
     """
-    looper, new_node, sdk_pool_handle, new_steward_wallet_handle = sdk_node_set_with_node_added_after_some_txns
+    looper, new_node, pool_handle, new_steward_wallet_handle = vdr_node_set_with_node_added_after_some_txns
     waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:-1],
                          exclude_from_check=['check_last_ordered_3pc_backup'])
 

@@ -20,7 +20,7 @@ def catchuped(node):
 
 def test_node_catchup_when_3_not_primary_node_restarted(
         looper, txnPoolNodeSet, tdir, tconf,
-        allPluginsPath, vdr_wallet_steward, vdr_pool_handle):
+        allPluginsPath, vdr_wallet_steward, pool_handle):
     """
     Test case:
     1. Create pool of 4 nodes
@@ -55,7 +55,7 @@ def test_node_catchup_when_3_not_primary_node_restarted(
         ensure_all_nodes_have_same_data(looper,
                                         remaining_nodes,
                                         custom_timeout=tconf.NEW_VIEW_TIMEOUT)
-        vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                                   vdr_wallet_steward, 1)
         node_to_restart = start_stopped_node(node_to_restart,
                                              looper,
@@ -83,7 +83,7 @@ def test_node_catchup_when_3_not_primary_node_restarted(
         node_to_restart = [n for n in pool_of_nodes if n.name == nodes_names[__]][0]
         assert not node_to_restart.has_master_primary
         pool_of_nodes = start_stop_one_node(node_to_restart, pool_of_nodes)
-        vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                                   vdr_wallet_steward, 1)
         ensure_all_nodes_have_same_data(looper,
                                         pool_of_nodes,

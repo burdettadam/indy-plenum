@@ -3,8 +3,8 @@ from plenum.test.helper import vdr_send_random_request, \
 from plenum.test.pool_transactions.helper import vdr_pool_refresh
 
 
-def test_sdk_pool_handle(vdr_pool_handle):
-    ph = vdr_pool_handle
+def test_pool_handle(pool_handle):
+    ph = pool_handle
     assert ph > 0
 
 
@@ -43,50 +43,50 @@ def test_sdk_new_steward_wallet(vdr_wallet_new_steward):
     assert cl_did
 
 
-def test_sdk_trustee_send(looper, vdr_pool_handle, vdr_wallet_trustee):
-    resp_task = vdr_send_random_request(looper, vdr_pool_handle, vdr_wallet_trustee)
+def test_sdk_trustee_send(looper, pool_handle, vdr_wallet_trustee):
+    resp_task = vdr_send_random_request(looper, pool_handle, vdr_wallet_trustee)
     _, j_resp = vdr_get_and_check_replies(looper, [resp_task])[0]
     assert j_resp['result']
 
 
-def test_sdk_steward_send(looper, vdr_pool_handle, vdr_wallet_steward):
-    resp_task = vdr_send_random_request(looper, vdr_pool_handle, vdr_wallet_steward)
+def test_sdk_steward_send(looper, pool_handle, vdr_wallet_steward):
+    resp_task = vdr_send_random_request(looper, pool_handle, vdr_wallet_steward)
     _, j_resp = vdr_get_and_check_replies(looper, [resp_task])[0]
     assert j_resp['result']
 
 
-def test_sdk_client_send(looper, vdr_pool_handle, vdr_wallet_client):
-    resp_task = vdr_send_random_request(looper, vdr_pool_handle, vdr_wallet_client)
+def test_sdk_client_send(looper, pool_handle, vdr_wallet_client):
+    resp_task = vdr_send_random_request(looper, pool_handle, vdr_wallet_client)
     _, j_resp = vdr_get_and_check_replies(looper, [resp_task])[0]
     assert j_resp['result']
 
 
-def test_sdk_client2_send(looper, vdr_pool_handle, vdr_wallet_client2):
-    resp_task = vdr_send_random_request(looper, vdr_pool_handle, vdr_wallet_client2)
+def test_sdk_client2_send(looper, pool_handle, vdr_wallet_client2):
+    resp_task = vdr_send_random_request(looper, pool_handle, vdr_wallet_client2)
     _, j_resp = vdr_get_and_check_replies(looper, [resp_task])[0]
     assert j_resp['result']
 
 
-def test_sdk_new_client_send(looper, vdr_pool_handle, vdr_wallet_new_client):
-    resp_task = vdr_send_random_request(looper, vdr_pool_handle, vdr_wallet_new_client)
+def test_sdk_new_client_send(looper, pool_handle, vdr_wallet_new_client):
+    resp_task = vdr_send_random_request(looper, pool_handle, vdr_wallet_new_client)
     _, j_resp = vdr_get_and_check_replies(looper, [resp_task])[0]
     assert j_resp['result']
 
 
-def test_sdk_new_steward_send(looper, vdr_pool_handle, vdr_wallet_new_steward):
-    resp_task = vdr_send_random_request(looper, vdr_pool_handle, vdr_wallet_new_steward)
+def test_sdk_new_steward_send(looper, pool_handle, vdr_wallet_new_steward):
+    resp_task = vdr_send_random_request(looper, pool_handle, vdr_wallet_new_steward)
     _, j_resp = vdr_get_and_check_replies(looper, [resp_task])[0]
     assert j_resp['result']
 
 
-def test_sdk_steward_send_many(looper, vdr_pool_handle, vdr_wallet_steward):
-    resp_task = vdr_send_random_requests(looper, vdr_pool_handle, vdr_wallet_steward, 30)
+def test_sdk_steward_send_many(looper, pool_handle, vdr_wallet_steward):
+    resp_task = vdr_send_random_requests(looper, pool_handle, vdr_wallet_steward, 30)
     repl = vdr_get_and_check_replies(looper, resp_task)
     for _, resp in repl:
         assert resp['result']
 
 
-def test_sdk_pool_refresh(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client):
-    vdr_pool_refresh(looper, vdr_pool_handle)
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+def test_sdk_pool_refresh(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+    vdr_pool_refresh(looper, pool_handle)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 1)

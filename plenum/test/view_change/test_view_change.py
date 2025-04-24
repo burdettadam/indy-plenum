@@ -19,12 +19,12 @@ def test_view_change_on_empty_ledger(txnPoolNodeSet, looper):
 
 # noinspection PyIncorrectDocstring
 def test_view_change_after_some_txns(looper, txnPoolNodeSet, viewNo,
-                                     vdr_pool_handle,
+                                     pool_handle,
                                      vdr_wallet_client):
     """
     Check that view change is done after processing some of txns
     """
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 3)
 
     ensure_view_change(looper, txnPoolNodeSet)
@@ -34,18 +34,18 @@ def test_view_change_after_some_txns(looper, txnPoolNodeSet, viewNo,
 
 # noinspection PyIncorrectDocstring
 def test_send_more_after_view_change(looper, txnPoolNodeSet,
-                                     vdr_pool_handle, vdr_wallet_client):
+                                     pool_handle, vdr_wallet_client):
     """
     Check that we can send more requests after view change
     """
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 4)
 
     ensure_view_change(looper, txnPoolNodeSet)
     ensureElectionsDone(looper=looper, nodes=txnPoolNodeSet)
     ensure_all_nodes_have_same_data(looper, nodes=txnPoolNodeSet)
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 10)
 
 

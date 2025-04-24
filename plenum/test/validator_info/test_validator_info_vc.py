@@ -21,7 +21,7 @@ def tconf(tconf):
 def test_number_txns_in_catchup_and_vc_queue_valid(looper,
                                                    txnPoolNodeSet,
                                                    tconf,
-                                                   vdr_pool_handle,
+                                                   pool_handle,
                                                    vdr_wallet_steward,
                                                    tdir,
                                                    allPluginsPath):
@@ -36,8 +36,8 @@ def test_number_txns_in_catchup_and_vc_queue_valid(looper,
     looper.removeProdable(master_node)
     looper.run(eventually(checkViewNoForNodes, other_nodes, expected_view_no, retryWait=1,
                           timeout=tconf.NEW_VIEW_TIMEOUT))
-    vdr_pool_refresh(looper, vdr_pool_handle)
-    vdr_send_random_and_check(looper, other_nodes, vdr_pool_handle, vdr_wallet_steward, num_txns)
+    vdr_pool_refresh(looper, pool_handle)
+    vdr_send_random_and_check(looper, other_nodes, pool_handle, vdr_wallet_steward, num_txns)
     master_node = start_stopped_node(master_node, looper, tconf,
                                      tdir, allPluginsPath)
     txnPoolNodeSet[master_node_index] = master_node
@@ -54,7 +54,7 @@ def test_number_txns_in_catchup_and_vc_queue_valid(looper,
 def test_instance_change_before_vc(looper,
                                    txnPoolNodeSet,
                                    tconf,
-                                   vdr_pool_handle,
+                                   pool_handle,
                                    vdr_wallet_steward):
     master_node = get_master_primary_node(txnPoolNodeSet)
     old_view = master_node.viewNo

@@ -20,7 +20,7 @@ LOG_SIZE = 3 * CHK_FREQ
 
 def test_lag_size_for_catchup(
         looper, chkFreqPatched, reqs_for_checkpoint, txnPoolNodeSet,
-        vdr_pool_handle, vdr_wallet_client):
+        pool_handle, vdr_wallet_client):
     """
     Verifies that if the stored own checkpoints have aligned bounds then
     the master replica lag which makes the node perform catch-up is
@@ -41,7 +41,7 @@ def test_lag_size_for_catchup(
     # Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP quorumed stashed checkpoints
     # from others
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            vdr_wallet_client,
                                            Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP *
                                            reqs_for_checkpoint)
@@ -59,7 +59,7 @@ def test_lag_size_for_catchup(
     # Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP + 1 quorumed stashed
     # checkpoints from others
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            vdr_wallet_client,
                                            reqs_for_checkpoint)
 

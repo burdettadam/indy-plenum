@@ -18,14 +18,14 @@ def tconf(tconf):
 
 
 def test_re_order_pre_prepares_no_pre_prepares(looper, txnPoolNodeSet,
-                                               vdr_wallet_client, vdr_pool_handle):
+                                               vdr_wallet_client, pool_handle):
     # 1. drop PrePrepars, Prepares and Commits on 4thNode
     # Order a couple of requests on Nodes 1-3
     lagging_node = txnPoolNodeSet[-1]
     other_nodes = txnPoolNodeSet[:-1]
     with delay_rules_without_processing(lagging_node.nodeIbStasher, delay_3pc()):
         vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                  vdr_pool_handle, vdr_wallet_client, 3)
+                                  pool_handle, vdr_wallet_client, 3)
         assert all(n.master_last_ordered_3PC == (0, 3) for n in other_nodes)
 
     with delay_rules_without_processing(lagging_node.nodeIbStasher,
@@ -73,4 +73,4 @@ def test_re_order_pre_prepares_no_pre_prepares(looper, txnPoolNodeSet,
         waitNodeDataEquality(looper, lagging_node, *other_nodes, customTimeout=60)
         assert lagging_node.master_last_ordered_3PC == (0, 4)
 
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)

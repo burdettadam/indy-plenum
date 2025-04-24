@@ -24,15 +24,15 @@ logger = getlogger()
 def poolAfterSomeTxns(
         looper,
         txnPoolNodeSet,
-        vdr_pool_handle,
+        pool_handle,
         vdr_wallet_client,
         request):
     txnCount = getValueFromModule(request, "txnCount", 5)
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               txnCount)
-    yield looper, vdr_pool_handle, vdr_wallet_client
+    yield looper, pool_handle, vdr_wallet_client
 
 
 @pytest.fixture

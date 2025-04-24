@@ -27,7 +27,7 @@ def tconf(tconf):
 
 def test_demote_promote_restart_after_promotion_from_10_to_4_nodes(txnPoolNodeSet,
                                                                    looper,
-                                                                   vdr_pool_handle,
+                                                                   pool_handle,
                                                                    vdr_wallet_steward,
                                                                    tdir,
                                                                    tconf,
@@ -41,7 +41,7 @@ def test_demote_promote_restart_after_promotion_from_10_to_4_nodes(txnPoolNodeSe
 
         starting_view_no = checkViewNoForNodes(rest_pool)
 
-        demote_node(looper, vdr_wallet_steward, vdr_pool_handle, demoted_node)
+        demote_node(looper, vdr_wallet_steward, pool_handle, demoted_node)
 
         waitForViewChange(looper, rest_pool, expectedViewNo=starting_view_no + 1)
         ensureElectionsDone(looper, rest_pool, customTimeout=60)
@@ -52,10 +52,10 @@ def test_demote_promote_restart_after_promotion_from_10_to_4_nodes(txnPoolNodeSe
     etalon_node = txnPoolNodeSet[-1]
     while len(rest_nodes) > 4:
         rest_nodes = demote_another_one(rest_nodes)
-        vdr_send_random_and_check(looper, rest_nodes, vdr_pool_handle, vdr_wallet_steward, 5)
+        vdr_send_random_and_check(looper, rest_nodes, pool_handle, vdr_wallet_steward, 5)
 
     starting_view_no = checkViewNoForNodes(rest_nodes)
-    promote_node(looper, vdr_wallet_steward, vdr_pool_handle, etalon_node)
+    promote_node(looper, vdr_wallet_steward, pool_handle, etalon_node)
 
     waitForViewChange(looper, rest_nodes, expectedViewNo=starting_view_no + 1)
     ensure_all_nodes_have_same_data(looper, rest_nodes)
@@ -64,4 +64,4 @@ def test_demote_promote_restart_after_promotion_from_10_to_4_nodes(txnPoolNodeSe
     restart_node(looper, rest_nodes, etalon_node, tconf, tdir, allPluginsPath)
     ensureElectionsDone(looper, rest_nodes)
 
-    vdr_ensure_pool_functional(looper, rest_nodes, vdr_wallet_steward, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, rest_nodes, vdr_wallet_steward, pool_handle)

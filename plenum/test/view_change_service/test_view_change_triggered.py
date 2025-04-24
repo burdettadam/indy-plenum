@@ -10,28 +10,28 @@ from plenum.test.view_change_service.helper import trigger_view_change, \
 REQ_COUNT = 10
 
 
-def test_view_change_triggered(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client):
+def test_view_change_triggered(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
     current_view_no = checkViewNoForNodes(txnPoolNodeSet)
 
     trigger_view_change(txnPoolNodeSet)
 
     ensureElectionsDone(looper, txnPoolNodeSet)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
     assert checkViewNoForNodes(txnPoolNodeSet) == current_view_no + 1
 
 
-def test_view_change_triggered_after_ordering(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client):
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, REQ_COUNT)
+def test_view_change_triggered_after_ordering(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, REQ_COUNT)
     current_view_no = checkViewNoForNodes(txnPoolNodeSet)
 
     trigger_view_change(txnPoolNodeSet)
 
     ensureElectionsDone(looper, txnPoolNodeSet)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
     assert checkViewNoForNodes(txnPoolNodeSet) == current_view_no + 1
 
 
-def test_view_change_with_next_primary_stopped(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client):
+def test_view_change_with_next_primary_stopped(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
     current_view_no = checkViewNoForNodes(txnPoolNodeSet)
     next_primary = get_next_primary_name(txnPoolNodeSet, current_view_no + 1)
     disconnect_node_and_ensure_disconnected(looper, txnPoolNodeSet, next_primary)
@@ -40,5 +40,5 @@ def test_view_change_with_next_primary_stopped(looper, txnPoolNodeSet, vdr_pool_
     trigger_view_change(remaining_nodes)
 
     ensureElectionsDone(looper, remaining_nodes, instances_list=range(2), customTimeout=15)
-    vdr_ensure_pool_functional(looper, remaining_nodes, vdr_wallet_client, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, remaining_nodes, vdr_wallet_client, pool_handle)
     assert checkViewNoForNodes(remaining_nodes) == current_view_no + 2

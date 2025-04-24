@@ -37,7 +37,7 @@ def test_3pc_while_catchup_with_chkpoints_only(tdir, tconf,
                                                reqs_for_checkpoint,
                                                testNodeClass,
                                                txnPoolNodeSet,
-                                               vdr_pool_handle,
+                                               pool_handle,
                                                vdr_wallet_client,
                                                allPluginsPath):
     '''
@@ -51,7 +51,7 @@ def test_3pc_while_catchup_with_chkpoints_only(tdir, tconf,
     rest_nodes = txnPoolNodeSet[:-1]
 
     # Check that requests executed well
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 1)
 
     # Stop one node
@@ -63,7 +63,7 @@ def test_3pc_while_catchup_with_chkpoints_only(tdir, tconf,
     looper.removeProdable(lagging_node)
 
     # Send more requests to active nodes
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 1)
     waitNodeDataEquality(looper, *rest_nodes)
 
@@ -102,7 +102,7 @@ def test_3pc_while_catchup_with_chkpoints_only(tdir, tconf,
         # stash enough stable checkpoints for starting a catch-up
         num_checkpoints = Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP + 1
         num_reqs = reqs_for_checkpoint * num_checkpoints + 1
-        vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                                   vdr_wallet_client,
                                   num_reqs)
         looper.run(

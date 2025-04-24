@@ -13,7 +13,7 @@ def test_stabilize_checkpoint_while_unstashing_when_missing_pre_prepare(looper,
                                                                         chkFreqPatched,
                                                                         reqs_for_checkpoint,
                                                                         txnPoolNodeSet,
-                                                                        vdr_pool_handle,
+                                                                        pool_handle,
                                                                         vdr_wallet_client):
     # Prepare nodes
     lagging_node = txnPoolNodeSet[-1]
@@ -21,13 +21,13 @@ def test_stabilize_checkpoint_while_unstashing_when_missing_pre_prepare(looper,
     rest_nodes = txnPoolNodeSet[:-1]
 
     # 1. send enough requests so that just 1 is left for checkpoint stabilization
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, reqs_for_checkpoint - 1)
 
     # 2. delay PrePrepare on 1 node so that prepares and commits will be stashed
     with delay_rules(lagging_node.nodeIbStasher, ppDelay()):
         with delay_rules(lagging_node.nodeIbStasher, msg_rep_delay()):
-            vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+            vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                                       vdr_wallet_client, 1)
 
             # all good nodes stabilized checkpoint

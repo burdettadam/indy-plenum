@@ -46,7 +46,7 @@ def tconf(tconf):
 
 
 def test_view_change_on_performance_degraded(looper, txnPoolNodeSet, viewNo,
-                                             vdr_pool_handle,
+                                             pool_handle,
                                              vdr_wallet_steward):
     """
     Test that a view change is done when the performance of master goes down
@@ -68,7 +68,7 @@ def test_view_change_on_performance_degraded(looper, txnPoolNodeSet, viewNo,
 
 
 def test_view_change_on_quorum_of_master_degraded(txnPoolNodeSet, looper,
-                                                  vdr_pool_handle,
+                                                  pool_handle,
                                                   vdr_wallet_steward,
                                                   viewNo):
     """
@@ -96,7 +96,7 @@ def test_view_change_on_quorum_of_master_degraded(txnPoolNodeSet, looper,
 
     backup_replica = txnPoolNodeSet[0].replicas[1]
     backup_last_ordered_before = backup_replica.last_ordered_3pc
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_steward, 4)
     # make sure that backups also ordered at least 1 batch to be able to track performance degradation
     looper.run(eventually(lambda: assertExp(backup_replica.last_ordered_3pc > backup_last_ordered_before)))

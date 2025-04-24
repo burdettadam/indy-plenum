@@ -17,7 +17,7 @@ def tconf(tconf):
 
 
 def test_view_change_with_instance_change_lost_due_to_restarts(looper, txnPoolNodeSet,
-                                                               vdr_pool_handle,
+                                                               pool_handle,
                                                                vdr_wallet_client,
                                                                tconf, tdir, allPluginsPath):
     """
@@ -50,4 +50,4 @@ def test_view_change_with_instance_change_lost_due_to_restarts(looper, txnPoolNo
     waitForViewChange(looper, txnPoolNodeSet, current_view_no + 1, customTimeout=3 * FRESHNESS_TIMEOUT)
 
     ensureElectionsDone(looper, txnPoolNodeSet)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)

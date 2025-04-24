@@ -27,7 +27,7 @@ def setup(request, looper, txnPoolNodeSet):
 
 
 def test_nodes_removes_request_keys_for_ordered(setup, looper, txnPoolNodeSet,
-                                                vdr_pool_handle,
+                                                pool_handle,
                                                 vdr_wallet_client):
     """
     A node does not order requests since it is missing some 3PC messages,
@@ -38,7 +38,7 @@ def test_nodes_removes_request_keys_for_ordered(setup, looper, txnPoolNodeSet,
     reqs = vdr_json_couples_to_request_list(
         send_reqs_batches_and_get_suff_replies(
             looper, txnPoolNodeSet,
-            vdr_pool_handle,
+            pool_handle,
             vdr_wallet_client,
             10,
             5))

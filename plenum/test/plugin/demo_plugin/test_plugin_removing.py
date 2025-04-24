@@ -30,7 +30,7 @@ def tconf(tconf):
 def check_get_auction_txn(expected_result,
                           looper,
                           sdk_wallet_steward,
-                          sdk_pool_handle):
+                          pool_handle):
     seqNo = get_seq_no(expected_result)
 
     _, steward_did = sdk_wallet_steward
@@ -39,7 +39,7 @@ def check_get_auction_txn(expected_result,
     request_couple = \
         vdr_sign_and_send_prepared_request(looper,
                                            sdk_wallet_steward,
-                                           sdk_pool_handle,
+                                           pool_handle,
                                            request)
     result = vdr_get_and_check_replies(looper,
                                        [request_couple])[0][1]['result']
@@ -53,7 +53,7 @@ def check_get_auction_txn(expected_result,
 
 
 def test_plugin_removing(looper, tconf, txn_pool_node_set_post_creation,
-                         vdr_pool_handle, vdr_wallet_steward, vdr_wallet_trustee, tdir, allPluginsPath):
+                         pool_handle, vdr_wallet_steward, vdr_wallet_trustee, tdir, allPluginsPath):
     """
     Send a transaction from the plugin
     Wait for recording a freshness txn
@@ -71,11 +71,11 @@ def test_plugin_removing(looper, tconf, txn_pool_node_set_post_creation,
     txnPoolNodeSet = txn_pool_node_set_post_creation
 
     # Update auction ledger
-    result = send_auction_txn(looper, vdr_pool_handle, vdr_wallet_steward)[0][1]["result"]
+    result = send_auction_txn(looper, pool_handle, vdr_wallet_steward)[0][1]["result"]
 
     # get txn
     auction_id, auction_name = list(get_payload_data(result)[DATA].items())[0]
-    get_auction_result = send_get_auction_txn(looper, vdr_pool_handle, vdr_wallet_steward)
+    get_auction_result = send_get_auction_txn(looper, pool_handle, vdr_wallet_steward)
     assert get_auction_result[0][1]["result"][auction_id] == auction_name
 
     # Wait for the first freshness update
@@ -85,7 +85,7 @@ def test_plugin_removing(looper, tconf, txn_pool_node_set_post_creation,
     )
 
     sdk_send_freeze_ledgers(
-        looper, vdr_pool_handle,
+        looper, pool_handle,
         [vdr_wallet_trustee],
         [AUCTION_LEDGER_ID]
     )
@@ -93,10 +93,10 @@ def test_plugin_removing(looper, tconf, txn_pool_node_set_post_creation,
     with pytest.raises(RequestRejectedException,
                        match="'{}' transaction is forbidden because of "
                              "'{}' ledger is frozen".format(AUCTION_START, AUCTION_LEDGER_ID)):
-        send_auction_txn(looper, vdr_pool_handle, vdr_wallet_steward)
+        send_auction_txn(looper, pool_handle, vdr_wallet_steward)
 
     # should failed with "ledger is frozen"
-    get_auction_result = send_get_auction_txn(looper, vdr_pool_handle, vdr_wallet_steward)
+    get_auction_result = send_get_auction_txn(looper, pool_handle, vdr_wallet_steward)
     assert get_auction_result[0][1]["result"][auction_id] == auction_name
 
     # restart pool
@@ -107,20 +107,20 @@ def test_plugin_removing(looper, tconf, txn_pool_node_set_post_creation,
                        match="unknown value '" + str(AUCTION_LEDGER_ID)):
         check_get_auction_txn(result, looper,
                               vdr_wallet_steward,
-                              vdr_pool_handle)
+                              pool_handle)
 
     # should failed with "unknown txn"
     with pytest.raises(RequestNackedException,
                        match="invalid type: " + GET_AUCTION):
-        send_get_auction_txn(looper, vdr_pool_handle, vdr_wallet_steward)
+        send_get_auction_txn(looper, pool_handle, vdr_wallet_steward)
 
     with pytest.raises(RequestNackedException,
                        match="invalid type: " + AUCTION_START):
-        send_auction_txn(looper, vdr_pool_handle, vdr_wallet_steward)
+        send_auction_txn(looper, pool_handle, vdr_wallet_steward)
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_steward, 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_steward, 1)
 
     # make sure that all node have equal primaries and can order
     ensureElectionsDone(looper, txnPoolNodeSet, customTimeout=30)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet, custom_timeout=20)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, pool_handle)

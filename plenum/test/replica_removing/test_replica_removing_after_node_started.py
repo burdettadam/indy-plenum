@@ -30,7 +30,7 @@ def tconf(tconf):
 
 def test_replica_removing_after_node_started(looper,
                                              txnPoolNodeSet,
-                                             vdr_pool_handle,
+                                             pool_handle,
                                              vdr_wallet_client,
                                              tconf,
                                              tdir,
@@ -67,7 +67,7 @@ def test_replica_removing_after_node_started(looper,
                           timeout=tconf.TolerateBackupPrimaryDisconnection * 2))
 
     new_steward_wallet, new_node = vdr_add_new_steward_and_node(looper,
-                                                                vdr_pool_handle,
+                                                                pool_handle,
                                                                 vdr_wallet_steward,
                                                                 "test_steward",
                                                                 "test_node",

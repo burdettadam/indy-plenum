@@ -19,7 +19,7 @@ def tconf(tconf):
 
 def test_replica_removing_with_primary_disconnected(looper,
                                                     txnPoolNodeSet,
-                                                    vdr_pool_handle,
+                                                    pool_handle,
                                                     vdr_wallet_client,
                                                     tconf,
                                                     tdir,

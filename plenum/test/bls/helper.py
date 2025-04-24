@@ -46,7 +46,7 @@ def generate_state_root():
 
 
 def sdk_check_bls_multi_sig_after_send(looper, txnPoolNodeSet,
-                                       sdk_pool_handle, sdk_wallet_handle,
+                                       pool_handle, sdk_wallet_handle,
                                        saved_multi_sigs_count):
     # at least two because first request could have no
     # signature since state can be clear
@@ -56,7 +56,7 @@ def sdk_check_bls_multi_sig_after_send(looper, txnPoolNodeSet,
     # Using loop to avoid 3pc batching
     state_roots = []
     for i in range(number_of_requests):
-        vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool_handle,
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                                   sdk_wallet_handle, 1)
         waitNodeDataEquality(looper, txnPoolNodeSet[0], *txnPoolNodeSet[:-1])
         state_roots.append(
@@ -120,7 +120,7 @@ def calculate_multi_sig(creator, bls_bft_with_commits, quorums, pre_prepare):
 
 def sdk_change_bls_key(looper, txnPoolNodeSet,
                        node,
-                       sdk_pool_handle,
+                       pool_handle,
                        sdk_wallet_steward,
                        add_wrong=False,
                        new_bls=None,
@@ -135,7 +135,7 @@ def sdk_change_bls_key(looper, txnPoolNodeSet,
     bls_key_proof = new_key_proof or key_proof
     node_dest = hexToFriendly(node.nodestack.verhex)
     vdr_send_update_node(looper, sdk_wallet_steward,
-                         sdk_pool_handle,
+                         pool_handle,
                          node_dest, node.name,
                          None, None,
                          None, None,
@@ -147,9 +147,9 @@ def sdk_change_bls_key(looper, txnPoolNodeSet,
     poolSetExceptOne.remove(node)
     waitNodeDataEquality(looper, node, *poolSetExceptOne)
     if pool_refresh:
-        vdr_pool_refresh(looper, sdk_pool_handle)
+        vdr_pool_refresh(looper, pool_handle)
     if check_functional:
-        vdr_ensure_pool_functional(looper, txnPoolNodeSet, sdk_wallet_steward, sdk_pool_handle)
+        vdr_ensure_pool_functional(looper, txnPoolNodeSet, sdk_wallet_steward, pool_handle)
     return new_blspk
 
 
@@ -176,7 +176,7 @@ def check_update_bls_key(node_num, saved_multi_sigs_count,
                          looper, txnPoolNodeSet,
                          sdk_wallet_stewards,
                          sdk_wallet_client,
-                         sdk_pool_handle,
+                         pool_handle,
                          add_wrong=False,
                          pool_refresh=True):
     # 1. Change BLS key for a specified NODE
@@ -184,7 +184,7 @@ def check_update_bls_key(node_num, saved_multi_sigs_count,
     sdk_wallet_steward = sdk_wallet_stewards[node_num]
     new_blspk = sdk_change_bls_key(looper, txnPoolNodeSet,
                                    node,
-                                   sdk_pool_handle,
+                                   pool_handle,
                                    sdk_wallet_steward,
                                    add_wrong,
                                    pool_refresh=pool_refresh)
@@ -194,7 +194,7 @@ def check_update_bls_key(node_num, saved_multi_sigs_count,
 
     # 3. Check that we can send new requests and have correct multisigs
     sdk_check_bls_multi_sig_after_send(looper, txnPoolNodeSet,
-                                       sdk_pool_handle, sdk_wallet_client,
+                                       pool_handle, sdk_wallet_client,
                                        saved_multi_sigs_count)
 
 
@@ -284,13 +284,13 @@ def validate_multi_signature(state_proof, txnPoolNodeSet):
                                                 public_keys)
 
 
-def update_bls_keys_no_proof(node_index, sdk_wallet_stewards, sdk_pool_handle, looper, txnPoolNodeSet):
+def update_bls_keys_no_proof(node_index, sdk_wallet_stewards, pool_handle, looper, txnPoolNodeSet):
     node = txnPoolNodeSet[node_index]
     sdk_wallet_steward = sdk_wallet_stewards[node_index]
     new_blspk, key_proof = init_bls_keys(node.keys_dir, node.name)
     node_dest = hexToFriendly(node.nodestack.verhex)
     vdr_send_update_node(looper, sdk_wallet_steward,
-                         sdk_pool_handle,
+                         pool_handle,
                          node_dest, node.name,
                          None, None,
                          None, None,
@@ -300,7 +300,7 @@ def update_bls_keys_no_proof(node_index, sdk_wallet_stewards, sdk_pool_handle, l
     poolSetExceptOne = list(txnPoolNodeSet)
     poolSetExceptOne.remove(node)
     waitNodeDataEquality(looper, node, *poolSetExceptOne)
-    vdr_pool_refresh(looper, sdk_pool_handle)
+    vdr_pool_refresh(looper, pool_handle)
     return new_blspk
 
 

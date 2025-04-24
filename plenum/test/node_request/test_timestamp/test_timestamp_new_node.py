@@ -14,7 +14,7 @@ TestRunningTimeLimitSec = 200
 
 def test_new_node_accepts_timestamp(tconf, looper, txnPoolNodeSet,
                                     vdr_node_created_after_some_txns,
-                                    vdr_wallet_client, vdr_pool_handle):
+                                    vdr_wallet_client, pool_handle):
     """
     A new node joins the pool and is able to function properly without
     """
@@ -23,7 +23,7 @@ def test_new_node_accepts_timestamp(tconf, looper, txnPoolNodeSet,
     # Don't wait for node to catchup, start sending requests
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               count=10)
     waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:-1])
@@ -34,7 +34,7 @@ def test_new_node_accepts_timestamp(tconf, looper, txnPoolNodeSet,
     # All nodes should reply
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               count=Max3PCBatchSize * 3)
     # No suspicions were raised by new_node
@@ -46,7 +46,7 @@ def test_new_node_accepts_timestamp(tconf, looper, txnPoolNodeSet,
     ensureElectionsDone(looper=looper, nodes=txnPoolNodeSet)
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               count=Max3PCBatchSize * 3)
     for node in txnPoolNodeSet:

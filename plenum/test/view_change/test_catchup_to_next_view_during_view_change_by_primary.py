@@ -20,7 +20,7 @@ def tconf(tconf):
 
 
 def test_catchup_to_next_view_during_view_change_by_primary(txnPoolNodeSet, looper,
-                                                            vdr_pool_handle, vdr_wallet_steward):
+                                                            pool_handle, vdr_wallet_steward):
     '''
     1) Lagging node is a primary for view=1
     2) All nodes except the lagging one start a view change (to view=1)
@@ -49,7 +49,7 @@ def test_catchup_to_next_view_during_view_change_by_primary(txnPoolNodeSet, loop
 
             # order some txns
             vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                      vdr_pool_handle, vdr_wallet_steward, 5)
+                                      pool_handle, vdr_wallet_steward, 5)
 
             assert initial_view_no == lagging_node.viewNo
             assert initial_last_ordered == lagging_node.master_last_ordered_3PC
@@ -67,4 +67,4 @@ def test_catchup_to_next_view_during_view_change_by_primary(txnPoolNodeSet, loop
     ensure_all_nodes_have_same_data(looper, nodes=other_nodes)
 
     # make sure that the pool is functional
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, pool_handle)

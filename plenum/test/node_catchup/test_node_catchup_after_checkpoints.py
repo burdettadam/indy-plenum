@@ -21,7 +21,7 @@ def test_node_catchup_after_checkpoints(
         chkFreqPatched,
         reqs_for_checkpoint,
         txnPoolNodeSet,
-        vdr_pool_handle,
+        pool_handle,
         vdr_wallet_client,
         broken_node_and_others):
     """
@@ -35,7 +35,7 @@ def test_node_catchup_after_checkpoints(
     logger.info("Step 1: The node misses quite a lot of requests")
 
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            vdr_wallet_client,
                                            reqs_for_checkpoint + max_batch_size)
 
@@ -50,7 +50,7 @@ def test_node_catchup_after_checkpoints(
     completed_catchups_before = get_number_of_completed_catchups(broken_node)
 
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            vdr_wallet_client,
                                            (Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP + 1) *
                                            reqs_for_checkpoint - max_batch_size)
@@ -69,7 +69,7 @@ def test_node_catchup_after_checkpoints(
     logger.info("Step 3: Check if the node is able to process requests")
 
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            vdr_wallet_client,
                                            reqs_for_checkpoint + max_batch_size)
 

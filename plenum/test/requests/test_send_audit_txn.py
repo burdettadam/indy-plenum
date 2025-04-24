@@ -10,7 +10,7 @@ from plenum.common.constants import TXN_TYPE, AUDIT, CURRENT_PROTOCOL_VERSION
 from plenum.common.types import OPERATION, f
 
 
-def test_send_audit_txn(looper, vdr_wallet_client, vdr_pool_handle):
+def test_send_audit_txn(looper, vdr_wallet_client, pool_handle):
     req = {
         OPERATION: {
             TXN_TYPE: AUDIT,
@@ -21,7 +21,7 @@ def test_send_audit_txn(looper, vdr_wallet_client, vdr_pool_handle):
         f.PROTOCOL_VERSION.nm: CURRENT_PROTOCOL_VERSION
     }
 
-    rep = vdr_sign_and_send_prepared_request(looper, vdr_wallet_client, vdr_pool_handle, json.dumps(req))
+    rep = vdr_sign_and_send_prepared_request(looper, vdr_wallet_client, pool_handle, json.dumps(req))
     with pytest.raises(RequestNackedException) as e:
         vdr_get_and_check_replies(looper, [rep])
     e.match('External audit requests are not allowed')

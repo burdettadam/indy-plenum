@@ -20,7 +20,7 @@ logger = getlogger()
 
 
 def test_primary_send_incorrect_pp(looper, txnPoolNodeSet, tconf,
-                                   allPluginsPath, vdr_pool_handle,
+                                   allPluginsPath, pool_handle,
                                    vdr_wallet_steward,
                                    monkeypatch):
     """
@@ -39,7 +39,7 @@ def test_primary_send_incorrect_pp(looper, txnPoolNodeSet, tconf,
     timeout = waits.expectedPoolCatchupTime(nodeCount=len(txnPoolNodeSet))
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet, custom_timeout=timeout)
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle, vdr_wallet_steward, 1)
+                              pool_handle, vdr_wallet_steward, 1)
     old_sender = malicious_primary.master_replica._ordering_service._send
 
     def patched_sender(msg, dst=None, stat=None):
@@ -60,7 +60,7 @@ def test_primary_send_incorrect_pp(looper, txnPoolNodeSet, tconf,
     with delay_rules(slow_node.nodeIbStasher, msg_rep_delay(types_to_delay=[PREPREPARE])):
         preprepare_process_num = slow_node.master_replica._ordering_service.spylog.count(
             OrderingService.process_preprepare)
-        resp_task = vdr_send_random_request(looper, vdr_pool_handle, vdr_wallet_steward)
+        resp_task = vdr_send_random_request(looper, pool_handle, vdr_wallet_steward)
 
         def chk():
             assert preprepare_process_num + 1 == slow_node.master_replica._ordering_service.spylog.count(
@@ -70,7 +70,7 @@ def test_primary_send_incorrect_pp(looper, txnPoolNodeSet, tconf,
 
         _, j_resp = vdr_get_and_check_replies(looper, [resp_task])[0]
         vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                  vdr_pool_handle, vdr_wallet_steward, 1)
+                                  pool_handle, vdr_wallet_steward, 1)
 
         trigger_view_change(txnPoolNodeSet)
         ensure_all_nodes_have_same_data(looper, nodes=txnPoolNodeSet)
@@ -79,4 +79,4 @@ def test_primary_send_incorrect_pp(looper, txnPoolNodeSet, tconf,
         ensureElectionsDone(looper=looper, nodes=txnPoolNodeSet,
                             instances_list=[0, 1])
         ensure_all_nodes_have_same_data(looper, nodes=txnPoolNodeSet)
-        vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, vdr_pool_handle)
+        vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, pool_handle)

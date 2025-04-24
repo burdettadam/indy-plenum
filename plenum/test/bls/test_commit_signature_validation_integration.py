@@ -29,7 +29,7 @@ def ord_delay(nodes):
 
 def test_commit_signature_validation_integration(looper,
                                                  txnPoolNodeSet,
-                                                 vdr_pool_handle,
+                                                 pool_handle,
                                                  vdr_wallet_steward,
                                                  vdr_wallet_client,
                                                  tconf,
@@ -45,12 +45,12 @@ def test_commit_signature_validation_integration(looper,
     fast_nodes = txnPoolNodeSet[:2]
     slow_nodes = txnPoolNodeSet[2:]
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_steward, 1)
 
     # create new steward
     new_steward_wallet_handle = vdr_add_new_nym(looper,
-                                                vdr_pool_handle,
+                                                pool_handle,
                                                 vdr_wallet_steward,
                                                 alias="testClientSteward945",
                                                 role=STEWARD_STRING)
@@ -74,7 +74,7 @@ def test_commit_signature_validation_integration(looper,
     first_ordered = txnPoolNodeSet[0].master_last_ordered_3PC
     with ord_delay(slow_nodes):
         request1 = vdr_sign_and_send_prepared_request(looper, new_steward_wallet_handle,
-                                                      vdr_pool_handle, node_request)
+                                                      pool_handle, node_request)
 
         key1 = get_key_from_req(request1[0])
 
@@ -92,7 +92,7 @@ def test_commit_signature_validation_integration(looper,
 
         looper.run(eventually(check_fast_nodes_ordered_request))
 
-        request2 = vdr_send_random_request(looper, vdr_pool_handle, vdr_wallet_client)
+        request2 = vdr_send_random_request(looper, pool_handle, vdr_wallet_client)
         looper.run(eventually(check_nodes_receive_pp, first_ordered[0], first_ordered[1] + 2))
 
         def check_nodes_receive_commits(view_no, seq_no):

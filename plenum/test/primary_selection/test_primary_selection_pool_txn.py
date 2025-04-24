@@ -17,20 +17,20 @@ from plenum.test.primary_selection.helper import check_newly_added_nodes
 
 
 def test_primary_selection_non_genesis_node(sdk_one_node_added, looper,
-                                            txnPoolNodeSet, vdr_pool_handle,
+                                            txnPoolNodeSet, pool_handle,
                                             vdr_wallet_steward):
     vdr_ensure_pool_functional(looper, txnPoolNodeSet,
                                vdr_wallet_steward,
-                               vdr_pool_handle)
+                               pool_handle)
 
 
 @pytest.fixture(scope='module')
 def two_more_nodes_added(sdk_one_node_added, looper, txnPoolNodeSet,
-                         vdr_pool_handle, vdr_wallet_steward,
+                         pool_handle, vdr_wallet_steward,
                          tdir, tconf, allPluginsPath):
     # check_accepted_view_change_sent(one_node_added, txnPoolNodeSet)
 
-    new_nodes = vdr_add_2_nodes(looper, txnPoolNodeSet, vdr_pool_handle,
+    new_nodes = vdr_add_2_nodes(looper, txnPoolNodeSet, pool_handle,
                                 vdr_wallet_steward,
                                 tdir, tconf, allPluginsPath)
 
@@ -46,10 +46,10 @@ def test_primary_selection_increase_f(
         looper,
         txnPoolNodeSet,
         vdr_wallet_steward,
-        vdr_pool_handle):
+        pool_handle):
     # for n in two_more_nodes_added:
     #     check_accepted_view_change_sent(n, txnPoolNodeSet)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, pool_handle)
 
 # TODO: Add more tests to make one next primary crashed, malicious, ensure primary
 # selection happens after catchup

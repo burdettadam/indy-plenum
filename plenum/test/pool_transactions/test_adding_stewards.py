@@ -22,10 +22,10 @@ def tconf(tconf, request):
 
 def testOnlyAStewardCanAddAnotherSteward(looper,
                                          txnPoolNodeSet,
-                                         vdr_pool_handle,
+                                         pool_handle,
                                          vdr_wallet_steward,
                                          vdr_wallet_client):
-    vdr_add_new_nym(looper, vdr_pool_handle, vdr_wallet_steward,
+    vdr_add_new_nym(looper, pool_handle, vdr_wallet_steward,
                     alias='testSteward' + randomString(3), role=STEWARD_STRING)
 
     seed = randomString(32)
@@ -36,7 +36,7 @@ def testOnlyAStewardCanAddAnotherSteward(looper,
                             'testSteward2', 'STEWARD'))
 
     request_couple = vdr_sign_and_send_prepared_request(looper, vdr_wallet_client,
-                                                        vdr_pool_handle, nym_request)
+                                                        pool_handle, nym_request)
     total_timeout = vdr_eval_timeout(1, len(txnPoolNodeSet))
     request_couple = vdr_get_replies(looper, [request_couple], total_timeout)[0]
     with pytest.raises(RequestRejectedException) as e:
@@ -46,13 +46,13 @@ def testOnlyAStewardCanAddAnotherSteward(looper,
 
 def testStewardsCanBeAddedOnlyTillAThresholdIsReached(looper,
                                                       txnPoolNodeSet,
-                                                      vdr_pool_handle,
+                                                      pool_handle,
                                                       vdr_wallet_steward,
                                                       tconf):
-    vdr_add_new_nym(looper, vdr_pool_handle, vdr_wallet_steward,
+    vdr_add_new_nym(looper, pool_handle, vdr_wallet_steward,
                     alias='testSteward' + randomString(3), role=STEWARD_STRING)
     with pytest.raises(RequestRejectedException) as e:
-        vdr_add_new_nym(looper, vdr_pool_handle, vdr_wallet_steward,
+        vdr_add_new_nym(looper, pool_handle, vdr_wallet_steward,
                         alias='testSteward' + randomString(3), role=STEWARD_STRING)
     error_message = 'New stewards cannot be added by other stewards as there ' \
                     'are already {} stewards in the system'.format(tconf.stewardThreshold)

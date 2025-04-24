@@ -10,11 +10,11 @@ nodeCount = 6
 whitelist = ['Audit ledger has inconsistent names of primaries', ]
 
 
-def test_demote_backup_primary_without_view_change(looper, txnPoolNodeSet, vdr_pool_handle,
+def test_demote_backup_primary_without_view_change(looper, txnPoolNodeSet, pool_handle,
                                                    vdr_wallet_stewards, tdir, tconf, allPluginsPath):
     assert len(txnPoolNodeSet) > 4
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_stewards[0], 1)
 
     lagging_instance = 1
@@ -33,7 +33,7 @@ def test_demote_backup_primary_without_view_change(looper, txnPoolNodeSet, vdr_p
                       for n in txnPoolNodeSet
                       if n != txnPoolNodeSet[demote_node_index]],
                      icDelay()):
-        demote_node(looper, steward_for_demote_node, vdr_pool_handle,
+        demote_node(looper, steward_for_demote_node, pool_handle,
                     node_to_demote)
         del txnPoolNodeSet[demote_node_index]
 
@@ -47,7 +47,7 @@ def test_demote_backup_primary_without_view_change(looper, txnPoolNodeSet, vdr_p
         looper.run(checkNodesConnected(txnPoolNodeSet))
         ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)
 
-        vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                                   vdr_wallet_stewards[0], 1)
         ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)
         for instance_id, r in node_to_restart.replicas.items():

@@ -31,7 +31,7 @@ def tconf(tconf):
 
 def test_set_H_as_maxsize_for_backup_if_is_primary(looper,
                                                    txnPoolNodeSet,
-                                                   vdr_pool_handle,
+                                                   pool_handle,
                                                    vdr_wallet_steward,
                                                    tconf,
                                                    tdir,
@@ -57,7 +57,7 @@ def test_set_H_as_maxsize_for_backup_if_is_primary(looper,
 
         vdr_send_random_and_check(looper,
                                   txnPoolNodeSet,
-                                  vdr_pool_handle,
+                                  pool_handle,
                                   vdr_wallet_steward,
                                   LOG_SIZE)
 

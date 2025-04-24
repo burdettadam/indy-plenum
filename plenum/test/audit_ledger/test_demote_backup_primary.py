@@ -15,12 +15,12 @@ def tconf(tconf):
         yield tconf
 
 
-def test_demote_backup_primary(looper, txnPoolNodeSet, vdr_pool_handle,
+def test_demote_backup_primary(looper, txnPoolNodeSet, pool_handle,
                                vdr_wallet_stewards, tdir, tconf, allPluginsPath):
     assert len(txnPoolNodeSet) == 6
     view_no = txnPoolNodeSet[-1].viewNo
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_stewards[0], 1)
 
     node_to_restart = txnPoolNodeSet[-1]
@@ -35,7 +35,7 @@ def test_demote_backup_primary(looper, txnPoolNodeSet, vdr_pool_handle,
 
     assert node_to_demote
 
-    demote_node(looper, steward_for_demote_node, vdr_pool_handle,
+    demote_node(looper, steward_for_demote_node, pool_handle,
                 node_to_demote)
     del txnPoolNodeSet[demote_node_index]
 
@@ -54,6 +54,6 @@ def test_demote_backup_primary(looper, txnPoolNodeSet, vdr_pool_handle,
     looper.run(checkNodesConnected(txnPoolNodeSet))
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_stewards[0], 1)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet, custom_timeout=20)

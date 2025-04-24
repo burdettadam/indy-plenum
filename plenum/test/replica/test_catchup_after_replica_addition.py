@@ -16,11 +16,11 @@ from stp_core.loop.eventually import eventually
 nodeCount = 6
 
 
-def _send_txn_for_creating_node(looper, sdk_pool_handle, sdk_wallet_steward, tdir, new_node_name, clientIp,
+def _send_txn_for_creating_node(looper, pool_handle, sdk_wallet_steward, tdir, new_node_name, clientIp,
                                 clientPort, nodeIp, nodePort, bls_key, sigseed, key_proof):
     new_steward_name = "testClientSteward"
     new_steward_wallet_handle = vdr_add_new_nym(looper,
-                                                sdk_pool_handle,
+                                                pool_handle,
                                                 sdk_wallet_steward,
                                                 alias=new_steward_name,
                                                 role=STEWARD_STRING)
@@ -41,17 +41,17 @@ def _send_txn_for_creating_node(looper, sdk_pool_handle, sdk_wallet_steward, tdi
 
     # sending request using 'sdk_' functions
     request_couple = vdr_sign_and_send_prepared_request(looper, new_steward_wallet_handle,
-                                                        sdk_pool_handle, node_request)
+                                                        pool_handle, node_request)
 
     # waiting for replies
     vdr_get_and_check_replies(looper, [request_couple])
 
 
-def test_catchup_after_replica_addition(looper, vdr_pool_handle, txnPoolNodeSet,
+def test_catchup_after_replica_addition(looper, pool_handle, txnPoolNodeSet,
                                         vdr_wallet_steward, tdir, tconf, allPluginsPath):
     view_no = txnPoolNodeSet[-1].viewNo
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle, vdr_wallet_steward, 1)
+                              pool_handle, vdr_wallet_steward, 1)
     waitNodeDataEquality(looper, *txnPoolNodeSet)
 
     # create node
@@ -64,7 +64,7 @@ def test_catchup_after_replica_addition(looper, vdr_pool_handle, txnPoolNodeSet,
                                          tconf=tconf, auto_start=True, plugin_path=allPluginsPath,
                                          nodeClass=TestNode)
 
-    _send_txn_for_creating_node(looper, vdr_pool_handle, vdr_wallet_steward, tdir, new_node_name, clientIp,
+    _send_txn_for_creating_node(looper, pool_handle, vdr_wallet_steward, tdir, new_node_name, clientIp,
                                 clientPort, nodeIp, nodePort, bls_key, sigseed, key_proof)
 
     txnPoolNodeSet.append(new_node)
@@ -72,6 +72,6 @@ def test_catchup_after_replica_addition(looper, vdr_pool_handle, txnPoolNodeSet,
 
     looper.run(eventually(lambda: assertExp(n.viewNo == view_no + 1 for n in txnPoolNodeSet)))
     waitNodeDataEquality(looper, *txnPoolNodeSet)
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_steward, 1)
     waitNodeDataEquality(looper, *txnPoolNodeSet, exclude_from_check=['check_last_ordered_3pc'])

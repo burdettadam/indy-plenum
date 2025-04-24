@@ -28,24 +28,24 @@ logger = getlogger()
 
 
 def testStewardCannotAddMoreThanOneNode(looper, txnPoolNodeSet,
-                                        vdr_pool_handle,
+                                        pool_handle,
                                         vdr_wallet_steward, tdir, tconf,
                                         allPluginsPath):
     new_node_name = "Epsilon"
     with pytest.raises(RequestRejectedException) as e:
         vdr_add_new_node(looper,
-                         vdr_pool_handle,
+                         pool_handle,
                          vdr_wallet_steward,
                          new_node_name,
                          tdir,
                          tconf,
                          allPluginsPath)
     assert 'already has a node' in e._excinfo[1].args[0]
-    vdr_pool_refresh(looper, vdr_pool_handle)
+    vdr_pool_refresh(looper, pool_handle)
 
 
 def testClientConnectsToNewNode(looper,
-                                vdr_pool_handle,
+                                pool_handle,
                                 txnPoolNodeSet,
                                 sdk_node_theta_added,
                                 vdr_wallet_client):
@@ -54,18 +54,18 @@ def testClientConnectsToNewNode(looper,
     """
     _, new_node = sdk_node_theta_added
     logger.debug("{} connected to the pool".format(new_node))
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 1)
 
 
 def testAdd2NewNodes(looper, txnPoolNodeSet,
-                     vdr_pool_handle, vdr_wallet_steward,
+                     pool_handle, vdr_wallet_steward,
                      tdir, tconf, allPluginsPath):
     """
     Add 2 new nodes to trigger replica addition and primary election
     """
     new_nodes = vdr_add_2_nodes(looper, txnPoolNodeSet,
-                                vdr_pool_handle, vdr_wallet_steward,
+                                pool_handle, vdr_wallet_steward,
                                 tdir, tconf, allPluginsPath)
     for n in new_nodes:
         logger.debug("{} connected to the pool".format(n))
@@ -80,12 +80,12 @@ def testAdd2NewNodes(looper, txnPoolNodeSet,
     timeout = waits.expectedClientToPoolConnectionTimeout(len(txnPoolNodeSet))
     looper.run(eventually(checkFValue, retryWait=1, timeout=timeout))
     checkProtocolInstanceSetup(looper, txnPoolNodeSet, retryWait=1)
-    vdr_pool_refresh(looper, vdr_pool_handle)
+    vdr_pool_refresh(looper, pool_handle)
 
 
 def testStewardCannotAddNodeWithOutFullFieldsSet(looper, tdir, tconf,
                                                  txnPoolNodeSet,
-                                                 vdr_pool_handle,
+                                                 pool_handle,
                                                  vdr_wallet_steward):
     """
     The case:
@@ -96,7 +96,7 @@ def testStewardCannotAddNodeWithOutFullFieldsSet(looper, tdir, tconf,
     new_node_name = "Epsilon"
 
     new_steward_wallet_handle = vdr_add_new_nym(looper,
-                                                vdr_pool_handle,
+                                                pool_handle,
                                                 vdr_wallet_steward,
                                                 alias='New steward' + randomString(
                                                     3),
@@ -124,7 +124,7 @@ def testStewardCannotAddNodeWithOutFullFieldsSet(looper, tdir, tconf,
 
     request_couple = vdr_sign_and_send_prepared_request(looper,
                                                         new_steward_wallet_handle,
-                                                        vdr_pool_handle,
+                                                        pool_handle,
                                                         node_request1)
     with pytest.raises(RequestNackedException) as e:
         vdr_get_and_check_replies(looper, [request_couple])
@@ -136,7 +136,7 @@ def testStewardCannotAddNodeWithOutFullFieldsSet(looper, tdir, tconf,
         node_request2 = json.dumps(request_json)
         request_couple = vdr_sign_and_send_prepared_request(looper,
                                                             new_steward_wallet_handle,
-                                                            vdr_pool_handle,
+                                                            pool_handle,
                                                             node_request2)
         # wait NAcks with exact message. it does not works for just 'is missed'
         # because the 'is missed' will check only first few cases
@@ -150,6 +150,6 @@ def testNodesConnect(txnPoolNodeSet):
 
 
 def testNodesReceiveClientMsgs(looper, txnPoolNodeSet, vdr_wallet_client,
-                               vdr_pool_handle):
+                               pool_handle):
     vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client,
-                               vdr_pool_handle)
+                               pool_handle)

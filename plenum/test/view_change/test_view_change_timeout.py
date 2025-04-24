@@ -74,7 +74,7 @@ def setup(txnPoolNodeSet, looper):
 
 @pytest.mark.skip(reason="INDY-2244 will be fixed in the scope clean-up work")
 def test_view_change_retry_by_timeout(
-        txnPoolNodeSet, looper, tconf, setup, vdr_pool_handle, vdr_wallet_client):
+        txnPoolNodeSet, looper, tconf, setup, pool_handle, vdr_wallet_client):
     """
     Verifies that a view change is restarted if it is not completed in time
     """
@@ -106,13 +106,13 @@ def test_view_change_retry_by_timeout(
 
     vdr_ensure_pool_functional(looper, txnPoolNodeSet,
                                vdr_wallet_client,
-                               vdr_pool_handle)
+                               pool_handle)
 
 
 @pytest.mark.skip(reason="INDY-2244 will be fixed in the scope clean-up work")
 def test_multiple_view_change_retries_by_timeouts(
         txnPoolNodeSet, looper, tconf, setup,
-        vdr_pool_handle, vdr_wallet_client):
+        pool_handle, vdr_wallet_client):
     """
     Verifies that a view change is restarted each time
     when the previous one is timed out
@@ -143,7 +143,7 @@ def test_multiple_view_change_retries_by_timeouts(
 
     vdr_ensure_pool_functional(looper, txnPoolNodeSet,
                                vdr_wallet_client,
-                               vdr_pool_handle)
+                               pool_handle)
 
 
 @pytest.mark.skip(reason="INDY-2244 will be fixed in the scope clean-up work")

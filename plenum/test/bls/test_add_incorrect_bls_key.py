@@ -10,7 +10,7 @@ nodes_wth_bls = 0
 
 def test_add_incorrect_bls_one_node(looper,
                                     txnPoolNodeSet,
-                                    vdr_pool_handle,
+                                    pool_handle,
                                     vdr_wallet_stewards,
                                     vdr_wallet_client):
     '''
@@ -22,13 +22,13 @@ def test_add_incorrect_bls_one_node(looper,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
                          sdk_wallet_stewards=vdr_wallet_stewards,
                          sdk_wallet_client=vdr_wallet_client,
-                         sdk_pool_handle=vdr_pool_handle,
+                         pool_handle=pool_handle,
                          add_wrong=True)
 
 
 def test_add_incorrect_bls_two_nodes(looper,
                                      txnPoolNodeSet,
-                                     vdr_pool_handle,
+                                     pool_handle,
                                      vdr_wallet_stewards,
                                      vdr_wallet_client):
     '''
@@ -40,13 +40,13 @@ def test_add_incorrect_bls_two_nodes(looper,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
                          sdk_wallet_stewards=vdr_wallet_stewards,
                          sdk_wallet_client=vdr_wallet_client,
-                         sdk_pool_handle=vdr_pool_handle,
+                         pool_handle=pool_handle,
                          add_wrong=True)
 
 
 def test_add_incorrect_bls_three_nodes(looper,
                                        txnPoolNodeSet,
-                                       vdr_pool_handle,
+                                       pool_handle,
                                        vdr_wallet_stewards,
                                        vdr_wallet_client):
     '''
@@ -62,13 +62,13 @@ def test_add_incorrect_bls_three_nodes(looper,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
                          sdk_wallet_stewards=vdr_wallet_stewards,
                          sdk_wallet_client=vdr_wallet_client,
-                         sdk_pool_handle=vdr_pool_handle,
+                         pool_handle=pool_handle,
                          add_wrong=True)
 
 
 def test_add_incorrect_bls_all_nodes(looper,
                                      txnPoolNodeSet,
-                                     vdr_pool_handle,
+                                     pool_handle,
                                      vdr_wallet_stewards,
                                      vdr_wallet_client):
     '''
@@ -80,5 +80,5 @@ def test_add_incorrect_bls_all_nodes(looper,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
                          sdk_wallet_stewards=vdr_wallet_stewards,
                          sdk_wallet_client=vdr_wallet_client,
-                         sdk_pool_handle=vdr_pool_handle,
+                         pool_handle=pool_handle,
                          add_wrong=True)

@@ -11,7 +11,7 @@ def tconf(tconf):
 
 def test_replica_removing_with_backup_degraded(looper,
                                                txnPoolNodeSet,
-                                               vdr_pool_handle,
+                                               pool_handle,
                                                vdr_wallet_client,
                                                vdr_wallet_steward,
                                                tconf,
@@ -19,6 +19,6 @@ def test_replica_removing_with_backup_degraded(looper,
                                                allPluginsPath):
     do_test_replica_removing_with_backup_degraded(looper,
                                                   txnPoolNodeSet,
-                                                  vdr_pool_handle,
+                                                  pool_handle,
                                                   vdr_wallet_client,
                                                   tconf)

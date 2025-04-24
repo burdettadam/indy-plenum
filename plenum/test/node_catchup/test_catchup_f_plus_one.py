@@ -16,7 +16,7 @@ txnCount = 5
 
 def testNodeCatchupFPlusOne(looper,
                             txnPoolNodeSet,
-                            vdr_pool_handle,
+                            pool_handle,
                             vdr_wallet_steward,
                             tconf, tdir,
                             tdirWithPoolTxns, allPluginsPath, testNodeClass):
@@ -36,7 +36,7 @@ def testNodeCatchupFPlusOne(looper,
     looper.removeProdable(node0)
 
     logger.debug("Sending requests")
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_steward, 5)
 
     logger.debug("Stopping node1 with pool ledger size {}".
@@ -67,7 +67,7 @@ def testNodeCatchupFPlusOne(looper,
                          exclude_from_check=['check_last_ordered_3pc_backup'])
 
     logger.debug("Sending more requests")
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_steward, 2)
     checkNodeDataForEquality(node0, *txnPoolNodeSet[:-2],
                              exclude_from_check=['check_last_ordered_3pc_backup'])

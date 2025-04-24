@@ -16,7 +16,7 @@ def validate_bls_signature_without_key_proof(request):
 
 def test_ordering_with_nodes_have_not_bls_key_proofs(looper,
                                                      txnPoolNodeSet,
-                                                     vdr_pool_handle,
+                                                     pool_handle,
                                                      vdr_wallet_stewards,
                                                      vdr_wallet_client,
                                                      monkeypatch,
@@ -34,14 +34,14 @@ def test_ordering_with_nodes_have_not_bls_key_proofs(looper,
                                 'static_validation',
                                 lambda req: True)
         for node_index in range(0, len(txnPoolNodeSet)):
-            update_bls_keys_no_proof(node_index, vdr_wallet_stewards, vdr_pool_handle, looper, txnPoolNodeSet)
+            update_bls_keys_no_proof(node_index, vdr_wallet_stewards, pool_handle, looper, txnPoolNodeSet)
         monkeypatch.undo()
 
     with update_validate_bls_signature_without_key_proof(txnPoolNodeSet, validate_bls_signature_without_key_proof):
         if validate_bls_signature_without_key_proof:
             vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                      vdr_pool_handle, vdr_wallet_stewards[3], 1)
+                                      pool_handle, vdr_wallet_stewards[3], 1)
         else:
             with pytest.raises(PoolLedgerTimeoutException):
                 vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                          vdr_pool_handle, vdr_wallet_stewards[3], 1)
+                                          pool_handle, vdr_wallet_stewards[3], 1)

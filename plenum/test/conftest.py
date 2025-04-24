@@ -450,10 +450,10 @@ def delayed_perf_chk(txnPoolNodeSet):
 
 
 @pytest.fixture(scope="module")
-def sent1(looper, vdr_pool_handle,
+def sent1(looper, pool_handle,
           vdr_wallet_client):
     request_couple_json = vdr_send_random_requests(
-        looper, vdr_pool_handle, vdr_wallet_client, 1)
+        looper, pool_handle, vdr_wallet_client, 1)
     return request_couple_json
 
 
@@ -889,22 +889,6 @@ async def sdk_gen_pool_handler(work_dir, name, open_config):
     return pool_handle
 
 
-@pytest.fixture(scope='module')
-def sdk_pool_handle(looper, txnPoolNodeSet, tdirWithPoolTxns, sdk_pool_data):
-    # TODO think about moving protocol version setting to separate
-    # fixture like 'sdk_init' since some sdk request builders don't
-    # requires pool handle but use protocol version
-    sdk_set_protocol_version(looper)
-    pool_name, open_config = sdk_pool_data
-    pool_handle = looper.loop.run_until_complete(
-        sdk_gen_pool_handler(tdirWithPoolTxns, pool_name, open_config))
-    yield pool_handle
-    try:
-        looper.loop.run_until_complete(close_pool_ledger(pool_handle))
-    except Exception as e:
-        logger.debug("Unhandled exception: {}".format(e))
-
-
 async def sdk_gen_wallet_handler(wallet_data):
     wallet_config, wallet_credentials = wallet_data
     await sdk_create_wallet(wallet_config, wallet_credentials)
@@ -966,8 +950,8 @@ def sdk_wallet_steward(looper, sdk_wallet_handle, sdk_steward_seed):
 
 
 @pytest.fixture(scope='module')
-def sdk_wallet_new_steward(looper, sdk_pool_handle, sdk_wallet_steward):
-    wh, client_did = sdk_add_new_nym(looper, sdk_pool_handle,
+def sdk_wallet_new_steward(looper, pool_handle, sdk_wallet_steward):
+    wh, client_did = sdk_add_new_nym(looper, pool_handle,
                                      sdk_wallet_steward,
                                      alias='new_steward_qwerty',
                                      role='STEWARD')
@@ -993,23 +977,6 @@ def sdk_wallet_client(looper, sdk_wallet_handle, sdk_client_seed):
         sdk_create_and_store_my_did(sdk_wallet_handle,
                                 json.dumps({'seed': sdk_client_seed})))
     return sdk_wallet_handle, client_did
-
-
-@pytest.fixture(scope='module')
-def sdk_wallet_client2(looper, sdk_wallet_handle, sdk_client_seed2):
-    (client_did, _) = looper.loop.run_until_complete(
-        sdk_create_and_store_my_did(sdk_wallet_handle,
-                                json.dumps({'seed': sdk_client_seed2})))
-    return sdk_wallet_handle, client_did
-
-
-@pytest.fixture(scope='module')
-def sdk_wallet_new_client(looper, sdk_pool_handle, sdk_wallet_steward,
-                          sdk_new_client_seed):
-    wh, client_did = sdk_add_new_nym(looper, sdk_pool_handle,
-                                     sdk_wallet_steward,
-                                     seed=sdk_new_client_seed)
-    return wh, client_did
 
 
 # @pytest.fixture(scope="module")
@@ -1077,62 +1044,6 @@ def sdk_wallet_new_client(looper, sdk_pool_handle, sdk_wallet_steward,
 #     node.onStopping()  # TODO stop won't call onStopping as we are in Stopped state
 
 
-@pytest.fixture(scope="module")
-def sdk_node_created_after_some_txns(looper, testNodeClass, do_post_node_creation,
-                                     sdk_pool_handle, sdk_wallet_client, sdk_wallet_steward,
-                                     txnPoolNodeSet, tdir, tconf, allPluginsPath, request):
-    txnCount = getValueFromModule(request, "txnCount", 5)
-    sdk_send_random_and_check(looper, txnPoolNodeSet,
-                              sdk_pool_handle,
-                              sdk_wallet_client,
-                              txnCount)
-    new_steward_name = randomString()
-    new_node_name = "Epsilon"
-    new_steward_wallet_handle, new_node = sdk_add_new_steward_and_node(
-        looper, sdk_pool_handle, sdk_wallet_steward,
-        new_steward_name, new_node_name, tdir, tconf, nodeClass=testNodeClass,
-        allPluginsPath=allPluginsPath, autoStart=True,
-        do_post_node_creation=do_post_node_creation)
-    sdk_pool_refresh(looper, sdk_pool_handle)
-    yield looper, new_node, sdk_pool_handle, new_steward_wallet_handle
-
-
-@pytest.fixture(scope="module")
-def sdk_node_set_with_node_added_after_some_txns(
-        txnPoolNodeSet, sdk_node_created_after_some_txns):
-    looper, new_node, sdk_pool_handle, new_steward_wallet_handle = \
-        sdk_node_created_after_some_txns
-    txnPoolNodeSet.append(new_node)
-    looper.run(checkNodesConnected(txnPoolNodeSet))
-    sdk_pool_refresh(looper, sdk_pool_handle)
-    return looper, new_node, sdk_pool_handle, new_steward_wallet_handle
-
-
-@pytest.fixture(scope="module")
-def sdk_new_node_caught_up(txnPoolNodeSet,
-                           sdk_node_set_with_node_added_after_some_txns):
-    looper, new_node, _, _ = sdk_node_set_with_node_added_after_some_txns
-    waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:4],
-                         exclude_from_check=['check_last_ordered_3pc_backup'])
-    check_last_3pc_master(new_node, txnPoolNodeSet[:4])
-
-    # Check if catchup done once
-    catchup_done_once = True
-    for leecher in new_node.ledgerManager._node_leecher._leechers.values():
-        catchup_done_once = catchup_done_once and (leecher.num_txns_caught_up > 0)
-
-    if not catchup_done_once:
-        # It might be the case that node has to do catchup again, in that case
-        # check the return value of `num_txns_caught_up_in_last_catchup` to be
-        # greater than 0
-
-        assert max(
-            getAllReturnVals(
-                new_node,
-                new_node.num_txns_caught_up_in_last_catchup)) > 0
-
-    return new_node
-
 # ####### VDR fixtures #########
 
 
@@ -1165,12 +1076,12 @@ async def vdr_gen_pool_handler(work_dir, name, open_config):
 
 
 @pytest.fixture(scope='module')
-def vdr_pool_handle(looper, txnPoolNodeSet, tdirWithPoolTxns, vdr_pool_data):
+def pool_handle(looper, txnPoolNodeSet, tdirWithPoolTxns, vdr_pool_data):
     pool_name, open_config = vdr_pool_data
     pool_handle = looper.loop.run_until_complete(
         vdr_gen_pool_handler(tdirWithPoolTxns, pool_name, open_config))
     yield pool_handle
-
+    # TODO: close pool
 
 @pytest.fixture(scope="session", autouse=True)
 def set_proto_ver():
@@ -1234,13 +1145,13 @@ def vdr_wallet_steward(looper, vdr_wallet_handle, vdr_steward_seed):
 
 
 @pytest.fixture(scope='module')
-def vdr_wallet_new_steward(looper, sdk_pool_handle, vdr_wallet_steward):
-    wh, client_did = vdr_add_new_nym(looper, sdk_pool_handle,
+def vdr_wallet_new_steward(looper, pool_handle, vdr_wallet_steward):
+    wh, client_did = vdr_add_new_nym(looper, pool_handle,
                                      vdr_wallet_steward,
                                      alias='new_steward_qwerty',
                                      role='STEWARD')
-    return wh, client_did, vdr_pool_handle
-vdr_pool_handle
+    return wh, client_did, pool_handle
+pool_handle
 
 @pytest.fixture(scope='module')
 def vdr_wallet_stewards(looper, vdr_wallet_handle, poolTxnStewardNames, poolTxnData):
@@ -1269,14 +1180,14 @@ def vdr_wallet_client2(looper, vdr_wallet_handle, vdr_client_seed2):
 
 
 @pytest.fixture(scope='module')
-def vdr_wallet_new_client(looper, sdk_pool_handle, vdr_wallet_steward,
+def vdr_wallet_new_client(looper, pool_handle, vdr_wallet_steward,
                           vdr_new_client_seed):
-    wh, client_did = vdr_add_new_nym(looper, sdk_pool_handle,
+    wh, client_did = vdr_add_new_nym(looper, pool_handle,
                                      vdr_wallet_steward,
                                      seed=vdr_new_client_seed)
-    return wh, client_did, vdr_pool_handle
+    return wh, client_did, pool_handle
 
-vdr_pool_handle
+pool_handle
 @pytest.fixture(scope="module")
 def vdr_create_node_and_not_start(testNodeClass,
                               node_config_helper_class,
@@ -1344,32 +1255,32 @@ def vdr_test_node(tdirWithPoolTxns,
 
 @pytest.fixture(scope="module")
 def vdr_node_created_after_some_txns(looper, testNodeClass, do_post_node_creation,
-                                     vdr_pool_handle, vdr_wallet_client, vdr_wallet_steward,
+                                     pool_handle, vdr_wallet_client, vdr_wallet_steward,
                                      txnPoolNodeSet, tdir, tconf, allPluginsPath, request):
     txnCount = getValueFromModule(request, "txnCount", 5)
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, 
-                              vdr_wallet_client, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, 
+                              vdr_wallet_client, pool_handle,
                               txnCount)
     new_steward_name = randomString()
     new_node_name = "Epsilon"
     new_steward_wallet_handle, pool_handle = vdr_add_new_steward_and_node(
-        looper, vdr_pool_handle, vdr_wallet_steward,
+        looper, pool_handle, vdr_wallet_steward,
         new_steward_name, new_node_name, tdir, tconf, nodeClass=testNodeClass,
         allPluginsPath=allPluginsPath, autoStart=True,
         do_post_node_creation=do_post_node_creation)
-    vdr_pool_refresh(looper, vdr_pool_handle)
-    yield looper, pool_handle, vdr_pool_handle, new_steward_wallet_handle
+    vdr_pool_refresh(looper, pool_handle)
+    yield looper, pool_handle, pool_handle, new_steward_wallet_handle
 
 
 @pytest.fixture(scope="module")
 def vdr_node_set_with_node_added_after_some_txns(
         txnPoolNodeSet, vdr_node_created_after_some_txns):
-    looper, new_node, sdk_pool_handle, new_steward_wallet_handle = \
+    looper, new_node, pool_handle, new_steward_wallet_handle = \
         vdr_node_created_after_some_txns
     txnPoolNodeSet.append(new_node)
     looper.run(checkNodesConnected(txnPoolNodeSet))
-    vdr_pool_refresh(looper, sdk_pool_handle)
-    return looper, new_node, sdk_pool_handle, new_steward_wallet_handle
+    vdr_pool_refresh(looper, pool_handle)
+    return looper, new_node, pool_handle, new_steward_wallet_handle
 
 
 @pytest.fixture(scope="module")

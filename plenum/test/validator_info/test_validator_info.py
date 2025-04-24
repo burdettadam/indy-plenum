@@ -222,10 +222,10 @@ def test_extractions_section(node):
 # def test_last_exactly_N_txn_from_ledger(node,
 #                                         looper,
 #                                         txnPoolNodeSet,
-#                                         sdk_pool_handle,
+#                                         pool_handle,
 #                                         sdk_wallet_steward):
 #     txnCount = 10
-#     sdk_send_random_and_check(looper, txnPoolNodeSet, sdk_pool_handle, sdk_wallet_steward, txnCount)
+#     sdk_send_random_and_check(looper, txnPoolNodeSet, pool_handle, sdk_wallet_steward, txnCount)
 #     assert node.domainLedger.size > NUMBER_TXNS_FOR_DISPLAY
 #     extractions = node._info_tool.additional_info['Extractions']
 #     assert len(extractions["Last_N_domain_ledger_txns"]) == NUMBER_TXNS_FOR_DISPLAY
@@ -244,12 +244,12 @@ def test_protocol_info_section(info):
 
 @pytest.fixture
 def write_txn_and_get_latest_info(txnPoolNodesLooper,
-                                  vdr_pool_handle,
+                                  pool_handle,
                                   vdr_wallet_client,
                                   node):
     def write_wrapped():
         vdr_send_random_and_check(txnPoolNodesLooper, range(nodeCount),
-                                  vdr_pool_handle,
+                                  pool_handle,
                                   vdr_wallet_client,
                                   1)
         return node._info_tool.info

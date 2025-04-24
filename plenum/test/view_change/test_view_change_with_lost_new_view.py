@@ -26,7 +26,7 @@ def lost_count(request):
 
 def test_view_change_with_lost_new_view(txnPoolNodeSet,
                                         looper,
-                                        vdr_pool_handle,
+                                        pool_handle,
                                         vdr_wallet_steward,
                                         tconf,
                                         tdir,
@@ -40,7 +40,7 @@ def test_view_change_with_lost_new_view(txnPoolNodeSet,
     initial_view_no = txnPoolNodeSet[0].viewNo
 
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle, vdr_wallet_steward, 5)
+                              pool_handle, vdr_wallet_steward, 5)
 
     def unpatch_after_call(msg, frm):
         global call_count
@@ -62,4 +62,4 @@ def test_view_change_with_lost_new_view(txnPoolNodeSet,
     ensure_all_nodes_have_same_data(looper, nodes=txnPoolNodeSet)
 
     # make sure that the pool is functional
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, pool_handle)

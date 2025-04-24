@@ -13,12 +13,12 @@ from plenum.test.pool_transactions.helper import vdr_add_new_nym, prepare_new_no
 invalid_dest = 'a' * 43
 
 
-def test_send_node_with_invalid_dest_verkey(looper, vdr_pool_handle,
+def test_send_node_with_invalid_dest_verkey(looper, pool_handle,
                                             vdr_wallet_steward, tdir, tconf):
     node_name = "Psi"
     new_steward_name = "testClientSteward" + randomString(3)
     new_steward_wallet_handle = vdr_add_new_nym(looper,
-                                                vdr_pool_handle,
+                                                pool_handle,
                                                 vdr_wallet_steward,
                                                 alias=new_steward_name,
                                                 role=STEWARD_STRING)
@@ -42,7 +42,7 @@ def test_send_node_with_invalid_dest_verkey(looper, vdr_pool_handle,
                              key_proof=key_proof))
 
     request_couple = vdr_sign_and_send_prepared_request(looper, new_steward_wallet_handle,
-                                                        vdr_pool_handle, node_request)
+                                                        pool_handle, node_request)
     vdr_get_bad_response(looper, [request_couple], RequestNackedException,
                          'Node\'s dest is not correct Ed25519 key.')
 
@@ -63,12 +63,12 @@ def test_send_node_with_invalid_dest_verkey(looper, vdr_pool_handle,
     node_request = json.dumps(node_request)
 
     request_couple = vdr_sign_and_send_prepared_request(looper, new_steward_wallet_handle,
-                                                        vdr_pool_handle, node_request)
+                                                        pool_handle, node_request)
     vdr_get_bad_response(looper, [request_couple], RequestNackedException,
                          'Node\'s verkey is not correct Ed25519 key.')
 
 
-def test_edit_node_with_invalid_verkey(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_steward):
+def test_edit_node_with_invalid_verkey(looper, txnPoolNodeSet, pool_handle, vdr_wallet_steward):
     with pytest.raises(RequestNackedException) as e:
-        vdr_change_node_keys(looper, txnPoolNodeSet[0], vdr_wallet_steward, vdr_pool_handle, invalid_dest)
+        vdr_change_node_keys(looper, txnPoolNodeSet[0], vdr_wallet_steward, pool_handle, invalid_dest)
     e.match('Node\'s verkey is not correct Ed25519 key.')

@@ -13,7 +13,7 @@ logger = getlogger()
 
 def testAddInactiveNodeThenActivate(looper, txnPoolNodeSet,
                                     vdr_wallet_steward,
-                                    vdr_pool_handle, tdir, tconf, allPluginsPath):
+                                    pool_handle, tdir, tconf, allPluginsPath):
     new_steward_name = "testClientSteward" + randomString(3)
     new_node_name = "Kappa"
 
@@ -21,7 +21,7 @@ def testAddInactiveNodeThenActivate(looper, txnPoolNodeSet,
     # it means the node is in the inactive state
     new_steward_wallet, new_node = \
         vdr_add_new_steward_and_node(looper,
-                                     vdr_pool_handle,
+                                     pool_handle,
                                      vdr_wallet_steward,
                                      new_steward_name,
                                      new_node_name,
@@ -30,13 +30,13 @@ def testAddInactiveNodeThenActivate(looper, txnPoolNodeSet,
                                      allPluginsPath,
                                      services=None)
     looper.run(checkNodesConnected(txnPoolNodeSet))
-    vdr_pool_refresh(looper, vdr_pool_handle)
+    vdr_pool_refresh(looper, pool_handle)
     new_node = update_node_data_and_reconnect(looper, txnPoolNodeSet + [new_node],
                                               new_steward_wallet,
-                                              vdr_pool_handle,
+                                              pool_handle,
                                               new_node,
                                               None, None,
                                               None, None,
                                               tdir, tconf)
     txnPoolNodeSet.append(new_node)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, new_steward_wallet, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, new_steward_wallet, pool_handle)

@@ -31,13 +31,13 @@ whitelist = [ERORR_MSG]
 
 def testLoggingTxnStateForValidRequest(
         looper, logsearch, txnPoolNodeSet,
-        vdr_pool_handle, vdr_wallet_client):
+        pool_handle, vdr_wallet_client):
     logsPropagate, _ = logsearch(files=['propagator.py'], funcs=['propagate'],
                                  msgs=['propagating.*request.*from client'])
     logsOrdered, _ = logsearch(files=['ordering_service.py'], funcs=['_order_3pc_key'], msgs=['ordered batch request'])
     logsCommited, _ = logsearch(files=['node.py'], funcs=['executeBatch'], msgs=['committed batch request'])
 
-    reqs = vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    reqs = vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                                      vdr_wallet_client, 1)
     req, _ = reqs[0]
 
@@ -48,7 +48,7 @@ def testLoggingTxnStateForValidRequest(
 
 
 def testLoggingTxnStateForInvalidRequest(
-        looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, logsearch):
+        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, logsearch):
     logsPropagate, _ = logsearch(files=['propagator.py'], funcs=['propagate'],
                                  msgs=['propagating.*request.*from client'])
     logsReject, _ = logsearch(files=['ordering_service.py'], funcs=['_consume_req_queue_for_pre_prepare'],
@@ -62,7 +62,7 @@ def testLoggingTxnStateForInvalidRequest(
                             "name", STEWARD_STRING))
 
     request_couple = vdr_sign_and_send_prepared_request(looper, vdr_wallet_client,
-                                                        vdr_pool_handle, nym_request)
+                                                        pool_handle, nym_request)
 
     with pytest.raises(RequestRejectedException) as e:
         vdr_get_and_check_replies(looper, [request_couple])
@@ -76,7 +76,7 @@ def testLoggingTxnStateForInvalidRequest(
 
 
 def testLoggingTxnStateWhenCommitFails(
-        looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_steward, logsearch):
+        looper, txnPoolNodeSet, pool_handle, vdr_wallet_steward, logsearch):
     logsPropagate, _ = logsearch(files=['propagator.py'], funcs=['propagate'],
                                  msgs=['propagating.*request.*from client'])
     logsOrdered, _ = logsearch(files=['ordering_service.py'], funcs=['_order_3pc_key'], msgs=['ordered batch request'])
@@ -91,7 +91,7 @@ def testLoggingTxnStateWhenCommitFails(
                             "name", None))
 
     req_couple = vdr_sign_and_send_prepared_request(looper, vdr_wallet_steward,
-                                                    vdr_pool_handle, nym_request)
+                                                    pool_handle, nym_request)
 
     class SomeError(Exception):
         pass

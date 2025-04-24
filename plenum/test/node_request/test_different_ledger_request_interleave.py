@@ -17,19 +17,19 @@ def test_different_ledger_request_interleave(tconf, looper, txnPoolNodeSet,
                                              tdir,
                                              tdirWithPoolTxns,
                                              allPluginsPath,
-                                             vdr_pool_handle, vdr_wallet_client,
+                                             pool_handle, vdr_wallet_client,
                                              vdr_wallet_steward):
     """
     Send pool and domain ledger requests such that they interleave, and do
     view change in between and verify the pool is functional
     """
     new_node = sdk_one_node_added
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 2)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)
 
     # Send domain ledger requests but don't wait for replies
-    requests = vdr_send_random_requests(looper, vdr_pool_handle,
+    requests = vdr_send_random_requests(looper, pool_handle,
                                         vdr_wallet_client, 2)
 
     # Add another node by sending pool ledger request
@@ -37,13 +37,13 @@ def test_different_ledger_request_interleave(tconf, looper, txnPoolNodeSet,
                                         txnPoolNodeSet,
                                         tdir,
                                         tconf,
-                                        vdr_pool_handle,
+                                        pool_handle,
                                         vdr_wallet_steward,
                                         allPluginsPath,
                                         name='new_theta')
 
     # Send more domain ledger requests but don't wait for replies
-    requests.extend(vdr_send_random_requests(looper, vdr_pool_handle,
+    requests.extend(vdr_send_random_requests(looper, pool_handle,
                                              vdr_wallet_client, 3))
 
     # Do view change without waiting for replies
@@ -54,9 +54,9 @@ def test_different_ledger_request_interleave(tconf, looper, txnPoolNodeSet,
     total_timeout = vdr_eval_timeout(len(requests), len(txnPoolNodeSet))
     vdr_get_and_check_replies(looper, requests, timeout=total_timeout)
     vdr_ensure_pool_functional(looper, txnPoolNodeSet,
-                               vdr_wallet_client, vdr_pool_handle)
+                               vdr_wallet_client, pool_handle)
     new_steward_wallet, steward_did = vdr_add_new_nym(looper,
-                                                      vdr_pool_handle,
+                                                      pool_handle,
                                                       vdr_wallet_steward,
                                                       'another_ste',
                                                       role='STEWARD')
@@ -80,12 +80,12 @@ def test_different_ledger_request_interleave(tconf, looper, txnPoolNodeSet,
 
     sdk_wallet = (new_steward_wallet, steward_did)
     request_couple = vdr_sign_and_send_prepared_request(looper, sdk_wallet,
-                                                        vdr_pool_handle,
+                                                        pool_handle,
                                                         node_req)
 
     # Send more domain ledger requests but don't wait for replies
     request_couples = [request_couple, *
-    vdr_send_random_requests(looper, vdr_pool_handle,
+    vdr_send_random_requests(looper, pool_handle,
                              vdr_wallet_client, 5)]
 
     # Make sure all requests are completed
@@ -94,4 +94,4 @@ def test_different_ledger_request_interleave(tconf, looper, txnPoolNodeSet,
 
     # Make sure pool is functional
     vdr_ensure_pool_functional(looper, txnPoolNodeSet,
-                               vdr_wallet_client, vdr_pool_handle)
+                               vdr_wallet_client, pool_handle)

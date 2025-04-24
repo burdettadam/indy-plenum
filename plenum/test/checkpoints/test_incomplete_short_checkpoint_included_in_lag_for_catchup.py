@@ -23,7 +23,7 @@ LOG_SIZE = 3 * CHK_FREQ
 
 def test_incomplete_short_checkpoint_included_in_lag_for_catchup(
         looper, chkFreqPatched, reqs_for_checkpoint, txnPoolNodeSet,
-        vdr_pool_handle, vdr_wallet_steward, vdr_wallet_client,
+        pool_handle, vdr_wallet_steward, vdr_wallet_client,
         tdir, tconf, allPluginsPath):
     """
     Verifies that if the first stored own checkpoint has a not aligned lower
@@ -37,7 +37,7 @@ def test_incomplete_short_checkpoint_included_in_lag_for_catchup(
     max_batch_size = chkFreqPatched.Max3PCBatchSize
 
     _, new_node = vdr_add_new_steward_and_node(
-        looper, vdr_pool_handle, vdr_wallet_steward,
+        looper, pool_handle, vdr_wallet_steward,
         'EpsilonSteward', 'Epsilon', tdir, tconf,
         allPluginsPath=allPluginsPath)
     txnPoolNodeSet.append(new_node)
@@ -52,7 +52,7 @@ def test_incomplete_short_checkpoint_included_in_lag_for_catchup(
     # with EpsilonSteward NYM transaction and with Epsilon NODE transaction.
     # This checkpoint has a not aligned lower bound on the new node replicas.
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            vdr_wallet_client,
                                            reqs_for_checkpoint - 4 * max_batch_size)
 
@@ -67,7 +67,7 @@ def test_incomplete_short_checkpoint_included_in_lag_for_catchup(
     # Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP quorumed stashed
     # checkpoints from others
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            vdr_wallet_client,
                                            (Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP - 1) *
                                            reqs_for_checkpoint + max_batch_size)
@@ -85,7 +85,7 @@ def test_incomplete_short_checkpoint_included_in_lag_for_catchup(
     # Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP + 1 quorumed stashed
     # checkpoints from others
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            vdr_wallet_client,
                                            reqs_for_checkpoint)
 

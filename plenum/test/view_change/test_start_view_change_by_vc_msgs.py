@@ -10,7 +10,7 @@ from stp_core.loop.eventually import eventually
 def test_start_view_change_by_vc_msgs(looper,
                                       txnPoolNodeSet,
                                       vdr_wallet_client,
-                                      vdr_pool_handle):
+                                      pool_handle):
 
     delayed_node = txnPoolNodeSet[-1]
     rest_nodes = txnPoolNodeSet[:-1]
@@ -19,12 +19,12 @@ def test_start_view_change_by_vc_msgs(looper,
         trigger_view_change(txnPoolNodeSet)
         looper.run(eventually(checkViewNoForNodes, rest_nodes, current_view_no + 1))
         ensureElectionsDone(looper, txnPoolNodeSet)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
 
 
 def test_delay_IC_for_next_primary(looper,
                                    txnPoolNodeSet,
-                                   vdr_pool_handle,
+                                   pool_handle,
                                    vdr_wallet_client):
     current_view_no = checkViewNoForNodes(txnPoolNodeSet)
     next_primary_name = get_next_primary_name(txnPoolNodeSet, current_view_no + 1)
@@ -34,5 +34,5 @@ def test_delay_IC_for_next_primary(looper,
         trigger_view_change(txnPoolNodeSet)
         looper.run(eventually(checkViewNoForNodes, rest_nodes, current_view_no + 1))
         ensureElectionsDone(looper, txnPoolNodeSet)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
     assert next_primary.master_replica.isPrimary

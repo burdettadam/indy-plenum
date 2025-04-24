@@ -10,10 +10,10 @@ from plenum.test.helper import vdr_send_random_and_check
 def test_discard_checkpoint_msg_for_stable_checkpoint(chkFreqPatched,
                                                       tconf, looper,
                                                       txnPoolNodeSet,
-                                                      vdr_pool_handle,
+                                                      pool_handle,
                                                       vdr_wallet_client,
                                                       reqs_for_checkpoint):
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, reqs_for_checkpoint)
     next_checkpoint = tconf.CHK_FREQ
     for inst_id in txnPoolNodeSet[0].replicas.keys():

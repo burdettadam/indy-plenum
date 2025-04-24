@@ -61,10 +61,10 @@ def validate_taa_acceptance_func_api(node_validator):
 
 
 @pytest.fixture(scope='module')
-def validate_taa_acceptance_txn_api(looper, txnPoolNodeSet, vdr_pool_handle):
+def validate_taa_acceptance_txn_api(looper, txnPoolNodeSet, pool_handle):
     def wrapped(signed_req_dict):
         signed_req_json = json.dumps(signed_req_dict)
-        vdr_send_and_check([signed_req_json], looper, txnPoolNodeSet, vdr_pool_handle)[0]
+        vdr_send_and_check([signed_req_json], looper, txnPoolNodeSet, pool_handle)[0]
         ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)
     return wrapped
 

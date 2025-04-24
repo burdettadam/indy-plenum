@@ -14,13 +14,13 @@ def limitTestRunningTime():
     return 150
 
 
-def add_new_node(looper, nodes, sdk_pool_handle, sdk_wallet_steward,
+def add_new_node(looper, nodes, pool_handle, sdk_wallet_steward,
                  tdir, tconf, all_plugins_path, name=None):
     node_name = name or randomString(5)
     new_steward_name = "testClientSteward" + randomString(3)
     new_steward_wallet_handle, new_node = \
         vdr_add_new_steward_and_node(looper,
-                                     sdk_pool_handle,
+                                     pool_handle,
                                      sdk_wallet_steward,
                                      new_steward_name,
                                      node_name,
@@ -36,12 +36,12 @@ def add_new_node(looper, nodes, sdk_pool_handle, sdk_wallet_steward,
 
 
 def test_add_node_with_f_changed(looper, txnPoolNodeSet, tdir, tconf,
-                                 allPluginsPath, vdr_pool_handle,
+                                 allPluginsPath, pool_handle,
                                  vdr_wallet_steward, limitTestRunningTime):
     nodes = txnPoolNodeSet
     add_new_node(looper,
                  nodes,
-                 vdr_pool_handle,
+                 pool_handle,
                  vdr_wallet_steward,
                  tdir,
                  tconf,
@@ -49,7 +49,7 @@ def test_add_node_with_f_changed(looper, txnPoolNodeSet, tdir, tconf,
                  name="Node5")
     add_new_node(looper,
                  nodes,
-                 vdr_pool_handle,
+                 pool_handle,
                  vdr_wallet_steward,
                  tdir,
                  tconf,
@@ -57,7 +57,7 @@ def test_add_node_with_f_changed(looper, txnPoolNodeSet, tdir, tconf,
                  name="Node6")
     add_new_node(looper,
                  nodes,
-                 vdr_pool_handle,
+                 pool_handle,
                  vdr_wallet_steward,
                  tdir,
                  tconf,
@@ -65,7 +65,7 @@ def test_add_node_with_f_changed(looper, txnPoolNodeSet, tdir, tconf,
                  name="Node7")
     add_new_node(looper,
                  nodes,
-                 vdr_pool_handle,
+                 pool_handle,
                  vdr_wallet_steward,
                  tdir,
                  tconf,

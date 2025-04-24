@@ -37,7 +37,7 @@ def test_limited_stash_3pc_while_catchup(tdir, tconf,
                                          looper,
                                          testNodeClass,
                                          txnPoolNodeSet,
-                                         vdr_pool_handle,
+                                         pool_handle,
                                          vdr_wallet_client,
                                          allPluginsPath,
                                          chkFreqPatched):
@@ -51,7 +51,7 @@ def test_limited_stash_3pc_while_catchup(tdir, tconf,
     rest_nodes = txnPoolNodeSet[:-1]
 
     # Check that requests executed well
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 1)
 
     # Stop one node
@@ -64,7 +64,7 @@ def test_limited_stash_3pc_while_catchup(tdir, tconf,
 
     # Order 2 checkpoints on rest_nodes (2 txns in 2 batches)
     vdr_send_batches_of_random_and_check(looper, txnPoolNodeSet,
-                                         vdr_pool_handle, vdr_wallet_client,
+                                         pool_handle, vdr_wallet_client,
                                          2 * CHK_FREQ, 2)
     waitNodeDataEquality(looper, *rest_nodes)
 
@@ -93,17 +93,17 @@ def test_limited_stash_3pc_while_catchup(tdir, tconf,
 
             # Order 2 checkpoints in the first lagging node catchup (2 txns in 2 batches)
             vdr_send_batches_of_random_and_check(looper, txnPoolNodeSet,
-                                                 vdr_pool_handle, vdr_wallet_client,
+                                                 pool_handle, vdr_wallet_client,
                                                  2 * CHK_FREQ, 2)
 
         # Order 2 checkpoints in the second lagging node catchup (2 txns in 2 batches)
         vdr_send_batches_of_random_and_check(looper, txnPoolNodeSet,
-                                             vdr_pool_handle, vdr_wallet_client,
+                                             pool_handle, vdr_wallet_client,
                                              2 * CHK_FREQ, 2)
 
     waitNodeDataEquality(looper, *txnPoolNodeSet, customTimeout=5,
                          exclude_from_check=['check_last_ordered_3pc_backup'])
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 1)
     looper.run(
         eventually(

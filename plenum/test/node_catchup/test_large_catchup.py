@@ -44,7 +44,7 @@ def test_large_catchup(tdir, tconf,
                        looper,
                        testNodeClass,
                        txnPoolNodeSet,
-                       vdr_pool_handle,
+                       pool_handle,
                        vdr_wallet_client,
                        allPluginsPath):
     """
@@ -56,7 +56,7 @@ def test_large_catchup(tdir, tconf,
     all_nodes = txnPoolNodeSet
 
     # Check that requests executed well
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 10)
 
     # Stop one node
@@ -68,7 +68,7 @@ def test_large_catchup(tdir, tconf,
     looper.removeProdable(lagging_node)
 
     # Send more requests to active nodes
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 100)
     waitNodeDataEquality(looper, *rest_nodes)
 

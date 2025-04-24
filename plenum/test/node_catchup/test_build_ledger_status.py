@@ -35,17 +35,17 @@ def test_ledger_status_for_new_pool(txnPoolNodeSet):
     check_ledger_statuses(txnPoolNodeSet)
 
 
-def test_ledger_status_after_txn_ordered(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle):
+def test_ledger_status_after_txn_ordered(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle):
     # we expect last ordered 3PC is not None for Domain ledger only, as there is a txn added to Domain ledger
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 1)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)
 
     check_ledger_statuses(txnPoolNodeSet)
 
 
-def test_ledger_status_after_catchup(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle):
+def test_ledger_status_after_catchup(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle):
     # we expect last ordered 3PC is not None for Domain ledger only, as there is a txn added to Domain ledger
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 1)
 
     ensure_view_change_complete(looper, txnPoolNodeSet)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)
@@ -54,9 +54,9 @@ def test_ledger_status_after_catchup(looper, txnPoolNodeSet, vdr_wallet_client, 
 
 
 def test_ledger_status_for_new_node(looper, txnPoolNodeSet, vdr_node_created_after_some_txns):
-    _, new_node, sdk_pool_handle, new_steward_wallet_handle = vdr_node_created_after_some_txns
-    vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool_handle, new_steward_wallet_handle, 1)
-    vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool_handle, new_steward_wallet_handle, 1)
+    _, new_node, pool_handle, new_steward_wallet_handle = vdr_node_created_after_some_txns
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, new_steward_wallet_handle, 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, new_steward_wallet_handle, 1)
 
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet + [new_node],
                                     exclude_from_check=['check_last_ordered_3pc_backup'])

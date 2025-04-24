@@ -7,7 +7,7 @@ from plenum.test.view_change.helper import add_new_node
 
 def test_audit_multiple_uncommitted_node_regs(looper, tdir, tconf, allPluginsPath,
                                               txnPoolNodeSet,
-                                              vdr_pool_handle,
+                                              pool_handle,
                                               vdr_wallet_client,
                                               vdr_wallet_steward):
     '''
@@ -26,7 +26,7 @@ def test_audit_multiple_uncommitted_node_regs(looper, tdir, tconf, allPluginsPat
         # Add Node5
         new_node = add_new_node(looper,
                                 fast_nodes,
-                                vdr_pool_handle,
+                                pool_handle,
                                 vdr_wallet_steward,
                                 tdir,
                                 tconf,
@@ -39,7 +39,7 @@ def test_audit_multiple_uncommitted_node_regs(looper, tdir, tconf, allPluginsPat
         # Add Node6
         new_node = add_new_node(looper,
                                 fast_nodes,
-                                vdr_pool_handle,
+                                pool_handle,
                                 vdr_wallet_steward,
                                 tdir,
                                 tconf,
@@ -50,4 +50,4 @@ def test_audit_multiple_uncommitted_node_regs(looper, tdir, tconf, allPluginsPat
         start_delaying(new_node.nodeIbStasher, icDelay())
 
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet, custom_timeout=20)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)

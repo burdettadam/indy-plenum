@@ -13,7 +13,7 @@ LOG_SIZE = CHK_FREQ
 
 def test_process_three_phase_msg_and_stashed_for_next_checkpoint(txnPoolNodeSet,
                                                                  looper,
-                                                                 vdr_pool_handle,
+                                                                 pool_handle,
                                                                  vdr_wallet_client,
                                                                  chkFreqPatched):
     """
@@ -44,7 +44,7 @@ def test_process_three_phase_msg_and_stashed_for_next_checkpoint(txnPoolNodeSet,
         with delay_rules([slow_node.nodeIbStasher, ], chk_delay()):
             vdr_send_batches_of_random_and_check(looper,
                                                  txnPoolNodeSet,
-                                                 vdr_pool_handle,
+                                                 pool_handle,
                                                  vdr_wallet_client,
                                                  num_reqs=1 * CHK_FREQ,
                                                  num_batches=CHK_FREQ)
@@ -54,7 +54,7 @@ def test_process_three_phase_msg_and_stashed_for_next_checkpoint(txnPoolNodeSet,
                                   CHK_FREQ))
             vdr_send_random_and_check(looper,
                                       txnPoolNodeSet,
-                                      vdr_pool_handle,
+                                      pool_handle,
                                       vdr_wallet_client,
                                       1)
 

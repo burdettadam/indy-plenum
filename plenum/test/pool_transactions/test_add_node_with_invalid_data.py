@@ -40,12 +40,12 @@ def test_add_node_with_existing_data(looper,
                                      txnPoolNodeSet,
                                      tdir,
                                      tconf,
-                                     vdr_pool_handle,
+                                     pool_handle,
                                      vdr_wallet_stewards):
     alias = randomString(5)
     new_node_name = "Node-" + alias
     steward_wallet_handle = vdr_add_new_nym(looper,
-                                            vdr_pool_handle,
+                                            pool_handle,
                                             vdr_wallet_stewards[0],
                                             alias="Steward-" + alias,
                                             role='STEWARD')
@@ -57,7 +57,7 @@ def test_add_node_with_existing_data(looper,
     node_request = create_specific_node_request(
         looper, steward_wallet_handle, tconf, tdir, txnPoolNodeSet[0].name)
     request_couple = vdr_sign_and_send_prepared_request(looper, steward_wallet_handle,
-                                                        vdr_pool_handle, node_request)
+                                                        pool_handle, node_request)
     vdr_get_bad_response(looper, [request_couple], RequestRejectedException,
                          "Node's alias must be unique")
 
@@ -66,7 +66,7 @@ def test_add_node_with_existing_data(looper,
         looper, steward_wallet_handle, tconf, tdir, new_node_name,
         new_node_ip=existing_ha[0], new_node_port=existing_ha[1])
     request_couple = vdr_sign_and_send_prepared_request(looper, steward_wallet_handle,
-                                                        vdr_pool_handle, node_request)
+                                                        pool_handle, node_request)
     vdr_get_bad_response(looper, [request_couple], RequestRejectedException,
                          "Node's nodestack addresses must be unique")
 
@@ -75,20 +75,20 @@ def test_add_node_with_existing_data(looper,
         looper, steward_wallet_handle, tconf, tdir, new_node_name,
         new_client_ip=existing_cli_ha[0], new_client_port=existing_cli_ha[1])
     request_couple = vdr_sign_and_send_prepared_request(looper, steward_wallet_handle,
-                                                        vdr_pool_handle, node_request)
+                                                        pool_handle, node_request)
     vdr_get_bad_response(looper, [request_couple], RequestRejectedException,
                          "Node's clientstack addresses must be unique")
 
 
 def test_try_change_node_alias(looper,
                                txnPoolNodeSet,
-                               vdr_pool_handle,
+                               pool_handle,
                                vdr_wallet_stewards):
     node = txnPoolNodeSet[1]
     node_dest = hexToFriendly(node.nodestack.verhex)
     with pytest.raises(RequestRejectedException) as e:
         vdr_send_update_node(looper, vdr_wallet_stewards[1],
-                             vdr_pool_handle,
+                             pool_handle,
                              node_dest, node.name + '-foo',
                              None, None,
                              None, None,

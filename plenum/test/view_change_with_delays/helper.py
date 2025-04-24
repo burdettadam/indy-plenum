@@ -91,7 +91,7 @@ def wait_for_elections_done_on_given_nodes(looper: Looper,
 
 
 def do_view_change_with_pending_request_and_one_fast_node(fast_node,
-                                                          nodes, looper, sdk_pool_handle, sdk_wallet_client):
+                                                          nodes, looper, pool_handle, sdk_wallet_client):
     """
     Perform view change while processing request, with one node receiving commits much sooner than others.
     With current implementation of view change this will result in corrupted state of fast node
@@ -111,7 +111,7 @@ def do_view_change_with_pending_request_and_one_fast_node(fast_node,
     with delay_rules(slow_stashers, cDelay()):
         with delay_rules(fast_stasher, cDelay()):
             # Send request
-            request = vdr_send_random_request(looper, sdk_pool_handle, sdk_wallet_client)
+            request = vdr_send_random_request(looper, pool_handle, sdk_wallet_client)
 
             # Wait until this request is prepared on N-f nodes
             looper.run(eventually(check_last_prepared_certificate_on_quorum, nodes, (lpc[0], lpc[1] + 1)))
@@ -128,7 +128,7 @@ def do_view_change_with_pending_request_and_one_fast_node(fast_node,
 
 
 def do_view_change_with_unaligned_prepare_certificates(
-        slow_nodes, nodes, looper, sdk_pool_handle, sdk_wallet_client):
+        slow_nodes, nodes, looper, pool_handle, sdk_wallet_client):
     """
     Perform view change with some nodes reaching lower last prepared certificate than others.
     With current implementation of view change this can result with view change taking a lot of time.
@@ -142,7 +142,7 @@ def do_view_change_with_unaligned_prepare_certificates(
     with delay_rules(slow_stashers, pDelay()):
         with delay_rules(all_stashers, cDelay()):
             # Send request
-            request = vdr_send_random_request(looper, sdk_pool_handle, sdk_wallet_client)
+            request = vdr_send_random_request(looper, pool_handle, sdk_wallet_client)
 
             # Wait until this request is prepared on fast nodes
             looper.run(eventually(check_last_prepared_certificate, fast_nodes, (0, 1)))
@@ -160,11 +160,11 @@ def do_view_change_with_unaligned_prepare_certificates(
     vdr_get_reply(looper, request)
 
     ensure_all_nodes_have_same_data(looper, nodes)
-    vdr_ensure_pool_functional(looper, nodes, sdk_wallet_client, sdk_pool_handle)
+    vdr_ensure_pool_functional(looper, nodes, sdk_wallet_client, pool_handle)
 
 
 def do_view_change_with_delay_on_one_node(slow_node, nodes, looper,
-                                          sdk_pool_handle, sdk_wallet_client):
+                                          pool_handle, sdk_wallet_client):
     slow_stasher = slow_node.nodeIbStasher
 
     fast_nodes = [n for n in nodes if n != slow_node]
@@ -180,7 +180,7 @@ def do_view_change_with_delay_on_one_node(slow_node, nodes, looper,
         with delay_rules(slow_stasher, icDelay()):
             with delay_rules(stashers, cDelay()):
                 # Send request
-                request = vdr_send_random_request(looper, sdk_pool_handle, sdk_wallet_client)
+                request = vdr_send_random_request(looper, pool_handle, sdk_wallet_client)
 
                 # Wait until this request is prepared on N-f nodes
                 looper.run(eventually(check_last_prepared_certificate_on_quorum, nodes, (lpc[0], lpc[1] + 1)))
@@ -219,7 +219,7 @@ def do_view_change_with_delay_on_one_node(slow_node, nodes, looper,
 
 
 def do_view_change_with_propagate_primary_on_one_delayed_node(
-        slow_node, nodes, looper, sdk_pool_handle, sdk_wallet_client):
+        slow_node, nodes, looper, pool_handle, sdk_wallet_client):
 
     slow_stasher = slow_node.nodeIbStasher
 
@@ -236,7 +236,7 @@ def do_view_change_with_propagate_primary_on_one_delayed_node(
         with delay_rules(slow_stasher, nv_delay()):
             with delay_rules(stashers, cDelay()):
                 # Send request
-                request = vdr_send_random_request(looper, sdk_pool_handle, sdk_wallet_client)
+                request = vdr_send_random_request(looper, pool_handle, sdk_wallet_client)
 
                 # Wait until this request is prepared on N-f nodes
                 looper.run(eventually(check_last_prepared_certificate_on_quorum, nodes, (lpc[0], lpc[1] + 1)))
@@ -277,7 +277,7 @@ def do_view_change_with_propagate_primary_on_one_delayed_node(
 
 def do_view_change_with_delayed_commits_and_node_restarts(fast_nodes, slow_nodes, nodes_to_restart,
                                                           old_view_no, old_last_ordered,
-                                                          looper, sdk_pool_handle, sdk_wallet_client,
+                                                          looper, pool_handle, sdk_wallet_client,
                                                           tconf, tdir, all_plugins_path,
                                                           wait_for_catchup=False):
     """
@@ -299,7 +299,7 @@ def do_view_change_with_delayed_commits_and_node_restarts(fast_nodes, slow_nodes
     # Delay commits on `slow_nodes`
     with delay_rules_without_processing(slow_stashers, cDelay()):
 
-        request = vdr_send_random_request(looper, sdk_pool_handle, sdk_wallet_client)
+        request = vdr_send_random_request(looper, pool_handle, sdk_wallet_client)
 
         # Check that all of the nodes except the slows one ordered the request
         looper.run(eventually(check_last_ordered, fast_nodes, (old_view_no, old_last_ordered[1] + 1)))
@@ -341,4 +341,4 @@ def do_view_change_with_delayed_commits_and_node_restarts(fast_nodes, slow_nodes
     ensureElectionsDone(looper=looper, nodes=nodes)
     ensure_all_nodes_have_same_data(looper, nodes)
     vdr_get_reply(looper, request)
-    vdr_ensure_pool_functional(looper, nodes, sdk_wallet_client, sdk_pool_handle)
+    vdr_ensure_pool_functional(looper, nodes, sdk_wallet_client, pool_handle)

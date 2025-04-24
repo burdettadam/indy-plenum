@@ -13,12 +13,12 @@ logger = getlogger()
 
 def testChangeHaPersistsPostNodesRestart(looper, txnPoolNodeSet,
                                          tdir, tconf,
-                                         vdr_pool_handle,
+                                         pool_handle,
                                          vdr_wallet_client,
                                          vdr_wallet_steward):
     new_steward_wallet, new_node = \
         vdr_add_new_steward_and_node(looper,
-                                     vdr_pool_handle,
+                                     pool_handle,
                                      vdr_wallet_steward,
                                      'AnotherSteward' + randomString(4),
                                      'AnotherNode' + randomString(4),
@@ -26,7 +26,7 @@ def testChangeHaPersistsPostNodesRestart(looper, txnPoolNodeSet,
                                      tconf)
     txnPoolNodeSet.append(new_node)
     looper.run(checkNodesConnected(txnPoolNodeSet))
-    vdr_pool_refresh(looper, vdr_pool_handle)
+    vdr_pool_refresh(looper, pool_handle)
 
     node_new_ha, client_new_ha = genHa(2)
     logger.debug("{} changing HAs to {} {}".format(new_node, node_new_ha,
@@ -34,7 +34,7 @@ def testChangeHaPersistsPostNodesRestart(looper, txnPoolNodeSet,
 
     # Making the change HA txn an confirming its succeeded
     node_dest = hexToFriendly(new_node.nodestack.verhex)
-    vdr_send_update_node(looper, new_steward_wallet, vdr_pool_handle,
+    vdr_send_update_node(looper, new_steward_wallet, pool_handle,
                          node_dest, new_node.name,
                          node_new_ha.host, node_new_ha.port,
                          client_new_ha.host, client_new_ha.port)
@@ -67,5 +67,5 @@ def testChangeHaPersistsPostNodesRestart(looper, txnPoolNodeSet,
 
     looper.run(checkNodesConnected(restartedNodes))
     waitNodeDataEquality(looper, node, *restartedNodes[:-1])
-    vdr_pool_refresh(looper, vdr_pool_handle)
-    vdr_ensure_pool_functional(looper, restartedNodes, vdr_wallet_client, vdr_pool_handle)
+    vdr_pool_refresh(looper, pool_handle)
+    vdr_ensure_pool_functional(looper, restartedNodes, vdr_wallet_client, pool_handle)

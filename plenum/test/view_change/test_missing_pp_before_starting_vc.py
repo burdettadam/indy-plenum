@@ -18,7 +18,7 @@ def tconf(tconf):
 
 
 def test_missing_pp_before_starting_vc(tconf, txnPoolNodeSet, looper,
-                                       vdr_pool_handle, vdr_wallet_steward):
+                                       pool_handle, vdr_wallet_steward):
     '''
     - all nodes delay PrePrepares for viewNo=1 with ppSeqNo<4
     - all nodes go to view=1
@@ -36,7 +36,7 @@ def test_missing_pp_before_starting_vc(tconf, txnPoolNodeSet, looper,
         looper.run(eventually(check_not_in_view_change, txnPoolNodeSet))
 
         # 3. send requests
-        vdr_send_random_requests(looper, vdr_pool_handle,
+        vdr_send_random_requests(looper, pool_handle,
                                  vdr_wallet_steward, 10)
 
         # 4. do view change for view=2
@@ -45,4 +45,4 @@ def test_missing_pp_before_starting_vc(tconf, txnPoolNodeSet, looper,
     # 5. ensure everything is fine
     ensureElectionsDone(looper, txnPoolNodeSet)
     ensure_all_nodes_have_same_data(looper, nodes=txnPoolNodeSet)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, pool_handle)

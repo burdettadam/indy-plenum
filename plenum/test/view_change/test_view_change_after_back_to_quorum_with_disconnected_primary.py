@@ -15,7 +15,7 @@ def tconf(tconf):
 
 
 def test_view_change_after_back_to_quorum_with_disconnected_primary(txnPoolNodeSet, looper,
-                                                                    vdr_pool_handle,
+                                                                    pool_handle,
                                                                     vdr_wallet_client,
                                                                     tdir, tconf, allPluginsPath):
     assert len(txnPoolNodeSet) == 4
@@ -77,6 +77,6 @@ def test_view_change_after_back_to_quorum_with_disconnected_primary(txnPoolNodeS
                       customTimeout=3 * tconf.NEW_VIEW_TIMEOUT)
 
     # 6. ensure pool is working properly
-    vdr_send_random_and_check(looper, remaining_nodes, vdr_pool_handle,
+    vdr_send_random_and_check(looper, remaining_nodes, pool_handle,
                               vdr_wallet_client, 3)
     ensure_all_nodes_have_same_data(looper, nodes=remaining_nodes)

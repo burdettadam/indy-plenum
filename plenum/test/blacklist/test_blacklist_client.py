@@ -12,7 +12,7 @@ from plenum.test import waits
 
 # noinspection PyIncorrectDocstring,PyUnusedLocal,PyShadowingNames
 def testDoNotBlacklistClient(looper, txnPoolNodeSet,
-                             vdr_wallet_client, vdr_pool_handle,
+                             vdr_wallet_client, pool_handle,
                              poolTxnClientNames):
     """
     Client should be not be blacklisted by node on sending an unsigned request
@@ -23,7 +23,7 @@ def testDoNotBlacklistClient(looper, txnPoolNodeSet,
     req_obj = vdr_random_request_objects(1, identifier=did,
                                          protocol_version=CURRENT_PROTOCOL_VERSION)[0]
 
-    reqs = vdr_send_signed_requests(vdr_pool_handle, [req_obj], looper)
+    reqs = vdr_send_signed_requests(pool_handle, [req_obj], looper)
 
     with pytest.raises(RequestNackedException, match='MissingSignature'):
         vdr_get_and_check_replies(looper, reqs)

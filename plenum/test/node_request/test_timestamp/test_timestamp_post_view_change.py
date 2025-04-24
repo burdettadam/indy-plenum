@@ -17,7 +17,7 @@ TestRunningTimeLimitSec = 200
 
 
 def test_new_primary_has_wrong_clock(tconf, looper, txnPoolNodeSet,
-                                     vdr_wallet_client, vdr_pool_handle):
+                                     vdr_wallet_client, pool_handle):
     """
     One of non-primary has a bad clock, it raises suspicions but orders
     requests after getting PREPAREs. Then a view change happens this
@@ -63,6 +63,6 @@ def test_new_primary_has_wrong_clock(tconf, looper, txnPoolNodeSet,
     # All nodes reply
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               count=Max3PCBatchSize * 2)

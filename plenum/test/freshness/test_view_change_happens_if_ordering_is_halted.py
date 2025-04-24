@@ -17,7 +17,7 @@ def tconf(tconf):
 
 
 def test_view_change_happens_if_ordering_is_halted(looper, tconf, txnPoolNodeSet,
-                                                   vdr_wallet_client, vdr_pool_handle):
+                                                   vdr_wallet_client, pool_handle):
     current_view_no = txnPoolNodeSet[0].viewNo
     for node in txnPoolNodeSet:
         assert node.viewNo == current_view_no
@@ -32,4 +32,4 @@ def test_view_change_happens_if_ordering_is_halted(looper, tconf, txnPoolNodeSet
 
     assert sum(1 for node in txnPoolNodeSet if has_freshness_instance_change(node)) >= 3
 
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)

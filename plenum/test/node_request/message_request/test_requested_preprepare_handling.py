@@ -15,7 +15,7 @@ from plenum.test.helper import vdr_send_batches_of_random_and_check
 
 
 def test_handle_delayed_preprepares(looper, txnPoolNodeSet,
-                                    vdr_wallet_client, vdr_pool_handle,
+                                    vdr_wallet_client, pool_handle,
                                     teardown,
                                     monkeypatch):
     """
@@ -41,7 +41,7 @@ def test_handle_delayed_preprepares(looper, txnPoolNodeSet,
 
     vdr_send_batches_of_random_and_check(looper,
                                          txnPoolNodeSet,
-                                         vdr_pool_handle,
+                                         pool_handle,
                                          vdr_wallet_client,
                                          num_reqs=10,
                                          num_batches=5)

@@ -40,15 +40,15 @@ def test_node_catchup_after_restart_with_txns(
         txnPoolNodeSet,
         tdir,
         tconf,
-        sdk_node_set_with_node_added_after_some_txns,
+        vdr_node_set_with_node_added_after_some_txns,
         allPluginsPath):
     """
     A node that restarts after some transactions should eventually get the
     transactions which happened while it was down
     :return:
     """
-    looper, new_node, sdk_pool_handle, new_steward_wallet_handle = \
-        sdk_node_set_with_node_added_after_some_txns
+    looper, new_node, pool_handle, new_steward_wallet_handle = \
+        vdr_node_set_with_node_added_after_some_txns
     logger.debug("Stopping node {} with pool ledger size {}".
                  format(new_node, new_node.poolManager.txnSeqNo))
     disconnect_node_and_ensure_disconnected(looper, txnPoolNodeSet, new_node)
@@ -62,7 +62,7 @@ def test_node_catchup_after_restart_with_txns(
     # TODO: Check if the node has really stopped processing requests?
     logger.debug("Sending requests")
     more_requests = 5
-    vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               new_steward_wallet_handle, more_requests)
     logger.debug("Starting the stopped node, {}".format(new_node))
     nodeHa, nodeCHa = HA(*new_node.nodestack.ha), HA(*new_node.clientstack.ha)

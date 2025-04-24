@@ -23,7 +23,7 @@ def test_3pc_while_catchup(tdir, tconf,
                            looper,
                            testNodeClass,
                            txnPoolNodeSet,
-                           vdr_pool_handle,
+                           pool_handle,
                            vdr_wallet_client,
                            allPluginsPath):
     '''
@@ -36,7 +36,7 @@ def test_3pc_while_catchup(tdir, tconf,
     rest_nodes = txnPoolNodeSet[:-1]
 
     # Check that requests executed well
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 10)
 
     # Stop one node
@@ -48,7 +48,7 @@ def test_3pc_while_catchup(tdir, tconf,
     looper.removeProdable(lagging_node)
 
     # Send more requests to active nodes
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 10)
     waitNodeDataEquality(looper, *rest_nodes)
 
@@ -76,7 +76,7 @@ def test_3pc_while_catchup(tdir, tconf,
                        timeout=60))
 
         # make sure that more requests are being ordered while catch-up is in progress
-        vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                                   vdr_wallet_client, 10)
 
         assert lagging_node.mode == Mode.syncing

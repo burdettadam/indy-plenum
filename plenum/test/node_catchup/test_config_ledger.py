@@ -21,29 +21,29 @@ from plenum.test.test_node import TestNode, checkNodesConnected
 from stp_core.types import HA
 
 
-def write(key, val, looper, sdk_pool_handle, sdk_wallet):
+def write(key, val, looper, pool_handle, sdk_wallet):
     _, idr = sdk_wallet
     reqs_obj = [vdr_gen_request(op, identifier=idr)
                 for op in [write_conf_op(key, val)]]
     reqs = vdr_sign_request_objects(looper, sdk_wallet, reqs_obj)
-    sent_reqs = vdr_send_signed_requests(sdk_pool_handle, reqs, looper)
+    sent_reqs = vdr_send_signed_requests(pool_handle, reqs, looper)
     vdr_get_and_check_replies(looper, sent_reqs, timeout=10)
 
 
-def read(key, looper, sdk_pool_handle, sdk_wallet):
+def read(key, looper, pool_handle, sdk_wallet):
     _, idr = sdk_wallet
     reqs_obj = [vdr_gen_request(op, identifier=idr)
                 for op in [read_conf_op(key)]]
     reqs = vdr_sign_request_objects(looper, sdk_wallet, reqs_obj)
-    sent_reqs = vdr_send_signed_requests(sdk_pool_handle, reqs, looper)
+    sent_reqs = vdr_send_signed_requests(pool_handle, reqs, looper)
     (req, resp), = vdr_get_and_check_replies(looper, sent_reqs, timeout=10)
     return json.loads(resp['result'][DATA])[key]
 
 
-def send_some_config_txns(looper, sdk_pool_handle, sdk_wallet_client, keys):
+def send_some_config_txns(looper, pool_handle, sdk_wallet_client, keys):
     for i in range(5):
         key, val = 'key_{}'.format(i + 1), randomString()
-        write(key, val, looper, sdk_pool_handle, sdk_wallet_client)
+        write(key, val, looper, pool_handle, sdk_wallet_client)
         keys[key] = val
     return keys
 
@@ -62,7 +62,7 @@ def setup(testNodeClass, txnPoolNodeSet):
 
 
 def test_config_ledger_txns(looper, setup, txnPoolNodeSet, vdr_wallet_client,
-                            vdr_pool_handle):
+                            pool_handle):
     """
     Do some writes and reads on the config ledger
     """
@@ -80,34 +80,34 @@ def test_config_ledger_txns(looper, setup, txnPoolNodeSet, vdr_wallet_client,
 
     # Do a write txn
     key, val = 'test_key', 'test_val'
-    write(key, val, looper, vdr_pool_handle, vdr_wallet_client)
+    write(key, val, looper, pool_handle, vdr_wallet_client)
 
     for node in txnPoolNodeSet:
         assert len(node.getLedger(CONFIG_LEDGER_ID)) == (old_config_ledger_size + 1)
 
     state_root_hashes.add(state_roots_serializer.serialize(state.committedHeadHash))
 
-    assert read(key, looper, vdr_pool_handle, vdr_wallet_client) == val
+    assert read(key, looper, pool_handle, vdr_wallet_client) == val
     old_config_ledger_size += 1
 
     key, val = 'test_key', 'test_val1'
-    write(key, val, looper, vdr_pool_handle, vdr_wallet_client)
+    write(key, val, looper, pool_handle, vdr_wallet_client)
     for node in txnPoolNodeSet:
         assert len(node.getLedger(CONFIG_LEDGER_ID)) == (old_config_ledger_size + 1)
 
     state_root_hashes.add(state_roots_serializer.serialize(state.committedHeadHash))
 
-    assert read(key, looper, vdr_pool_handle, vdr_wallet_client) == val
+    assert read(key, looper, pool_handle, vdr_wallet_client) == val
     old_config_ledger_size += 1
 
     key, val = 'test_key1', 'test_val11'
-    write(key, val, looper, vdr_pool_handle, vdr_wallet_client)
+    write(key, val, looper, pool_handle, vdr_wallet_client)
     for node in txnPoolNodeSet:
         assert len(node.getLedger(CONFIG_LEDGER_ID)) == (old_config_ledger_size + 1)
 
     state_root_hashes.add(state_roots_serializer.serialize(state.committedHeadHash))
 
-    assert read(key, looper, vdr_pool_handle, vdr_wallet_client) == val
+    assert read(key, looper, pool_handle, vdr_wallet_client) == val
 
     for node in txnPoolNodeSet:
         # Not all batches might have BLS-sig but at least one of them will have
@@ -129,8 +129,8 @@ def keys():
 
 @pytest.fixture(scope="module")
 def some_config_txns_done(looper, setup, txnPoolNodeSet, keys,
-                          vdr_wallet_client, vdr_pool_handle):
-    return send_some_config_txns(looper, vdr_pool_handle, vdr_wallet_client, keys)
+                          vdr_wallet_client, pool_handle):
+    return send_some_config_txns(looper, pool_handle, vdr_wallet_client, keys)
 
 
 def start_stopped_node(stopped_node, looper, tconf,
@@ -163,7 +163,7 @@ def test_restarted_node_catches_up_config_ledger_txns(looper,
                                                       some_config_txns_done,
                                                       txnPoolNodeSet,
                                                       vdr_wallet_client,
-                                                      vdr_pool_handle,
+                                                      pool_handle,
                                                       vdr_new_node_caught_up,
                                                       keys,
                                                       tconf,
@@ -180,7 +180,7 @@ def test_restarted_node_catches_up_config_ledger_txns(looper,
 
     # Do some config txns; using a fixture as a method, passing some arguments
     # as None as they only make sense for the fixture (pre-requisites)
-    send_some_config_txns(looper, vdr_pool_handle, vdr_wallet_client, keys)
+    send_some_config_txns(looper, pool_handle, vdr_wallet_client, keys)
 
     # Make sure new node got out of sync
     for node in txnPoolNodeSet[:-1]:

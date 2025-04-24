@@ -20,13 +20,13 @@ logger = getlogger()
 
 @pytest.fixture(scope='module')
 def new_node_in_correct_view(looper, txnPoolNodeSet,
-                             sdk_one_node_added, vdr_pool_handle, vdr_wallet_client):
+                             sdk_one_node_added, pool_handle, vdr_wallet_client):
     for _ in range(5):
-        vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, 2)
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 2)
     new_node = sdk_one_node_added
     looper.run(eventually(checkViewNoForNodes, txnPoolNodeSet, retryWait=1,
                           timeout=10))
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 2)
 
 
@@ -40,7 +40,7 @@ def test_old_non_primary_restart_after_view_change(new_node_in_correct_view,
                                                    looper, txnPoolNodeSet,
                                                    tdir,
                                                    allPluginsPath, tconf,
-                                                   vdr_pool_handle,
+                                                   pool_handle,
                                                    vdr_wallet_client):
     """
     An existing non-primary node crashes and then view change happens,
@@ -55,14 +55,14 @@ def test_old_non_primary_restart_after_view_change(new_node_in_correct_view,
     remaining_nodes = list(set(txnPoolNodeSet) - {node_to_stop})
 
     # Send some requests before view change
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 5)
     old_view_no = txnPoolNodeSet[0].viewNo
     ensure_view_change(looper, remaining_nodes, custom_timeout=tconf.NEW_VIEW_TIMEOUT)
     waitForViewChange(looper, remaining_nodes, expectedViewNo=old_view_no + 1)
     ensureElectionsDone(looper, remaining_nodes)
     # Send some requests after view change
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 5)
 
     restarted_node = start_stopped_node(node_to_stop, looper, tconf,

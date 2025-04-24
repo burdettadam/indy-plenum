@@ -15,8 +15,8 @@ def testClientConnectToRestartedNodes(looper, txnPoolNodeSet,
                                       tdir, tconf,
                                       poolTxnNodeNames, allPluginsPath,
                                       vdr_wallet_new_client,
-                                      vdr_pool_handle):
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_new_client, 1)
+                                      pool_handle):
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_new_client, 1)
     for node in txnPoolNodeSet:
         node.stop()
         looper.removeProdable(node)
@@ -39,5 +39,5 @@ def testClientConnectToRestartedNodes(looper, txnPoolNodeSet,
     timeout = waits.expectedPoolGetReadyTimeout(len(txnPoolNodeSet))
     looper.run(eventually(chk, retryWait=1, timeout=timeout))
 
-    vdr_pool_refresh(looper, vdr_pool_handle)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_new_client, vdr_pool_handle)
+    vdr_pool_refresh(looper, pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_new_client, pool_handle)

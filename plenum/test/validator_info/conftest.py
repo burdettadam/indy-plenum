@@ -27,7 +27,7 @@ def node(txnPoolNodeSet):
 
 @pytest.fixture
 def read_txn_and_get_latest_info(looper,
-                                 vdr_pool_handle,
+                                 pool_handle,
                                  vdr_wallet_client, node):
     _, did = vdr_wallet_client
     def read_wrapped(txn_type):
@@ -38,7 +38,7 @@ def read_txn_and_get_latest_info(looper,
         }
         req = vdr_gen_request(op, CURRENT_PROTOCOL_VERSION, did, reqId=getTimeBasedId())
         vdr_get_and_check_replies(looper, [vdr_sign_and_submit_req_obj(
-            looper, vdr_pool_handle, vdr_wallet_client, req)])
+            looper, pool_handle, vdr_wallet_client, req)])
 
         return node._info_tool.info
 

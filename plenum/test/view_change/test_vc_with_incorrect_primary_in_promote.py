@@ -33,7 +33,7 @@ def tconf(tconf):
     tconf.LOG_SIZE = old_log_size
 
 
-def test_finish_view_change_with_incorrect_primaries_list(looper, txnPoolNodeSet, vdr_pool_handle,
+def test_finish_view_change_with_incorrect_primaries_list(looper, txnPoolNodeSet, pool_handle,
                                                           vdr_wallet_steward, tdir, tconf, allPluginsPath):
     """
     This test imitates situation when one of nodes is lagged.
@@ -70,7 +70,7 @@ def test_finish_view_change_with_incorrect_primaries_list(looper, txnPoolNodeSet
                                         pDelay()):
 
         # Add new node and this action should starts view_change because of NODE txn ordered
-        _, theta = vdr_add_new_steward_and_node(looper, vdr_pool_handle, vdr_wallet_steward,
+        _, theta = vdr_add_new_steward_and_node(looper, pool_handle, vdr_wallet_steward,
                                                 'Theta_Steward', 'Theta',
                                                 tdir, tconf, allPluginsPath=allPluginsPath)
         txnPoolNodeSet.append(theta)
@@ -96,6 +96,6 @@ def test_finish_view_change_with_incorrect_primaries_list(looper, txnPoolNodeSet
 
     # We assume that after 2 Checkpoints receiving lagged node will start catchup and elect right primaries
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_steward, 2 * CHK_SIZE)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_steward, 2 * CHK_SIZE)
     ensureElectionsDone(looper, txnPoolNodeSet)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, pool_handle)

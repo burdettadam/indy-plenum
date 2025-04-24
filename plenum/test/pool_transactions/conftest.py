@@ -23,7 +23,7 @@ def sdk_node_theta_added(looper,
                          txnPoolNodeSet,
                          tdir,
                          tconf,
-                         sdk_pool_handle,
+                         pool_handle,
                          sdk_wallet_steward,
                          allPluginsPath,
                          testNodeClass=TestNode,
@@ -32,7 +32,7 @@ def sdk_node_theta_added(looper,
     new_node_name = name or "Theta"
     new_steward_wallet, new_node = \
         vdr_add_new_steward_and_node(looper,
-                                     sdk_pool_handle,
+                                     pool_handle,
                                      sdk_wallet_steward,
                                      new_steward_name,
                                      new_node_name,
@@ -42,7 +42,7 @@ def sdk_node_theta_added(looper,
                                      nodeClass=testNodeClass)
     txnPoolNodeSet.append(new_node)
     looper.run(checkNodesConnected(txnPoolNodeSet))
-    vdr_pool_refresh(looper, sdk_pool_handle)
+    vdr_pool_refresh(looper, pool_handle)
     return new_steward_wallet, new_node
 
 
@@ -51,12 +51,12 @@ def sdk_node_theta_added_fixture(looper,
                                  txnPoolNodeSet,
                                  tdir,
                                  tconf,
-                                 vdr_pool_handle,
+                                 pool_handle,
                                  vdr_wallet_steward,
                                  allPluginsPath,
                                  testNodeClass=TestNode,
                                  name=None):
-    return sdk_node_theta_added(looper, txnPoolNodeSet, tdir, tconf, vdr_pool_handle, vdr_wallet_steward,
+    return sdk_node_theta_added(looper, txnPoolNodeSet, tdir, tconf, pool_handle, vdr_wallet_steward,
                                 allPluginsPath, testNodeClass, name)
 
 

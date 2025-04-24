@@ -21,43 +21,43 @@ def testRequestStaticValidation(tconf, looper, txnPoolNodeSet,
 
 
 def test3PCOverBatchWithThresholdReqs(tconf, looper, txnPoolNodeSet,
-                                      vdr_wallet_client, vdr_pool_handle):
+                                      vdr_wallet_client, pool_handle):
     """
     Check that 3 phase commit happens when threshold number of requests are
     received and propagated.
     :return:
     """
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, tconf.Max3PCBatchSize)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, tconf.Max3PCBatchSize)
 
 
 def test3PCOverBatchWithLessThanThresholdReqs(tconf, looper, txnPoolNodeSet,
-                                              vdr_wallet_client, vdr_pool_handle):
+                                              vdr_wallet_client, pool_handle):
     """
     Check that 3 phase commit happens when threshold number of requests are
     not received but threshold time has passed
     :return:
     """
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, tconf.Max3PCBatchSize - 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, tconf.Max3PCBatchSize - 1)
 
 
 def testTreeRootsCorrectAfterEachBatch(tconf, looper, txnPoolNodeSet,
-                                       vdr_pool_handle, vdr_wallet_client):
+                                       pool_handle, vdr_wallet_client):
     """
     Check if both state root and txn tree root are correct and same on each
     node after each batch
     :return:
     """
     # Send 1 batch
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, tconf.Max3PCBatchSize)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, tconf.Max3PCBatchSize)
     checkNodesHaveSameRoots(txnPoolNodeSet)
 
     # Send 2 batches
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, 2 * tconf.Max3PCBatchSize)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 2 * tconf.Max3PCBatchSize)
     checkNodesHaveSameRoots(txnPoolNodeSet)
 
 
 def testRequestDynamicValidation(tconf, looper, txnPoolNodeSet,
-                                 vdr_pool_handle, vdr_wallet_client):
+                                 pool_handle, vdr_wallet_client):
     """
     Check that for requests which fail dynamic (state based) validation,
     REJECT is sent to the client
@@ -77,7 +77,7 @@ def testRequestDynamicValidation(tconf, looper, txnPoolNodeSet,
         for replica in node.replicas._replicas.values():
             replica._ordering_service._do_dynamic_validation = types.MethodType(rejectingMethod, replica._ordering_service)
 
-    reqs = vdr_send_random_requests(looper, vdr_pool_handle,
+    reqs = vdr_send_random_requests(looper, pool_handle,
                                     vdr_wallet_client,
                                     tconf.Max3PCBatchSize)
     vdr_get_and_check_replies(looper, reqs[:-1])

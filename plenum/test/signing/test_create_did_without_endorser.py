@@ -49,11 +49,11 @@ def nym_txn_data(looper, vdr_wallet_client):
     return wh, randomString(5), sender_did, sender_verkey
 
 
-def test_create_did_without_endorser(looper, txnPoolNodeSet, nym_txn_data, vdr_pool_handle, patch_nym_validation):
+def test_create_did_without_endorser(looper, txnPoolNodeSet, nym_txn_data, pool_handle, patch_nym_validation):
     wh, alias, sender_did, sender_verkey = nym_txn_data
     nym_request = build_nym_request(sender_did, sender_did, sender_verkey, alias, NEW_ROLE)
 
-    request_couple = vdr_sign_and_send_prepared_request(looper, (wh, sender_did), vdr_pool_handle, nym_request)
+    request_couple = vdr_sign_and_send_prepared_request(looper, (wh, sender_did), pool_handle, nym_request)
     vdr_get_and_check_replies(looper, [request_couple])
 
     details = get_nym_details(txnPoolNodeSet[0].states[1], sender_did, is_committed=True)
@@ -61,25 +61,25 @@ def test_create_did_without_endorser(looper, txnPoolNodeSet, nym_txn_data, vdr_p
     assert details[VERKEY] == sender_verkey
 
 
-def test_create_did_without_endorser_empty_verkey(looper, nym_txn_data, vdr_wallet_client, vdr_pool_handle,
+def test_create_did_without_endorser_empty_verkey(looper, nym_txn_data, vdr_wallet_client, pool_handle,
                                             patch_nym_validation):
     wh, alias, sender_did, sender_verkey = nym_txn_data
 
     nym_request = build_nym_request(sender_did, sender_did, None, alias, NEW_ROLE)
 
-    request_couple = vdr_sign_and_send_prepared_request(looper, (wh, sender_did), vdr_pool_handle, nym_request)
+    request_couple = vdr_sign_and_send_prepared_request(looper, (wh, sender_did), pool_handle, nym_request)
 
     with pytest.raises(RequestNackedException, match=CouldNotAuthenticate.reason.format(sender_did)):
         vdr_get_and_check_replies(looper, [request_couple])
 
 
-def test_create_did_without_endorser_different_dest(looper, nym_txn_data, vdr_wallet_client, vdr_pool_handle,
+def test_create_did_without_endorser_different_dest(looper, nym_txn_data, vdr_wallet_client, pool_handle,
                                                     patch_nym_validation):
     wh, alias, sender_did, sender_verkey = nym_txn_data
 
     nym_request = build_nym_request(sender_did, vdr_wallet_client[1], sender_verkey, alias, NEW_ROLE)
 
-    request_couple = vdr_sign_and_send_prepared_request(looper, (wh, sender_did), vdr_pool_handle, nym_request)
+    request_couple = vdr_sign_and_send_prepared_request(looper, (wh, sender_did), pool_handle, nym_request)
 
     with pytest.raises(RequestNackedException, match=CouldNotAuthenticate.reason.format(sender_did)):
         vdr_get_and_check_replies(looper, [request_couple])

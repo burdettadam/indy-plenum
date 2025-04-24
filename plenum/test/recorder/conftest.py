@@ -21,14 +21,14 @@ TOTAL_TXNS = 2
 
 
 @pytest.fixture(scope="module")
-def some_txns_done(tconf, txnPoolNodesLooper, txnPoolNodeSet, vdr_pool_handle,
+def some_txns_done(tconf, txnPoolNodesLooper, txnPoolNodeSet, pool_handle,
                    vdr_wallet_steward):
     for i in range(math.ceil(TOTAL_TXNS / 2)):
-        vdr_add_new_nym(txnPoolNodesLooper, vdr_pool_handle, vdr_wallet_steward,
+        vdr_add_new_nym(txnPoolNodesLooper, pool_handle, vdr_wallet_steward,
                         alias='testSteward' + randomString(100))
     for i in range(math.floor(TOTAL_TXNS / 2)):
         vdr_send_random_and_check(txnPoolNodesLooper, txnPoolNodeSet,
-                                  vdr_pool_handle, vdr_wallet_steward, 5)
+                                  pool_handle, vdr_wallet_steward, 5)
 
 
 @pytest.fixture()

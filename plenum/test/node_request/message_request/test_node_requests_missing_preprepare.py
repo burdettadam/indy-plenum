@@ -13,7 +13,7 @@ whitelist = ['does not have expected state']
 
 
 def test_node_requests_missing_preprepare(looper, txnPoolNodeSet,
-                                          vdr_wallet_client, vdr_pool_handle,
+                                          vdr_wallet_client, pool_handle,
                                           teardown):
     """
     A node has bad network with primary and thus loses PRE-PREPARE,
@@ -34,7 +34,7 @@ def test_node_requests_missing_preprepare(looper, txnPoolNodeSet,
 
     vdr_send_batches_of_random_and_check(looper,
                                          txnPoolNodeSet,
-                                         vdr_pool_handle,
+                                         pool_handle,
                                          vdr_wallet_client,
                                          num_reqs=15,
                                          num_batches=5)

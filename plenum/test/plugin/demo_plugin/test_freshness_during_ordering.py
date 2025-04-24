@@ -16,7 +16,7 @@ def tconf(tconf):
 
 
 def test_update_bls_multi_sig_when_auction_ledger_orders(looper, tconf, txnPoolNodeSet,
-                                                         vdr_pool_handle,
+                                                         pool_handle,
                                                          vdr_wallet_steward):
     #  Update auction ledger so that its state root is different from config ledger
     for node in txnPoolNodeSet:
@@ -24,7 +24,7 @@ def test_update_bls_multi_sig_when_auction_ledger_orders(looper, tconf, txnPoolN
 
     def send_txn():
         send_auction_txn(looper,
-                         vdr_pool_handle, vdr_wallet_steward)
+                         pool_handle, vdr_wallet_steward)
 
     check_update_bls_multi_sig_during_ordering(looper, txnPoolNodeSet,
                                                send_txn,

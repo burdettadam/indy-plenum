@@ -54,13 +54,13 @@ def test_client_send_incorrect_ledger_status(looper, txnPoolNodeSet):
 
 
 def test_client_send_correct_ledger_status(looper,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            vdr_wallet_client,
                                            txnPoolNodeSet):
     # Client send LEDGER_STATUS with protocoloVersion field.
     # Node send her LEDGER_STATUS back
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client, 1)
 
     # node sent LEDGER_STATUS
@@ -72,7 +72,7 @@ def test_client_send_correct_ledger_status(looper,
 
 #Proposed Test need confirmation
 def test_request_none_protocol_version(looper, txnPoolNodeSet,
-                                       vdr_pool_handle,
+                                       pool_handle,
                                        vdr_wallet_client,
                                        request_num):
     _, did = vdr_wallet_client
@@ -87,7 +87,7 @@ def test_request_none_protocol_version(looper, txnPoolNodeSet,
 
 def test_request_with_outdated_version(looper,
                                        txnPoolNodeSet,
-                                       vdr_pool_handle,
+                                       pool_handle,
                                        vdr_wallet_client,
                                        request_num):
     _, did = vdr_wallet_client
@@ -101,7 +101,7 @@ def test_request_with_outdated_version(looper,
 
 def test_request_with_invalid_version(looper,
                                       txnPoolNodeSet,
-                                      vdr_pool_handle,
+                                      pool_handle,
                                       vdr_wallet_client,
                                       request_num):
     _, did = vdr_wallet_client
@@ -109,7 +109,7 @@ def test_request_with_invalid_version(looper,
     assert req_obj.protocolVersion == -1
 
     signed_objects = vdr_signed_random_requests(looper, vdr_wallet_client, request_num)
-    reqs = vdr_send_signed_requests(vdr_pool_handle, signed_objects, looper)
+    reqs = vdr_send_signed_requests(pool_handle, signed_objects, looper)
     vdr_get_bad_response(looper, reqs, RequestNackedException,
                          'missed fields - protocolVersion. ' + error_msg)
     
@@ -118,7 +118,7 @@ def test_request_with_invalid_version(looper,
 
 def test_request_with_correct_version(looper,
                                       txnPoolNodeSet,
-                                      vdr_pool_handle,
+                                      pool_handle,
                                       vdr_wallet_client,
                                       request_num):
     _, did = vdr_wallet_client
@@ -128,5 +128,5 @@ def test_request_with_correct_version(looper,
         assert json.loads(req_obj.body)["protocolVersion"] == CURRENT_PROTOCOL_VERSION
 
     signed_reqs = vdr_sign_request_objects(looper, vdr_wallet_client, reqs_obj)
-    reqs = vdr_send_signed_requests(vdr_pool_handle, signed_reqs, looper)
+    reqs = vdr_send_signed_requests(pool_handle, signed_reqs, looper)
     vdr_get_and_check_replies(looper, reqs)

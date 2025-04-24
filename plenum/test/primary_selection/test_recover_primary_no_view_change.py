@@ -26,7 +26,7 @@ def tconf(tconf):
 
 
 def test_recover_stop_primaries_no_view_change(looper, checkpoint_size, txnPoolNodeSet,
-                                               allPluginsPath, tdir, tconf, vdr_pool_handle,
+                                               allPluginsPath, tdir, tconf, pool_handle,
                                                vdr_wallet_steward):
     """
     Test that we can recover after having more than f nodes disconnected:
@@ -43,7 +43,7 @@ def test_recover_stop_primaries_no_view_change(looper, checkpoint_size, txnPoolN
 
     logger.info("send at least one checkpoint")
     check_for_nodes(active_nodes, check_stable_checkpoint, 0)
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_steward, 2 * checkpoint_size)
     # TODO: When stable checkpoint is not deleted it makes sense to check just our last checkpoint
     #  and remove eventually
@@ -69,7 +69,7 @@ def test_recover_stop_primaries_no_view_change(looper, checkpoint_size, txnPoolN
                                     exclude_from_check=['check_last_ordered_3pc_backup'])
 
     logger.info("Check if the pool is able to process requests")
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_steward, 10 * checkpoint_size)
     ensure_all_nodes_have_same_data(looper, nodes=active_nodes,
                                     exclude_from_check=['check_last_ordered_3pc_backup'])

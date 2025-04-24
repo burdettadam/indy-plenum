@@ -18,14 +18,14 @@ txnCount = 5
 # depend on each other
 @pytest.mark.skip(reason="INDY-1297. Node does not catch up on reconnection anymore.")
 def testNodeCatchupAfterDisconnect(vdr_new_node_caught_up, txnPoolNodeSet,
-                                   sdk_node_set_with_node_added_after_some_txns):
+                                   vdr_node_set_with_node_added_after_some_txns):
     """
     A node that disconnects after some transactions should eventually get the
     transactions which happened while it was disconnected
     :return:
     """
-    looper, new_node, sdk_pool_handle, new_steward_wallet_handle = \
-        sdk_node_set_with_node_added_after_some_txns
+    looper, new_node, pool_handle, new_steward_wallet_handle = \
+        vdr_node_set_with_node_added_after_some_txns
 
     logger.debug("Disconnecting node {} with pool ledger size {}".
                  format(new_node, new_node.poolManager.txnSeqNo))
@@ -34,7 +34,7 @@ def testNodeCatchupAfterDisconnect(vdr_new_node_caught_up, txnPoolNodeSet,
 
     # TODO: Check if the node has really stopped processing requests?
     logger.debug("Sending requests")
-    vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               new_steward_wallet_handle, 5)
     # Make sure new node got out of sync
     waitNodeDataInequality(looper, new_node, *txnPoolNodeSet[:-1])
@@ -46,6 +46,6 @@ def testNodeCatchupAfterDisconnect(vdr_new_node_caught_up, txnPoolNodeSet,
     waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:-1])
 
     logger.debug("Sending more requests")
-    vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               new_steward_wallet_handle, 10)
     checkNodeDataForEquality(new_node, *txnPoolNodeSet[:-1])

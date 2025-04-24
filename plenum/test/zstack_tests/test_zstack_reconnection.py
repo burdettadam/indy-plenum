@@ -19,10 +19,10 @@ def tconf(tconf):
 
 
 def testZStackNodeReconnection(tconf, looper, txnPoolNodeSet,
-                               vdr_pool_handle,
+                               pool_handle,
                                vdr_wallet_client,
                                tdir):
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 1)
 
     npr = [n for n in txnPoolNodeSet if not n.hasPrimary]
@@ -63,5 +63,5 @@ def testZStackNodeReconnection(tconf, looper, txnPoolNodeSet,
     ensure_all_nodes_have_same_data(looper, nodes=txnPoolNodeSet,
                                     exclude_from_check=['check_last_ordered_3pc_backup'])
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 10)

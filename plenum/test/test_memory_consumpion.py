@@ -9,16 +9,16 @@ logger = getlogger()
 
 
 @pytest.mark.skip('Unskip if needed')
-def testRequestsSize(looper, txnPoolNodeSet, vdr_pool_handle,
+def testRequestsSize(looper, txnPoolNodeSet, pool_handle,
                      vdr_wallet_steward, noRetryReq):
     clients = []
     for i in range(4):
-        clients.append(vdr_add_new_nym(looper, vdr_pool_handle, vdr_wallet_steward))
+        clients.append(vdr_add_new_nym(looper, pool_handle, vdr_wallet_steward))
     numRequests = 250
 
     for (_, nym) in clients:
         logger.debug("{} sending {} requests".format(nym, numRequests))
-        vdr_send_random_requests(looper, vdr_pool_handle,
+        vdr_send_random_requests(looper, pool_handle,
                                  vdr_wallet_steward, numRequests)
         logger.debug("{} sent {} requests".format(nym, numRequests))
 

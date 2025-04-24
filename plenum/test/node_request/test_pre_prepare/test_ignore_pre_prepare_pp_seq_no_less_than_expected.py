@@ -7,7 +7,7 @@ from plenum.test.test_node import getNonPrimaryReplicas
 def test_ignore_pre_prepare_pp_seq_no_less_than_expected(looper,
                                                          txnPoolNodeSet,
                                                          vdr_wallet_client,
-                                                         vdr_pool_handle):
+                                                         pool_handle):
     """
     A node should NOT pend a pre-prepare request which
     has ppSeqNo less than expected.
@@ -21,7 +21,7 @@ def test_ignore_pre_prepare_pp_seq_no_less_than_expected(looper,
 
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               count=1)
     assert len(replica._ordering_service.prePreparesPendingPrevPP) == 0, \

@@ -28,12 +28,12 @@ def testPostingThroughput(postingStatsEnabled,
                           decreasedMonitoringTimeouts,
                           looper,
                           txnPoolNodeSet,
-                          vdr_wallet_client, vdr_pool_handle):
+                          vdr_wallet_client, pool_handle):
     config = decreasedMonitoringTimeouts
     reqCount = 10
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               reqCount)
     ensure_all_nodes_have_same_data(looper, nodes=txnPoolNodeSet)
@@ -56,12 +56,12 @@ def testPostingLatency(postingStatsEnabled,
                        decreasedMonitoringTimeouts,
                        looper,
                        txnPoolNodeSet,
-                       vdr_wallet_client, vdr_pool_handle):
+                       vdr_wallet_client, pool_handle):
     config = decreasedMonitoringTimeouts
     reqCount = 10
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               reqCount)
 

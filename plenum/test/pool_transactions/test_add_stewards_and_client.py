@@ -29,7 +29,7 @@ def testAddNewClient(looper, txnPoolNodeSet, vdr_wallet_new_client):
 
 def testStewardCannotAddNodeWithNonBase58VerKey(looper, tdir, tconf,
                                                 txnPoolNodeSet,
-                                                vdr_pool_handle,
+                                                pool_handle,
                                                 vdr_wallet_new_steward):
     """
     The Case:
@@ -65,7 +65,7 @@ def testStewardCannotAddNodeWithNonBase58VerKey(looper, tdir, tconf,
 
     request_couple = vdr_sign_and_send_prepared_request(looper,
                                                         vdr_wallet_new_steward,
-                                                        vdr_pool_handle,
+                                                        pool_handle,
                                                         node_request)
     with pytest.raises(RequestNackedException) as e:
         vdr_get_and_check_replies(looper, [request_couple])
@@ -75,7 +75,7 @@ def testStewardCannotAddNodeWithNonBase58VerKey(looper, tdir, tconf,
 def testStewardCannotAddNodeWithInvalidHa(looper, tdir, tconf,
                                           txnPoolNodeSet,
                                           vdr_wallet_new_steward,
-                                          vdr_pool_handle):
+                                          pool_handle):
     """
     The case:
         Steward accidentally sends the NODE txn with an invalid HA.
@@ -115,7 +115,7 @@ def testStewardCannotAddNodeWithInvalidHa(looper, tdir, tconf,
         node_request1 = json.dumps(request_json)
         request_couple = vdr_sign_and_send_prepared_request(looper,
                                                             vdr_wallet_new_steward,
-                                                            vdr_pool_handle,
+                                                            pool_handle,
                                                             node_request1)
         # wait NAcks with exact message. it does not works for just 'is invalid'
         # because the 'is invalid' will check only first few cases

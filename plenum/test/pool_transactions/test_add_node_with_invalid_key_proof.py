@@ -7,7 +7,7 @@ from plenum.test.pool_transactions.helper import prepare_new_node_data, \
 
 
 def test_add_node_with_invalid_key_proof(looper,
-                                         vdr_pool_handle,
+                                         pool_handle,
                                          vdr_wallet_steward,
                                          tdir, tconf,
                                          allPluginsPath):
@@ -34,7 +34,7 @@ def test_add_node_with_invalid_key_proof(looper,
     # sending request using 'sdk_' functions
     request_couple = vdr_sign_and_send_prepared_request(looper,
                                                         vdr_wallet_steward,
-                                                        vdr_pool_handle,
+                                                        pool_handle,
                                                         node_request)
 
     # waitng for replies

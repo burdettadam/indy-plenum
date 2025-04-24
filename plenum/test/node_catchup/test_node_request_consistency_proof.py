@@ -25,7 +25,7 @@ Max3PCBatchSize = 1
 def test_node_request_consistency_proof(tdir, tconf,
                                         looper,
                                         txnPoolNodeSet,
-                                        vdr_pool_handle,
+                                        pool_handle,
                                         vdr_wallet_client,
                                         monkeypatch):
     lagging_node = txnPoolNodeSet[-1]
@@ -33,7 +33,7 @@ def test_node_request_consistency_proof(tdir, tconf,
 
     # Preseed pool with some transactions
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle, vdr_wallet_client, 4)
+                              pool_handle, vdr_wallet_client, 4)
 
     # Make some node send different ledger statuses so it doesn't get enough similar
     # consisistency proofs
@@ -66,7 +66,7 @@ def test_node_request_consistency_proof(tdir, tconf,
     with delay_rules(lagging_node.nodeIbStasher, ppDelay(), pDelay(), cDelay()):
         # Order some transactions on pool
         vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                  vdr_pool_handle, vdr_wallet_client, 4)
+                                  pool_handle, vdr_wallet_client, 4)
 
         # Start catchup on lagging node
         lagging_node.ledgerManager.start_catchup()

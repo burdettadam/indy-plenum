@@ -15,13 +15,13 @@ TestRunningTimeLimitSec = 200
 @pytest.mark.skipif('sys.platform == "win32"', reason='SOV-330')
 def testChangeNodeHaForNonPrimary(looper, txnPoolNodeSet,
                                   poolTxnData, poolTxnStewardNames, tconf, tdir,
-                                  vdr_pool_handle, vdr_wallet_stewards,
+                                  pool_handle, vdr_wallet_stewards,
                                   vdr_wallet_client):
     changeNodeHa(looper,
                  txnPoolNodeSet,
                  tconf,
                  shouldBePrimary=False,
                  tdir=tdir,
-                 sdk_pool_handle=vdr_pool_handle,
+                 pool_handle=pool_handle,
                  sdk_wallet_stewards=vdr_wallet_stewards,
                  sdk_wallet_client=vdr_wallet_client)

@@ -7,7 +7,7 @@ from plenum.test.test_node import getPrimaryReplica
 
 def test_revert_pp_from_malicious(looper,
                                   txnPoolNodeSet,
-                                  vdr_pool_handle,
+                                  pool_handle,
                                   vdr_wallet_client):
     def raise_invalid_ex():
         raise InvalidClientMessageException(1, 2, "3")
@@ -18,6 +18,6 @@ def test_revert_pp_from_malicious(looper,
     with pytest.raises(RequestRejectedException, match="client request invalid"):
         vdr_send_random_and_check(looper,
                                   txnPoolNodeSet,
-                                  vdr_pool_handle,
+                                  pool_handle,
                                   vdr_wallet_client,
                                   1)

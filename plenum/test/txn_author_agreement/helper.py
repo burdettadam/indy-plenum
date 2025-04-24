@@ -41,26 +41,26 @@ TaaAmlData = NamedTuple("TaaAmlData", [
 ])
 
 
-def sdk_send_txn_author_agreement(looper, sdk_pool_handle, sdk_wallet, version: str,
+def sdk_send_txn_author_agreement(looper, pool_handle, sdk_wallet, version: str,
                                   text: Optional[str] = None,
                                   ratified: Optional[int] = None,
                                   retired: Optional[int] = None):
     req = looper.loop.run_until_complete(build_txn_author_agreement_request(sdk_wallet[1], text, version,
                                                                             ratified, retired))
-    rep = vdr_sign_and_submit_req(looper, sdk_pool_handle, sdk_wallet, req)
+    rep = vdr_sign_and_submit_req(looper, pool_handle, sdk_wallet, req)
     return vdr_get_and_check_replies(looper, [rep])[0]
 
 
-def sdk_send_txn_author_agreement_disable(looper, sdk_pool_handle, sdk_wallet):
+def sdk_send_txn_author_agreement_disable(looper, pool_handle, sdk_wallet):
     req = looper.loop.run_until_complete(build_disable_all_txn_author_agreements_request(sdk_wallet[1]))
-    rep = vdr_sign_and_submit_req(looper, sdk_pool_handle, sdk_wallet, req)
+    rep = vdr_sign_and_submit_req(looper, pool_handle, sdk_wallet, req)
     return vdr_get_and_check_replies(looper, [rep])[0]
 
 
 def set_txn_author_agreement(
-        looper, sdk_pool_handle, sdk_wallet, text: str, version: str, ratified: int, retired: Optional[int]
+        looper, pool_handle, sdk_wallet, text: str, version: str, ratified: int, retired: Optional[int]
 ) -> TaaData:
-    reply = sdk_send_txn_author_agreement(looper, sdk_pool_handle, sdk_wallet, version, text,
+    reply = sdk_send_txn_author_agreement(looper, pool_handle, sdk_wallet, version, text,
                                           ratified=ratified, retired=retired)[1]
 
     assert reply[OP_FIELD_NAME] == REPLY
@@ -75,7 +75,7 @@ def set_txn_author_agreement(
     )
 
 
-def sdk_get_txn_author_agreement(looper, sdk_pool_handle, sdk_wallet,
+def sdk_get_txn_author_agreement(looper, pool_handle, sdk_wallet,
                                  digest: Optional[str] = None,
                                  version: Optional[str] = None,
                                  timestamp: Optional[int] = None):
@@ -87,26 +87,26 @@ def sdk_get_txn_author_agreement(looper, sdk_pool_handle, sdk_wallet,
     if timestamp is not None:
         params['timestamp'] = timestamp
     req = looper.loop.run_until_complete(build_get_txn_author_agreement_request(sdk_wallet[1], json.dumps(params)))
-    rep = vdr_sign_and_submit_req(looper, sdk_pool_handle, sdk_wallet, req)
+    rep = vdr_sign_and_submit_req(looper, pool_handle, sdk_wallet, req)
     return vdr_get_and_check_replies(looper, [rep])[0]
 
 
-def sdk_get_taa_aml(looper, sdk_pool_handle, sdk_wallet,
+def sdk_get_taa_aml(looper, pool_handle, sdk_wallet,
                     version: Optional[str] = None,
                     timestamp: Optional[int] = None):
     req = looper.loop.run_until_complete(build_get_acceptance_mechanisms_request(sdk_wallet[1], timestamp, version))
-    rep = vdr_sign_and_submit_req(looper, sdk_pool_handle, sdk_wallet, req)
+    rep = vdr_sign_and_submit_req(looper, pool_handle, sdk_wallet, req)
     return vdr_get_and_check_replies(looper, [rep])[0]
 
 
 def get_txn_author_agreement(
-        looper, sdk_pool_handle, sdk_wallet,
+        looper, pool_handle, sdk_wallet,
         digest: Optional[str] = None,
         version: Optional[str] = None,
         timestamp: Optional[int] = None
 ) -> TaaData:
     reply = sdk_get_txn_author_agreement(
-        looper, sdk_pool_handle, sdk_wallet,
+        looper, pool_handle, sdk_wallet,
         digest=digest, version=version, timestamp=timestamp
     )[1]
 

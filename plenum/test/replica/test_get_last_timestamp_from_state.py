@@ -10,7 +10,7 @@ from plenum.test.view_change.helper import start_stopped_node
 
 def test_get_last_ordered_timestamp_after_catchup(looper,
                                                   txnPoolNodeSet,
-                                                  vdr_pool_handle,
+                                                  pool_handle,
                                                   vdr_wallet_steward,
                                                   tconf,
                                                   tdir,
@@ -18,7 +18,7 @@ def test_get_last_ordered_timestamp_after_catchup(looper,
     node_to_disconnect = txnPoolNodeSet[-1]
     reply_before = vdr_send_random_and_check(looper,
                                              txnPoolNodeSet,
-                                             vdr_pool_handle,
+                                             pool_handle,
                                              vdr_wallet_steward,
                                              1)[0][1]
     looper.runFor(2)
@@ -28,7 +28,7 @@ def test_get_last_ordered_timestamp_after_catchup(looper,
     looper.removeProdable(name=node_to_disconnect.name)
     reply = vdr_send_random_and_check(looper,
                                       txnPoolNodeSet,
-                                      vdr_pool_handle,
+                                      pool_handle,
                                       vdr_wallet_steward,
                                       1)[0][1]
 
@@ -45,11 +45,11 @@ def test_get_last_ordered_timestamp_after_catchup(looper,
 
 def test_choose_ts_from_state(looper,
                               txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_steward):
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_steward,
                               1)
     primary_node = get_master_primary_node(txnPoolNodeSet)
@@ -60,7 +60,7 @@ def test_choose_ts_from_state(looper,
     primary_node.master_replica._ordering_service.last_accepted_pre_prepare_time = None
     reply = vdr_send_random_and_check(looper,
                                       txnPoolNodeSet,
-                                      vdr_pool_handle,
+                                      pool_handle,
                                       vdr_wallet_steward,
                                       1)[0][1]
     assert abs(excpected_ts - int(get_txn_time(reply['result']))) < 3

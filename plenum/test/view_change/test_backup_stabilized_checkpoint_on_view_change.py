@@ -22,12 +22,12 @@ def tconf(tconf):
 def test_backup_stabilized_checkpoint_on_view_change(looper,
                                                      txnPoolNodeSet,
                                                      vdr_wallet_client,
-                                                     vdr_pool_handle):
+                                                     pool_handle):
     # Delta:1
     backup = txnPoolNodeSet[-1].replicas[1]
     count_of_replicas = len(txnPoolNodeSet[0].replicas)
     with delay_rules([n.nodeIbStasher for n in txnPoolNodeSet], ppDelay(instId=0)):
-        vdr_send_random_requests(looper, vdr_pool_handle, vdr_wallet_client, REQ_COUNT)
+        vdr_send_random_requests(looper, pool_handle, vdr_wallet_client, REQ_COUNT)
         looper.run(eventually(lambda r: assertExp(r.last_ordered_3pc == (0, REQ_COUNT)), backup))
         # assert that all of requests are propagated
         for n in txnPoolNodeSet:

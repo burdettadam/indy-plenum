@@ -15,7 +15,7 @@ def tconf(tconf):
 
 @pytest.mark.skip(reason="Should be fixed by: INDY-2238 (Persist 3PC messages during Ordering)")
 def test_view_change_with_delayed_commits_on_all_but_one_node_and_restart_of_those_nodes(txnPoolNodeSet, looper,
-                                                                                         vdr_pool_handle,
+                                                                                         pool_handle,
                                                                                          vdr_wallet_client, tconf, tdir,
                                                                                          allPluginsPath):
     """
@@ -35,7 +35,7 @@ def test_view_change_with_delayed_commits_on_all_but_one_node_and_restart_of_tho
         old_view_no=slow_nodes[0].viewNo,
         old_last_ordered=slow_nodes[0].master_replica.last_ordered_3pc,
         looper=looper,
-        sdk_pool_handle=vdr_pool_handle,
+        pool_handle=pool_handle,
         sdk_wallet_client=vdr_wallet_client,
         tconf=tconf,
         tdir=tdir,

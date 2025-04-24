@@ -31,7 +31,7 @@ def tconf(tconf):
 
 def test_set_H_greater_then_last_ppseqno(looper,
                                          txnPoolNodeSet,
-                                         vdr_pool_handle,
+                                         pool_handle,
                                          vdr_wallet_steward,
                                          tdir,
                                          tconf,
@@ -40,7 +40,7 @@ def test_set_H_greater_then_last_ppseqno(looper,
     # send LOG_SIZE requests and check, that all watermarks on all replicas is not changed
     # and now is (0, LOG_SIZE)
     """Send random requests for moving watermarks"""
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_steward, LOG_SIZE)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_steward, LOG_SIZE)
     # check, that all of node set up watermark greater, then default and
     # ppSeqNo with number LOG_SIZE + 1 will be out from default watermark
     assert txnPoolNodeSet[0].replicas[1].last_ordered_3pc[1] == LOG_SIZE
@@ -49,7 +49,7 @@ def test_set_H_greater_then_last_ppseqno(looper,
             assert r.h >= LOG_SIZE
             assert r.H >= LOG_SIZE + LOG_SIZE
     """Adding new node, for scheduling propagate primary procedure"""
-    new_node = add_new_node(looper, txnPoolNodeSet, vdr_pool_handle,
+    new_node = add_new_node(looper, txnPoolNodeSet, pool_handle,
                             vdr_wallet_steward, tdir, tconf, allPluginsPath)
     waitForViewChange(looper, txnPoolNodeSet, expectedViewNo=start_view_no + 1)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet,
@@ -64,7 +64,7 @@ def test_set_H_greater_then_last_ppseqno(looper,
             assert r.h == 0
             assert r.H == sys.maxsize
     """Send requests and check. that backup replicas does not stashing it by outside watermarks reason"""
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_steward, 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_steward, 1)
     # check, that there is no any stashed "outside watermark" messages.
     for r in new_node.replicas.values():
         assert r.stasher.stash_size(STASH_WATERMARKS) == 0

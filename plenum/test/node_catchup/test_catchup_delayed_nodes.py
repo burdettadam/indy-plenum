@@ -19,7 +19,7 @@ whitelist = ['found legacy entry']  # logged errors to ignore
 
 @pytest.mark.skip(reason="SOV-551. Incomplete implementation")
 def testCatchupDelayedNodes(txnPoolNodeSet,
-                            sdk_node_set_with_node_added_after_some_txns,
+                            vdr_node_set_with_node_added_after_some_txns,
                             vdr_wallet_steward,
                             txnPoolCliNodeReg, tdirWithPoolTxns,
                             tconf, tdir,
@@ -32,8 +32,8 @@ def testCatchupDelayedNodes(txnPoolNodeSet,
     not receive any catchup requests
     :return:
     """
-    looper, new_node, sdk_pool_handle, new_steward_wallet_handle = \
-        sdk_node_set_with_node_added_after_some_txns
+    looper, new_node, pool_handle, new_steward_wallet_handle = \
+        vdr_node_set_with_node_added_after_some_txns
     stewardXName = "testClientStewardX"
     nodeXName = "Zeta"
     stewardYName = "testClientStewardY"
@@ -43,7 +43,7 @@ def testCatchupDelayedNodes(txnPoolNodeSet,
     delayX = 45
     delayY = 2
     stewardX, nodeX = vdr_add_new_steward_and_node(looper,
-                                                   sdk_pool_handle,
+                                                   pool_handle,
                                                    vdr_wallet_steward,
                                                    stewardXName,
                                                    nodeXName,
@@ -53,7 +53,7 @@ def testCatchupDelayedNodes(txnPoolNodeSet,
                                                    allPluginsPath=allPluginsPath)
 
     stewardY, nodeY = vdr_add_new_steward_and_node(looper,
-                                                   sdk_pool_handle,
+                                                   pool_handle,
                                                    vdr_wallet_steward,
                                                    stewardYName,
                                                    nodeYName,
@@ -76,8 +76,8 @@ def testCatchupDelayedNodes(txnPoolNodeSet,
     nodeX.stop()
     nodeY.stop()
     logger.debug("Sending requests")
-    vdr_pool_refresh(looper, sdk_pool_handle)
-    vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool_handle,
+    vdr_pool_refresh(looper, pool_handle)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_steward, 50)
     logger.debug("Starting the 2 stopped nodes, {} and {}".format(nodeX.name,
                                                                   nodeY.name))

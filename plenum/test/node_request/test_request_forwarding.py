@@ -12,7 +12,7 @@ def test_all_replicas_hold_request_keys(
         looper,
         txnPoolNodeSet,
         vdr_wallet_client,
-        vdr_pool_handle):
+        pool_handle):
     """
     All replicas whether primary or non primary hold request keys of forwarded
     requests. Once requests are ordered, they request keys are removed from replica.
@@ -38,7 +38,7 @@ def test_all_replicas_hold_request_keys(
     reqs = vdr_signed_random_requests(looper,
                                       vdr_wallet_client,
                                       tconf.Max3PCBatchSize - 1)
-    req_resps = vdr_send_signed_requests(vdr_pool_handle, reqs, looper)
+    req_resps = vdr_send_signed_requests(pool_handle, reqs, looper)
     # Only non primary replicas should have all request keys with them
     looper.run(eventually(chk, tconf.Max3PCBatchSize - 1))
     vdr_get_replies(looper, req_resps, timeout=vdr_eval_timeout(

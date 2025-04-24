@@ -16,7 +16,7 @@ nodeCount = 6
 
 @pytest.mark.skip(reason="INDY-2276. Issue with adding node that will change f value")
 def test_audit_ledger_view_change(looper, txnPoolNodeSet,
-                                  vdr_pool_handle, vdr_wallet_client, vdr_wallet_steward,
+                                  pool_handle, vdr_wallet_client, vdr_wallet_steward,
                                   initial_domain_size, initial_pool_size, initial_config_size,
                                   tdir,
                                   tconf,
@@ -37,7 +37,7 @@ def test_audit_ledger_view_change(looper, txnPoolNodeSet,
     slow_node = txnPoolNodeSet[-1]
     # Add a new steward for creating a new node
     new_steward_wallet_handle = vdr_add_new_nym(looper,
-                                                vdr_pool_handle,
+                                                pool_handle,
                                                 vdr_wallet_steward,
                                                 alias="newSteward",
                                                 role=STEWARD_STRING)
@@ -51,7 +51,7 @@ def test_audit_ledger_view_change(looper, txnPoolNodeSet,
 
         # Send NODE txn fo 7th node
         new_node = vdr_add_new_node(looper,
-                                    vdr_pool_handle,
+                                    pool_handle,
                                     new_steward_wallet_handle,
                                     "Theta",
                                     tdir,
@@ -61,7 +61,7 @@ def test_audit_ledger_view_change(looper, txnPoolNodeSet,
         txnPoolNodeSet.append(new_node)
         looper.run(checkNodesConnected(other_nodes + [new_node]))
 
-        vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                                   vdr_wallet_client, 1)
 
         check_audit_ledger_updated(audit_size_initial, [slow_node],

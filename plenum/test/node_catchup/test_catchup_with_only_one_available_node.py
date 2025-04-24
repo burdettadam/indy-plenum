@@ -33,14 +33,14 @@ def tconf(tconf):
 
 def test_catchup_with_only_one_available_node(looper,
                                               txnPoolNodeSet,
-                                              vdr_pool_handle,
+                                              pool_handle,
                                               vdr_wallet_client,
                                               logsearch):
     lagging_node = txnPoolNodeSet[-1]
     other_nodes = txnPoolNodeSet[:-1]
 
     start_delaying(lagging_node.nodeIbStasher, delay_3pc())
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, 10)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 10)
 
     log_re_ask, _ = logsearch(msgs=['requesting .* missing transactions after timeout'])
     old_re_ask_count = len(log_re_ask)

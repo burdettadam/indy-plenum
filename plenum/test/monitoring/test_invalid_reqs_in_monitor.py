@@ -24,11 +24,11 @@ def check_count_reqs(nodes):
 def test_invalid_reqs(looper,
                       txnPoolNodeSet,
                       vdr_wallet_steward,
-                      vdr_pool_handle):
+                      pool_handle):
     """Send 1 valid request and 2 invalid. Then checked, that all 3 requests are stored into monitor."""
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_steward,
                               COUNT_VALID_REQS)
     for node in txnPoolNodeSet:
@@ -37,7 +37,7 @@ def test_invalid_reqs(looper,
     with pytest.raises(RequestRejectedException, match='not valid req'):
         vdr_send_random_and_check(looper,
                                   txnPoolNodeSet,
-                                  vdr_pool_handle,
+                                  pool_handle,
                                   vdr_wallet_steward,
                                   COUNT_INVALID_REQS)
     check_count_reqs(txnPoolNodeSet)

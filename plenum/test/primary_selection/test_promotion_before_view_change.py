@@ -15,9 +15,9 @@ def test_promotion_before_view_change(looper,
                                       tconf,
                                       allPluginsPath,
                                       vdr_wallet_stewards,
-                                      vdr_pool_handle):
+                                      pool_handle):
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_stewards[0], 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_stewards[0], 1)
     assert txnPoolNodeSet[0].master_replica.isPrimary
     assert txnPoolNodeSet[1].replicas[1].isPrimary
     assert txnPoolNodeSet[2].replicas[2].isPrimary
@@ -29,7 +29,7 @@ def test_promotion_before_view_change(looper,
 
     # Demote node 2
     steward_2 = vdr_wallet_stewards[1]
-    demote_node(looper, steward_2, vdr_pool_handle, node_2)
+    demote_node(looper, steward_2, pool_handle, node_2)
     disconnect_node_and_ensure_disconnected(looper, txnPoolNodeSet, node_2)
     looper.removeProdable(node_2)
     txnPoolNodeSet.remove(node_2)
@@ -46,7 +46,7 @@ def test_promotion_before_view_change(looper,
 
     # Promoting node 3, increasing replica count
     node_2 = start_stopped_node(node_2, looper, tconf, tdir, allPluginsPath)
-    promote_node(looper, steward_2, vdr_pool_handle, node_2)
+    promote_node(looper, steward_2, pool_handle, node_2)
     txnPoolNodeSet.append(node_2)
     looper.run(checkNodesConnected(txnPoolNodeSet))
     waitForViewChange(looper,
@@ -56,5 +56,5 @@ def test_promotion_before_view_change(looper,
     # node 5 is a primary since promoted node is added at the end of the list
     assert node_5.master_replica.isPrimary
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_stewards[0], 2)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_stewards[0], 2)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)

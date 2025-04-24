@@ -18,7 +18,7 @@ nodeCount = 7
 
 
 def test_old_view_pre_prepare_reply_processing(looper, txnPoolNodeSet, tconf,
-                                               allPluginsPath, vdr_pool_handle,
+                                               allPluginsPath, pool_handle,
                                                vdr_wallet_steward,
                                                monkeypatch):
     """
@@ -40,12 +40,12 @@ def test_old_view_pre_prepare_reply_processing(looper, txnPoolNodeSet, tconf,
     timeout = waits.expectedPoolCatchupTime(nodeCount=len(txnPoolNodeSet))
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet, custom_timeout=timeout)
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle, vdr_wallet_steward, 1)
+                              pool_handle, vdr_wallet_steward, 1)
 
     with delay_rules_without_processing(slow_node.nodeIbStasher, ppDelay(),
                                         msg_rep_delay(types_to_delay=[PREPREPARE])):
         vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                  vdr_pool_handle, vdr_wallet_steward, 1)
+                                  pool_handle, vdr_wallet_steward, 1)
     with delay_rules([n.nodeIbStasher for n in other_nodes], old_view_pp_request_delay()):
         old_sender = malicious_node.master_replica._ordering_service._send
 
@@ -81,4 +81,4 @@ def test_old_view_pre_prepare_reply_processing(looper, txnPoolNodeSet, tconf,
         looper.run(eventually(chk))
 
     ensure_all_nodes_have_same_data(looper, nodes=txnPoolNodeSet)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, pool_handle)

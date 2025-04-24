@@ -19,9 +19,9 @@ def tconf(tconf):
 
 
 def test_restart_majority_to_same_view(looper, txnPoolNodeSet, tconf, tdir, allPluginsPath,
-                                        vdr_pool_handle, vdr_wallet_client):
+                                        pool_handle, vdr_wallet_client):
     # Add transaction to ledger
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 1)
 
     majority = txnPoolNodeSet[:3]
     minority = txnPoolNodeSet[3:]
@@ -50,13 +50,13 @@ def test_restart_majority_to_same_view(looper, txnPoolNodeSet, tconf, tdir, allP
                   after_restart_timeout=tm, start_one_by_one=False)
 
     # Check that all nodes are still functional
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
 
 
 def test_restart_majority_to_lower_view(looper, txnPoolNodeSet, tconf, tdir, allPluginsPath,
-                                        vdr_pool_handle, vdr_wallet_client):
+                                        pool_handle, vdr_wallet_client):
     # Add transaction to ledger
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 1)
 
     # Move to higher view
     ensure_view_change_complete(looper, txnPoolNodeSet)
@@ -88,13 +88,13 @@ def test_restart_majority_to_lower_view(looper, txnPoolNodeSet, tconf, tdir, all
                   after_restart_timeout=tm, start_one_by_one=False)
 
     # Check that all nodes are still functional
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
 
 
 def test_restart_half_to_lower_view(looper, txnPoolNodeSet, tconf, tdir, allPluginsPath,
-                                    vdr_pool_handle, vdr_wallet_client):
+                                    pool_handle, vdr_wallet_client):
     # Add transaction to ledger
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 1)
 
     # Move to higher view
     ensure_view_change_complete(looper, txnPoolNodeSet)
@@ -114,4 +114,4 @@ def test_restart_half_to_lower_view(looper, txnPoolNodeSet, tconf, tdir, allPlug
         assert node.spylog.count(node.on_inconsistent_3pc_state) == 0
 
     # Check that all nodes are still functional
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, vdr_pool_handle, num_reqs=2, num_batches=1)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle, num_reqs=2, num_batches=1)

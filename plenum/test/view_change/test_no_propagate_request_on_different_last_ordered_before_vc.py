@@ -10,7 +10,7 @@ from stp_core.loop.eventually import eventually
 
 
 def test_no_propagate_request_on_different_last_ordered_on_backup_before_vc(looper, txnPoolNodeSet,
-                                                                            vdr_pool_handle, vdr_wallet_client):
+                                                                            pool_handle, vdr_wallet_client):
     '''
     1. Send random request
     2. Make 3 node on backup instance slow in getting commits
@@ -19,7 +19,7 @@ def test_no_propagate_request_on_different_last_ordered_on_backup_before_vc(loop
     5. reset delays
     => we expect that all nodes and all instances have the same last ordered
     '''
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 1)
     slow_instance = 1
     slow_nodes = txnPoolNodeSet[1:4]
@@ -30,7 +30,7 @@ def test_no_propagate_request_on_different_last_ordered_on_backup_before_vc(loop
     backup_last_pp_seq_no = txnPoolNodeSet[0].replicas[slow_instance].last_ordered_3pc[1]
     with delay_rules(nodes_stashers, cDelay(instId=slow_instance)):
         # send one request
-        vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                                   vdr_wallet_client, 1)
         master_pp_seq_no += 1
         looper.run(
@@ -62,7 +62,7 @@ def test_no_propagate_request_on_different_last_ordered_on_backup_before_vc(loop
                           txnPoolNodeSet[0].master_replica.instId,
                           (last_view_no + 1, master_pp_seq_no)))
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 1)
     master_pp_seq_no += 1
     assert all(0 == node.spylog.count(node.request_propagates)
@@ -70,7 +70,7 @@ def test_no_propagate_request_on_different_last_ordered_on_backup_before_vc(loop
 
 
 def test_no_propagate_request_on_different_prepares_on_backup_before_vc(looper, txnPoolNodeSet,
-                                                                        vdr_pool_handle, vdr_wallet_client):
+                                                                        pool_handle, vdr_wallet_client):
     '''
     1. Send random request
     2. Make 3 node on backup instance slow in getting prepares
@@ -79,7 +79,7 @@ def test_no_propagate_request_on_different_prepares_on_backup_before_vc(looper, 
     5. reset delays
     => we expect that all nodes and all instances have the same last ordered
     '''
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 1)
     slow_instance = 1
     slow_nodes = txnPoolNodeSet[1:3]
@@ -91,7 +91,7 @@ def test_no_propagate_request_on_different_prepares_on_backup_before_vc(looper, 
     with delay_rules(nodes_stashers, pDelay(instId=slow_instance)):
         with delay_rules(nodes_stashers, ppDelay(instId=slow_instance)):
             # send one request
-            vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+            vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                                       vdr_wallet_client, 1)
             master_pp_seq_no += 1
             looper.run(
@@ -122,7 +122,7 @@ def test_no_propagate_request_on_different_prepares_on_backup_before_vc(looper, 
                           txnPoolNodeSet[0].master_replica.instId,
                           (last_view_no + 1, master_pp_seq_no)))
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 1)
     master_pp_seq_no += 1
     looper.run(
@@ -135,11 +135,11 @@ def test_no_propagate_request_on_different_prepares_on_backup_before_vc(looper, 
 
 
 def test_no_propagate_request_on_different_last_ordered_on_master_before_vc(looper, txnPoolNodeSet,
-                                                                            vdr_pool_handle, vdr_wallet_client):
+                                                                            pool_handle, vdr_wallet_client):
     ''' Send random request and do view change then fast_nodes (1, 4 - without
     primary after next view change) are already ordered transaction on master
     and slow_nodes are not. Check ordering on slow_nodes.'''
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 1)
     master_instance = txnPoolNodeSet[0].master_replica.instId
     slow_nodes = txnPoolNodeSet[1:3]
@@ -149,7 +149,7 @@ def test_no_propagate_request_on_different_last_ordered_on_master_before_vc(loop
     batches_count = old_last_ordered[1]
     with delay_rules(nodes_stashers, cDelay()):
         # send one request
-        requests = vdr_send_random_requests(looper, vdr_pool_handle,
+        requests = vdr_send_random_requests(looper, pool_handle,
                                             vdr_wallet_client, 1)
         batches_count += 1
         last_ordered_for_slow = slow_nodes[0].master_replica.last_ordered_3pc

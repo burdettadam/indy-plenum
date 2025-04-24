@@ -16,7 +16,7 @@ from stp_core.loop.eventually import eventually
 @pytest.mark.skip(reason='Pending complete implementation')
 def test_node_detecting_lag_from_view_change_done_messages(txnPoolNodeSet,
                                                            looper,
-                                                           vdr_pool_handle,
+                                                           pool_handle,
                                                            vdr_wallet_client,
                                                            tconf):
     """
@@ -29,7 +29,7 @@ def test_node_detecting_lag_from_view_change_done_messages(txnPoolNodeSet,
     Also delay processing of COMMITs and INSTANCE_CHANGEs by other nodes
     """
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            vdr_wallet_client,
                                            2 * 3,
                                            3)

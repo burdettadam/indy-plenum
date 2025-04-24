@@ -46,7 +46,7 @@ def test_authenticator_registration(pre_reqs, registration):
 
 def test_authentication(looper, pre_reqs, registration,
                         vdr_wallet_client,
-                        vdr_pool_handle):
+                        pool_handle):
     _, core_authnr, req_authnr = pre_reqs
 
     # Remove simple_authnr
@@ -59,7 +59,7 @@ def test_authentication(looper, pre_reqs, registration,
         DATA: 1
     }
     # Just creating the request
-    req = vdr_sign_and_submit_op(looper, vdr_pool_handle,
+    req = vdr_sign_and_submit_op(looper, pool_handle,
                                  vdr_wallet_client, op)
     with pytest.raises(NoAuthenticatorFound):
         req_authnr.authenticate(req[0])
@@ -71,7 +71,7 @@ def test_authentication(looper, pre_reqs, registration,
         DATA: 1
     }
     # Just creating the request
-    req = vdr_sign_and_submit_op(looper, vdr_pool_handle,
+    req = vdr_sign_and_submit_op(looper, pool_handle,
                                  vdr_wallet_client, op)
     assert set() == req_authnr.authenticate(req[0])
 
@@ -84,7 +84,7 @@ def test_authentication(looper, pre_reqs, registration,
 
 
 def test_propagate_of_ordered_request_doesnt_stash_requests_in_authenticator(
-        looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client):
+        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
 
     # Universal delayer
     def stopAll(msg):
@@ -99,7 +99,7 @@ def test_propagate_of_ordered_request_doesnt_stash_requests_in_authenticator(
     with delay_rules(lastNode.nodeIbStasher, stopAll), \
          delay_rules(lastNode.clientIbStasher, stopAll):
         vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                  vdr_pool_handle,
+                                  pool_handle,
                                   vdr_wallet_client, 1)
         old_propagates = [n.spylog.count('processPropagate') for n in txnPoolNodeSet]
 

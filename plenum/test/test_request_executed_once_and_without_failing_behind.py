@@ -18,7 +18,7 @@ def set_checkpoint_faking(replica):
 
 def test_request_executed_once_and_without_failing_behind(tconf, looper,
                                                           txnPoolNodeSet,
-                                                          vdr_pool_handle,
+                                                          pool_handle,
                                                           vdr_wallet_client):
     """
     Checks that all requests executed only once and without failing behind in
@@ -40,7 +40,7 @@ def test_request_executed_once_and_without_failing_behind(tconf, looper,
             set_checkpoint_faking(replica)
 
     replies = vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                        vdr_pool_handle,
+                                        pool_handle,
                                         vdr_wallet_client,
                                         number_of_requests)
 

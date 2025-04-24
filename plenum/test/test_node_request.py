@@ -16,10 +16,10 @@ logger = getlogger()
 
 
 def testReqExecWhenReturnedByMaster(looper, txnPoolNodeSet,
-                                    vdr_pool_handle,
+                                    pool_handle,
                                     vdr_wallet_client):
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               1)
 

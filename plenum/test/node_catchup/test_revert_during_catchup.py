@@ -37,7 +37,7 @@ def tconf(tconf):
 @pytest.mark.skip(reason="We don't make a catchup during new view_change")
 def test_slow_node_reverts_unordered_state_during_catchup(looper,
                                                           txnPoolNodeSet,
-                                                          vdr_pool_handle,
+                                                          pool_handle,
                                                           vdr_wallet_client):
     """
     Delay COMMITs to a node such that when it needs to catchup, it needs to
@@ -49,7 +49,7 @@ def test_slow_node_reverts_unordered_state_during_catchup(looper,
     try to process delayed COMMITs, some COMMITs will be rejected but some will
     be processed since catchup was done for older ledger.
     """
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 3 * Max3PCBatchSize)
     nprs = getNonPrimaryReplicas(txnPoolNodeSet, 0)
     slow_node = nprs[-1].node
@@ -73,7 +73,7 @@ def test_slow_node_reverts_unordered_state_during_catchup(looper,
     make_a_node_catchup_less(slow_node, other_nodes, DOMAIN_LEDGER_ID,
                              delay_batches * Max3PCBatchSize)
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 6 * Max3PCBatchSize)
     ensure_all_nodes_have_same_data(looper, other_nodes)
     waitNodeDataInequality(looper, slow_node, *other_nodes)
@@ -142,6 +142,6 @@ def test_slow_node_reverts_unordered_state_during_catchup(looper,
     # make sure that the pool is functional
     checkProtocolInstanceSetup(looper, txnPoolNodeSet, retryWait=1)
     ensure_all_nodes_have_same_data(looper, nodes=txnPoolNodeSet)
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_client, 2 * Max3PCBatchSize)
     ensure_all_nodes_have_same_data(looper, nodes=txnPoolNodeSet)

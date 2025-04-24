@@ -21,7 +21,7 @@ def tconf(tconf):
 
 def test_demote_promote_restart_after_promotion(txnPoolNodeSet,
                                                 looper,
-                                                vdr_pool_handle,
+                                                pool_handle,
                                                 vdr_wallet_steward,
                                                 tdir,
                                                 tconf,
@@ -31,16 +31,16 @@ def test_demote_promote_restart_after_promotion(txnPoolNodeSet,
 
     starting_view_no = checkViewNoForNodes(txnPoolNodeSet)
 
-    demote_node(looper, vdr_wallet_steward, vdr_pool_handle, demoted_node)
+    demote_node(looper, vdr_wallet_steward, pool_handle, demoted_node)
 
     waitForViewChange(looper, rest_nodes, expectedViewNo=starting_view_no + 1)
     ensureElectionsDone(looper, rest_nodes)
     ensure_all_nodes_have_same_data(looper, rest_nodes)
 
-    vdr_send_random_and_check(looper, rest_nodes, vdr_pool_handle, vdr_wallet_steward, 5)
+    vdr_send_random_and_check(looper, rest_nodes, pool_handle, vdr_wallet_steward, 5)
 
     starting_view_no = checkViewNoForNodes(rest_nodes)
-    promote_node(looper, vdr_wallet_steward, vdr_pool_handle, demoted_node)
+    promote_node(looper, vdr_wallet_steward, pool_handle, demoted_node)
 
     waitForViewChange(looper, rest_nodes, expectedViewNo=starting_view_no + 1)
     ensureElectionsDone(looper, rest_nodes)
@@ -49,4 +49,4 @@ def test_demote_promote_restart_after_promotion(txnPoolNodeSet,
     restart_node(looper, txnPoolNodeSet, demoted_node, tconf, tdir, allPluginsPath)
     ensureElectionsDone(looper, txnPoolNodeSet)
 
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, pool_handle)

@@ -22,7 +22,7 @@ def _set_ppseqno(nodes, new_ppsn):
 
 
 @pytest.mark.parametrize('do_view_change', [0, 1])
-def test_add_node_to_pool_with_large_ppseqno_diff_views(do_view_change, looper, txnPoolNodeSet, tconf, vdr_pool_handle,
+def test_add_node_to_pool_with_large_ppseqno_diff_views(do_view_change, looper, txnPoolNodeSet, tconf, pool_handle,
                                                         vdr_wallet_steward, tdir, allPluginsPath):
     """
     Adding a node to the pool while ppSeqNo is big caused a node to stash all the
@@ -41,7 +41,7 @@ def test_add_node_to_pool_with_large_ppseqno_diff_views(do_view_change, looper, 
     # ensure pool is working properly
     vdr_ensure_pool_functional(looper, txnPoolNodeSet,
                                vdr_wallet_steward,
-                               vdr_pool_handle)
+                               pool_handle)
     assert (cur_ppseqno < get_pp_seq_no(txnPoolNodeSet))
 
     _set_ppseqno(txnPoolNodeSet, big_ppseqno)
@@ -49,7 +49,7 @@ def test_add_node_to_pool_with_large_ppseqno_diff_views(do_view_change, looper, 
     assert (big_ppseqno == cur_ppseqno)
     vdr_ensure_pool_functional(looper, txnPoolNodeSet,
                                vdr_wallet_steward,
-                               vdr_pool_handle)
+                               pool_handle)
 
     assert (cur_ppseqno < get_pp_seq_no(txnPoolNodeSet))
 
@@ -62,7 +62,7 @@ def test_add_node_to_pool_with_large_ppseqno_diff_views(do_view_change, looper, 
     new_steward_name = "testClientSteward" + randomString(4)
     new_node_name = "TestTheta" + randomString(4)
     new_steward_wallet_handle, new_node = vdr_add_new_steward_and_node(
-        looper, vdr_pool_handle, vdr_wallet_steward,
+        looper, pool_handle, vdr_wallet_steward,
         new_steward_name, new_node_name, tdir, tconf,
         allPluginsPath=allPluginsPath)
     txnPoolNodeSet.append(new_node)
@@ -70,12 +70,12 @@ def test_add_node_to_pool_with_large_ppseqno_diff_views(do_view_change, looper, 
 
     vdr_ensure_pool_functional(looper, txnPoolNodeSet,
                                new_steward_wallet_handle,
-                               vdr_pool_handle)
+                               pool_handle)
 
     waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:-1])
 
     vdr_ensure_pool_functional(looper, txnPoolNodeSet,
                                vdr_wallet_steward,
-                               vdr_pool_handle)
+                               pool_handle)
 
     waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:-1])

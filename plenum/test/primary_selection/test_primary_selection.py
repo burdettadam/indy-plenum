@@ -23,7 +23,7 @@ def primaryReplicas(txnPoolNodeSet):
 
 # noinspection PyIncorrectDocstring
 def testPrimarySelectionAfterPoolReady(
-        looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_steward):
+        looper, txnPoolNodeSet, pool_handle, vdr_wallet_steward):
     """
     Once the pool is ready(node has connected to at least 3 other nodes),
     appropriate primary replicas should be selected.
@@ -66,7 +66,7 @@ def testPrimarySelectionAfterPoolReady(
     # Check if every protocol instance has one and only one primary and any node
     #  has no more than one primary
     checkProtocolInstanceSetup(looper, txnPoolNodeSet, retryWait=1)
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_steward, 5)
 
 

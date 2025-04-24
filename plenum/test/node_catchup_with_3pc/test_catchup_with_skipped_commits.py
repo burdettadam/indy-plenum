@@ -26,7 +26,7 @@ def tconf(tconf):
 def test_catchup_with_skipped_commits(tdir, tconf,
                                       looper,
                                       txnPoolNodeSet,
-                                      vdr_pool_handle,
+                                      pool_handle,
                                       vdr_wallet_client):
     lagging_node = txnPoolNodeSet[-1]
     lagging_stasher = lagging_node.nodeIbStasher
@@ -47,7 +47,7 @@ def test_catchup_with_skipped_commits(tdir, tconf,
             assert compare_3PC_keys((view_no, pp_seq_no), node.master_replica.last_ordered_3pc) >= 0
 
     # Preload nodes with some transactions
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 1)
     for node in txnPoolNodeSet:
         assert node.master_replica.last_ordered_3pc == (0, 1)
 
@@ -57,7 +57,7 @@ def test_catchup_with_skipped_commits(tdir, tconf,
     start_delaying(lagging_stasher, delay_3pc(before=4, msgs=Commit))
 
     # Send more requests
-    reqs = vdr_send_random_requests(looper, vdr_pool_handle, vdr_wallet_client, 6)
+    reqs = vdr_send_random_requests(looper, pool_handle, vdr_wallet_client, 6)
 
     # Wait until pool ordered till (0, 3)
     looper.run(eventually(check_nodes_ordered_till, other_nodes, 0, 3))

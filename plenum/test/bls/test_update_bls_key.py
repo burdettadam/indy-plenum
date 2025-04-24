@@ -10,7 +10,7 @@ nodes_wth_bls = 4
 def test_update_bls_one_node(looper, txnPoolNodeSet,
                              vdr_wallet_stewards,
                              vdr_wallet_client,
-                             vdr_pool_handle):
+                             pool_handle):
     '''
     Rotated BLS key for 1st node;
     BLS multi-signatures must be calculated for all Nodes.
@@ -19,13 +19,13 @@ def test_update_bls_one_node(looper, txnPoolNodeSet,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
                          sdk_wallet_stewards=vdr_wallet_stewards,
                          sdk_wallet_client=vdr_wallet_client,
-                         sdk_pool_handle=vdr_pool_handle)
+                         pool_handle=pool_handle)
 
 
 def test_update_bls_two_nodes(looper, txnPoolNodeSet,
                               vdr_wallet_stewards,
                               vdr_wallet_client,
-                              vdr_pool_handle):
+                              pool_handle):
     '''
     Rotated BLS key for 1st and 2d nodes;
     BLS multi-signatures must be calculated for all Nodes.
@@ -34,13 +34,13 @@ def test_update_bls_two_nodes(looper, txnPoolNodeSet,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
                          sdk_wallet_stewards=vdr_wallet_stewards,
                          sdk_wallet_client=vdr_wallet_client,
-                         sdk_pool_handle=vdr_pool_handle)
+                         pool_handle=pool_handle)
 
 
 def test_update_bls_three_nodes(looper, txnPoolNodeSet,
                                 vdr_wallet_stewards,
                                 vdr_wallet_client,
-                                vdr_pool_handle):
+                                pool_handle):
     '''
     Rotated BLS key for 1-3 Nodes;
     BLS multi-signatures must be calculated for all Nodes.
@@ -49,13 +49,13 @@ def test_update_bls_three_nodes(looper, txnPoolNodeSet,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
                          sdk_wallet_stewards=vdr_wallet_stewards,
                          sdk_wallet_client=vdr_wallet_client,
-                         sdk_pool_handle=vdr_pool_handle)
+                         pool_handle=pool_handle)
 
 
 def test_update_bls_all_nodes(looper, txnPoolNodeSet,
                               vdr_wallet_stewards,
                               vdr_wallet_client,
-                              vdr_pool_handle):
+                              pool_handle):
     '''
     Rotated BLS key for all Nodes;
     BLS multi-signatures must be calculated for all Nodes.
@@ -64,4 +64,4 @@ def test_update_bls_all_nodes(looper, txnPoolNodeSet,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
                          sdk_wallet_stewards=vdr_wallet_stewards,
                          sdk_wallet_client=vdr_wallet_client,
-                         sdk_pool_handle=vdr_pool_handle)
+                         pool_handle=pool_handle)

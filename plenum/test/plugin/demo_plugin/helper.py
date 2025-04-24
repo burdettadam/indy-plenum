@@ -7,26 +7,26 @@ from plenum.test.plugin.demo_plugin.constants import AUCTION_START, GET_AUCTION
 
 
 def send_auction_txn(looper,
-                     sdk_pool_handle, sdk_wallet_steward):
+                     pool_handle, sdk_wallet_steward):
     op = {
         TXN_TYPE: AUCTION_START,
         DATA: {'id': 'abc'}
     }
-    return successful_op(looper, op, sdk_wallet_steward, sdk_pool_handle)
+    return successful_op(looper, op, sdk_wallet_steward, pool_handle)
 
 
 def send_get_auction_txn(looper,
-                     sdk_pool_handle, sdk_wallet_steward):
+                     pool_handle, sdk_wallet_steward):
     op = {
         TXN_TYPE: GET_AUCTION,
         DATA: {'auction_id': 'id'}
     }
-    return successful_op(looper, op, sdk_wallet_steward, sdk_pool_handle)
+    return successful_op(looper, op, sdk_wallet_steward, pool_handle)
 
 
-def successful_op(looper, op, sdk_wallet, sdk_pool_handle):
+def successful_op(looper, op, sdk_wallet, pool_handle):
     req_obj = vdr_gen_request(op, identifier=sdk_wallet[1])
-    req = vdr_sign_and_submit_req_obj(looper, sdk_pool_handle,
+    req = vdr_sign_and_submit_req_obj(looper, pool_handle,
                                       sdk_wallet, req_obj)
     return vdr_get_and_check_replies(looper, [req])
 

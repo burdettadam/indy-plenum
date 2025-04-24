@@ -35,11 +35,11 @@ def testNodeDoesNotParticipateUntilCaughtUp(txnPoolNodeSet,
     :return:
     """
 
-    looper, new_node, sdk_pool_handle, new_steward_wallet_handle = \
+    looper, new_node, pool_handle, new_steward_wallet_handle = \
         vdr_node_created_after_some_txns
     txnPoolNodeSet.append(new_node)
     old_nodes = txnPoolNodeSet[:-1]
-    vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               new_steward_wallet_handle, 4)
     chk_commits_prepares_recvd(0, old_nodes, new_node)
 
@@ -53,7 +53,7 @@ def testNodeDoesNotParticipateUntilCaughtUp(txnPoolNodeSet,
     waitNodeDataEquality(looper, new_node, *old_nodes,
                          exclude_from_check=['check_last_ordered_3pc_backup'])
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               new_steward_wallet_handle, 2)
 
     # Commits and Prepares are received by all old nodes

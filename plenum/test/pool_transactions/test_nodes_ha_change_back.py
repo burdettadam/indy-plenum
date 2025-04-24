@@ -9,7 +9,7 @@ TestRunningTimeLimitSec = 200
 
 
 def testChangeNodeHaBack(looper, txnPoolNodeSet,
-                         vdr_pool_handle,
+                         pool_handle,
                          sdk_node_theta_added,
                          tconf, tdir):
     """
@@ -29,20 +29,20 @@ def testChangeNodeHaBack(looper, txnPoolNodeSet,
     correct_node_ha = genHa(1)
 
     node_dest = hexToFriendly(new_node.nodestack.verhex)
-    vdr_send_update_node(looper, new_steward_wallet, vdr_pool_handle,
+    vdr_send_update_node(looper, new_steward_wallet, pool_handle,
                          node_dest, new_node.name,
                          correct_node_ha.host, correct_node_ha.port,
                          client_ha.host, client_ha.port)
 
     # step 2: set 'wrong' HA
     wrong_node_ha = genHa(1)
-    vdr_send_update_node(looper, new_steward_wallet, vdr_pool_handle,
+    vdr_send_update_node(looper, new_steward_wallet, pool_handle,
                          node_dest, new_node.name,
                          wrong_node_ha.host, wrong_node_ha.port,
                          client_ha.host, client_ha.port)
 
     # step 3: set 'correct' HA back
-    vdr_send_update_node(looper, new_steward_wallet, vdr_pool_handle,
+    vdr_send_update_node(looper, new_steward_wallet, pool_handle,
                          node_dest, new_node.name,
                          correct_node_ha.host, correct_node_ha.port,
                          client_ha.host, client_ha.port)

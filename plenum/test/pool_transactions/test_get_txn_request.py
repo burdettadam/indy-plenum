@@ -25,7 +25,7 @@ whitelist = ["GET_TXN has no seq_no, skip AuditProof logic", "Given signature is
 
 def test_get_txn_for_invalid_ledger_id(looper, txnPoolNodeSet,
                                        vdr_wallet_steward,
-                                       vdr_pool_handle):
+                                       pool_handle):
     _, steward_did = vdr_wallet_steward
     request = vdr_build_get_txn_request(looper, steward_did, 1)
 
@@ -37,7 +37,7 @@ def test_get_txn_for_invalid_ledger_id(looper, txnPoolNodeSet,
     request_couple = \
         vdr_sign_and_send_prepared_request(looper,
                                            vdr_wallet_steward,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            request)
     with pytest.raises(RequestNackedException) as e:
         vdr_get_and_check_replies(looper, [request_couple])
@@ -46,7 +46,7 @@ def test_get_txn_for_invalid_ledger_id(looper, txnPoolNodeSet,
 
 def test_get_txn_for_invalid_seq_no(looper, txnPoolNodeSet,
                                     vdr_wallet_steward,
-                                    vdr_pool_handle):
+                                    pool_handle):
     _, steward_did = vdr_wallet_steward
 
     # setting incorrect data
@@ -56,7 +56,7 @@ def test_get_txn_for_invalid_seq_no(looper, txnPoolNodeSet,
     request_couple = \
         vdr_sign_and_send_prepared_request(looper,
                                            vdr_wallet_steward,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            request)
     with pytest.raises(RequestNackedException) as e:
         vdr_get_and_check_replies(looper, [request_couple])
@@ -65,7 +65,7 @@ def test_get_txn_for_invalid_seq_no(looper, txnPoolNodeSet,
 
 def test_get_txn_for_existing_seq_no(looper, txnPoolNodeSet,
                                      vdr_wallet_steward,
-                                     vdr_pool_handle):
+                                     pool_handle):
     _, steward_did = vdr_wallet_steward
     for i in range(2):
         request = vdr_build_get_txn_request(looper, steward_did, 1)
@@ -78,13 +78,13 @@ def test_get_txn_for_existing_seq_no(looper, txnPoolNodeSet,
 
         vdr_sign_and_send_prepared_request(looper,
                                            vdr_wallet_steward,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            request)
 
 
 def test_get_txn_for_non_existing_seq_no(looper, txnPoolNodeSet,
                                          vdr_wallet_steward,
-                                         vdr_pool_handle):
+                                         pool_handle):
     _, steward_did = vdr_wallet_steward
 
     # setting incorrect data
@@ -97,14 +97,14 @@ def test_get_txn_for_non_existing_seq_no(looper, txnPoolNodeSet,
     request_couple = \
         vdr_sign_and_send_prepared_request(looper,
                                            vdr_wallet_steward,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            request)
     reply = vdr_get_and_check_replies(looper, [request_couple])[0][1]
     assert reply['result'][DATA] is None
 
 
 def test_get_txn_response_as_expected(looper, txnPoolNodeSet,
-                                      vdr_pool_handle,
+                                      pool_handle,
                                       vdr_wallet_steward):
     seed = randomString(32)
     wh, _ = vdr_wallet_steward
@@ -118,7 +118,7 @@ def test_get_txn_response_as_expected(looper, txnPoolNodeSet,
     # sending request using 'sdk_' functions
     request_couple = vdr_sign_and_send_prepared_request(
         looper, vdr_wallet_steward,
-        vdr_pool_handle, nym_request)
+        pool_handle, nym_request)
 
     result1 = vdr_get_and_check_replies(looper,
                                         [request_couple])[0][1]['result']
@@ -130,7 +130,7 @@ def test_get_txn_response_as_expected(looper, txnPoolNodeSet,
     request_couple = \
         vdr_sign_and_send_prepared_request(looper,
                                            vdr_wallet_steward,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            request)
     result2 = vdr_get_and_check_replies(looper,
                                         [request_couple])[0][1]['result']

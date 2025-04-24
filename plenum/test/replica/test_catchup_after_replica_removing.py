@@ -23,16 +23,16 @@ def tconf(tconf):
         yield tconf
 
 
-def test_catchup_after_replica_removing(looper, vdr_pool_handle, txnPoolNodeSet,
+def test_catchup_after_replica_removing(looper, pool_handle, txnPoolNodeSet,
                                         vdr_wallet_stewards, tdir, tconf, allPluginsPath):
     view_no = txnPoolNodeSet[-1].viewNo
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle, vdr_wallet_stewards[0], 1)
+                              pool_handle, vdr_wallet_stewards[0], 1)
     waitNodeDataEquality(looper, *txnPoolNodeSet)
 
     index, node_for_demote = [(i, n) for i, n in enumerate(txnPoolNodeSet) if n.replicas[1].isPrimary][0]
     sdk_wallet_steward = vdr_wallet_stewards[index]
-    demote_node(looper, sdk_wallet_steward, vdr_pool_handle, node_for_demote)
+    demote_node(looper, sdk_wallet_steward, pool_handle, node_for_demote)
     txnPoolNodeSet.pop(index)
 
     # we are expecting 2 view changes here since Beta is selected as a master Primary on view=1
@@ -42,6 +42,6 @@ def test_catchup_after_replica_removing(looper, vdr_pool_handle, txnPoolNodeSet,
     ensureElectionsDone(looper, txnPoolNodeSet, customTimeout=30)
 
     waitNodeDataEquality(looper, *txnPoolNodeSet)
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_stewards[0], 1)
     waitNodeDataEquality(looper, *txnPoolNodeSet)

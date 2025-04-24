@@ -27,7 +27,7 @@ def test_catchup_not_triggered_if_another_in_progress(
         chkFreqPatched,
         reqs_for_checkpoint,
         txnPoolNodeSet,
-        vdr_pool_handle,
+        pool_handle,
         vdr_wallet_client,
         broken_node_and_others):
     """
@@ -42,7 +42,7 @@ def test_catchup_not_triggered_if_another_in_progress(
     logger.info("Step 1: The node misses quite a lot of 3PC-messages and checkpoints")
 
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
-                                           vdr_pool_handle,
+                                           pool_handle,
                                            vdr_wallet_client,
                                            reqs_for_checkpoint + max_batch_size)
 
@@ -59,7 +59,7 @@ def test_catchup_not_triggered_if_another_in_progress(
 
     with delay_rules(repaired_node.nodeIbStasher, cr_delay()):
         send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
-                                               vdr_pool_handle,
+                                               pool_handle,
                                                vdr_wallet_client,
                                                (Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP + 1) *
                                                reqs_for_checkpoint - max_batch_size)
@@ -81,7 +81,7 @@ def test_catchup_not_triggered_if_another_in_progress(
             repaired_node.master_replica._checkpointer.spylog.count(CheckpointService.process_checkpoint)
 
         send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
-                                               vdr_pool_handle,
+                                               pool_handle,
                                                vdr_wallet_client,
                                                (Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP + 1) *
                                                reqs_for_checkpoint)

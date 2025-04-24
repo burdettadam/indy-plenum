@@ -35,7 +35,7 @@ def tconf(tconf):
     tconf.throughput_measurement_params = old_throughput_measurement_params
 
 
-def test_backup_throughput_measurement(looper, vdr_pool_handle, txnPoolNodeSet,
+def test_backup_throughput_measurement(looper, pool_handle, txnPoolNodeSet,
                                        vdr_wallet_steward, tdir, tconf, allPluginsPath):
     # 8 nodes, so f == 2 and replicas == 3
     looper.runFor(tconf.throughput_measurement_params['window_size'] *
@@ -43,7 +43,7 @@ def test_backup_throughput_measurement(looper, vdr_pool_handle, txnPoolNodeSet,
 
     # Send some txns
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle, vdr_wallet_steward, 1)
+                              pool_handle, vdr_wallet_steward, 1)
 
     # Stop backup primaries
     for node in txnPoolNodeSet[1:3]:
@@ -53,7 +53,7 @@ def test_backup_throughput_measurement(looper, vdr_pool_handle, txnPoolNodeSet,
 
     # Send more txns so that master replica got more throughput
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle, vdr_wallet_steward, int(2 / tconf.DELTA))
+                              pool_handle, vdr_wallet_steward, int(2 / tconf.DELTA))
 
     def chk():
         assert len(txnPoolNodeSet[0].monitor.areBackupsDegraded()) == 2

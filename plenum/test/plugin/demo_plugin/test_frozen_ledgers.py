@@ -19,23 +19,23 @@ def tconf(tconf):
         yield tconf
 
 
-def test_send_freeze_ledgers(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_trustee):
+def test_send_freeze_ledgers(looper, txnPoolNodeSet, pool_handle, vdr_wallet_trustee):
     ledger_to_remove = AUCTION_LEDGER_ID
 
     # check that the config state doesn't contain frozen ledgers records
-    result = sdk_get_frozen_ledgers(looper, vdr_pool_handle,
+    result = sdk_get_frozen_ledgers(looper, pool_handle,
                                     vdr_wallet_trustee)[1]["result"][DATA]
     assert result is None
 
     # add to the config state a frozen ledgers record with an empty list
     sdk_send_freeze_ledgers(
-        looper, vdr_pool_handle,
+        looper, pool_handle,
         [vdr_wallet_trustee],
         []
     )
 
     # check that the config state contains a frozen ledgers record with an empty list
-    result = sdk_get_frozen_ledgers(looper, vdr_pool_handle,
+    result = sdk_get_frozen_ledgers(looper, pool_handle,
                                     vdr_wallet_trustee)[1]["result"][DATA]
     assert len(result) == 0
 
@@ -45,13 +45,13 @@ def test_send_freeze_ledgers(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet
         timeout=3 * FRESHNESS_TIMEOUT)
     )
     sdk_send_freeze_ledgers(
-        looper, vdr_pool_handle,
+        looper, pool_handle,
         [vdr_wallet_trustee],
         [ledger_to_remove]
     )
 
     # check that the config state contains a frozen ledgers record with AUCTION ledger
-    result = sdk_get_frozen_ledgers(looper, vdr_pool_handle,
+    result = sdk_get_frozen_ledgers(looper, pool_handle,
                                     vdr_wallet_trustee)[1]["result"][DATA]
     assert len(result) == 1
     assert result[str(ledger_to_remove)]["state"]
@@ -60,13 +60,13 @@ def test_send_freeze_ledgers(looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet
 
     # add to the config state a frozen ledgers record with an empty list
     sdk_send_freeze_ledgers(
-        looper, vdr_pool_handle,
+        looper, pool_handle,
         [vdr_wallet_trustee],
         []
     )
 
     # check that the frozen ledgers list from the state wasn't cleared by the transaction with empty ledgers' list
-    result = sdk_get_frozen_ledgers(looper, vdr_pool_handle,
+    result = sdk_get_frozen_ledgers(looper, pool_handle,
                                     vdr_wallet_trustee)[1]["result"][DATA]
     assert len(result) == 1
     assert result[str(ledger_to_remove)]["state"]

@@ -9,7 +9,7 @@ whitelist = ["discarding message"]
 
 
 def test_not_check_if_no_new_requests(perf_chk_patched, looper, txnPoolNodeSet,
-                                      vdr_wallet_client, vdr_pool_handle):
+                                      vdr_wallet_client, pool_handle):
     """
     Checks that node does not do performance check if there were no new
     requests since previous check
@@ -30,7 +30,7 @@ def test_not_check_if_no_new_requests(perf_chk_patched, looper, txnPoolNodeSet,
     # performance check again
     num_requests = 1
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               num_requests)
     for node in txnPoolNodeSet:

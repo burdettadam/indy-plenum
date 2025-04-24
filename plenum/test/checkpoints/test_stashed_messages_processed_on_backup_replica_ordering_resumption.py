@@ -33,7 +33,7 @@ def tconf(tconf):
 def test_stashed_messages_processed_on_backup_replica_ordering_resumption(
         looper, chkFreqPatched, reqs_for_checkpoint,
         vdr_one_replica_and_others_in_backup_instance,
-        vdr_pool_handle, vdr_wallet_client, vdr_view_change_done,
+        pool_handle, vdr_wallet_client, vdr_view_change_done,
         txnPoolNodeSet):
     """
     Verifies resumption of ordering 3PC-batches on a backup replica
@@ -48,7 +48,7 @@ def test_stashed_messages_processed_on_backup_replica_ordering_resumption(
     batches_count = other_replicas[0].last_ordered_3pc[1]
 
     # Send a request and ensure that the replica orders the batch for it
-    vdr_send_random_requests(looper, vdr_pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_requests(looper, pool_handle, vdr_wallet_client, 1)
     batches_count += 1
 
     looper.run(
@@ -68,7 +68,7 @@ def test_stashed_messages_processed_on_backup_replica_ordering_resumption(
 
     # Send a request for which the replica will not be able to order the batch
     # due to an insufficient count of Commits
-    vdr_send_random_requests(looper, vdr_pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_requests(looper, pool_handle, vdr_wallet_client, 1)
     looper.runFor(waits.expectedTransactionExecutionTime(nodeCount))
 
     # Receive further Commits from now on
@@ -78,7 +78,7 @@ def test_stashed_messages_processed_on_backup_replica_ordering_resumption(
     # Send requests but in a quantity insufficient
     # for catch-up number of checkpoints
     reqs_until_checkpoints = reqs_for_checkpoint - other_replicas[0].last_ordered_3pc[1]
-    vdr_send_random_requests(looper, vdr_pool_handle, vdr_wallet_client,
+    vdr_send_random_requests(looper, pool_handle, vdr_wallet_client,
                              Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP *
                              reqs_until_checkpoints)
     looper.runFor(waits.expectedTransactionExecutionTime(nodeCount))
@@ -87,7 +87,7 @@ def test_stashed_messages_processed_on_backup_replica_ordering_resumption(
     slow_replica.node.nodeIbStasher.delay(chk_delay(instId=1))
 
     # Send more requests to reach catch-up number of checkpoints
-    vdr_send_random_requests(looper, vdr_pool_handle, vdr_wallet_client,
+    vdr_send_random_requests(looper, pool_handle, vdr_wallet_client,
                              reqs_for_checkpoint)
     looper.runFor(waits.expectedTransactionExecutionTime(nodeCount))
 
@@ -96,7 +96,7 @@ def test_stashed_messages_processed_on_backup_replica_ordering_resumption(
     assert slow_replica.stasher.stash_size(STASH_WATERMARKS) == 0
 
     # Send a request for which the batch will be outside of the watermarks
-    vdr_send_random_requests(looper, vdr_pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_requests(looper, pool_handle, vdr_wallet_client, 1)
     looper.runFor(waits.expectedTransactionExecutionTime(nodeCount))
 
     # Ensure that the replica has not ordered any batches
@@ -139,7 +139,7 @@ def test_stashed_messages_processed_on_backup_replica_ordering_resumption(
     assert slow_replica.stasher.stash_size(STASH_WATERMARKS) == 0
 
     # Send a request and ensure that the replica orders the batch for it
-    vdr_send_random_requests(looper, vdr_pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_requests(looper, pool_handle, vdr_wallet_client, 1)
     batches_count += 1
 
     looper.run(

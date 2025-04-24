@@ -26,7 +26,7 @@ logger = getlogger()
 
 def testNodeKeysChanged(looper, txnPoolNodeSet, tdir,
                         tconf, sdk_node_theta_added,
-                        vdr_pool_handle,
+                        pool_handle,
                         allPluginsPath=None):
     # 1. Add new node
     orig_view_no = txnPoolNodeSet[0].viewNo
@@ -38,7 +38,7 @@ def testNodeKeysChanged(looper, txnPoolNodeSet, tdir,
     nodeHa, nodeCHa = HA(*new_node.nodestack.ha), HA(*new_node.clientstack.ha)
     sigseed = randomString(32).encode()
     verkey = base58.b58encode(SimpleSigner(seed=sigseed).naclSigner.verraw).decode("utf-8")
-    vdr_change_node_keys(looper, new_node, new_steward_wallet, vdr_pool_handle, verkey)
+    vdr_change_node_keys(looper, new_node, new_steward_wallet, pool_handle, verkey)
 
     # 3. Start the new node back with the new keys
     logger.debug("{} starting with HAs {} {}".format(new_node, nodeHa, nodeCHa))
@@ -56,14 +56,14 @@ def testNodeKeysChanged(looper, txnPoolNodeSet, tdir,
     looper.run(checkNodesConnected(txnPoolNodeSet))
     waitNodeDataEquality(looper, node, *txnPoolNodeSet[:-1],
                          exclude_from_check=['check_last_ordered_3pc_backup'])
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, new_steward_wallet, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, new_steward_wallet, pool_handle)
 
     # 5. Make sure that no additional view changes happened
     assert all(n.viewNo == orig_view_no for n in txnPoolNodeSet)
 
 
 def test_node_init_remote_keys_errors_not_suppressed(looper, txnPoolNodeSet, sdk_node_theta_added, monkeypatch,
-                                                     vdr_pool_handle):
+                                                     pool_handle):
     TEST_EXCEPTION_MESSAGE = 'Failed to create some cert files'
 
     new_steward_wallet, new_node = sdk_node_theta_added
@@ -98,6 +98,6 @@ def test_node_init_remote_keys_errors_not_suppressed(looper, txnPoolNodeSet, sdk
 
     monkeypatch.setattr(stack_manager, 'initRemoteKeys', initRemoteKeysMock)
 
-    vdr_change_node_keys(looper, new_node, new_steward_wallet, vdr_pool_handle, verkey)
+    vdr_change_node_keys(looper, new_node, new_steward_wallet, pool_handle, verkey)
 
     monkeypatch.undo()

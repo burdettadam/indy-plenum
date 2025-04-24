@@ -12,7 +12,7 @@ whitelist = ['found legacy entry']  # warnings
 
 
 def testNodeDiscardMessageFromUnknownView(txnPoolNodeSet,
-                                          sdk_node_set_with_node_added_after_some_txns,
+                                          vdr_node_set_with_node_added_after_some_txns,
                                           vdr_new_node_caught_up,
                                           allPluginsPath, vdr_wallet_client):
     """
@@ -20,8 +20,8 @@ def testNodeDiscardMessageFromUnknownView(txnPoolNodeSet,
     know of (view nos before it joined the pool)
     :return:
     """
-    looper, new_node, sdk_pool_handle, new_steward_wallet_handle = \
-        sdk_node_set_with_node_added_after_some_txns
+    looper, new_node, pool_handle, new_steward_wallet_handle = \
+        vdr_node_set_with_node_added_after_some_txns
     viewNo = new_node.viewNo
 
     pp_seq_no = get_pp_seq_no(txnPoolNodeSet)

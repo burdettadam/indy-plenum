@@ -17,7 +17,7 @@ logger = getlogger()
 
 def test_primary_selection_after_primary_demotion_and_pool_restart(looper,
                                                                    txnPoolNodeSet,
-                                                                   vdr_pool_handle,
+                                                                   pool_handle,
                                                                    vdr_wallet_steward,
                                                                    txnPoolMasterNodes,
                                                                    tdir, tconf):
@@ -30,7 +30,7 @@ def test_primary_selection_after_primary_demotion_and_pool_restart(looper,
     master_node = txnPoolMasterNodes[0]
     node_dest = hexToFriendly(master_node.nodestack.verhex)
     vdr_send_update_node(looper, vdr_wallet_steward,
-                         vdr_pool_handle,
+                         pool_handle,
                          node_dest, master_node.name,
                          None, None,
                          None, None,
@@ -65,7 +65,7 @@ def test_primary_selection_after_primary_demotion_and_pool_restart(looper,
     looper.run(checkNodesConnected(restNodes))
     ensureElectionsDone(looper, restNodes)
     checkViewNoForNodes(restNodes, 0)
-    vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                               vdr_wallet_steward, 3)
 
     primariesIdxs = getPrimaryNodesIdxs(restNodes)

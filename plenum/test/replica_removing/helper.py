@@ -51,7 +51,7 @@ def check_replica_removed(node, start_replicas_count, instance_id):
 
 def do_test_replica_removing_with_backup_degraded(looper,
                                                   txnPoolNodeSet,
-                                                  sdk_pool_handle,
+                                                  pool_handle,
                                                   sdk_wallet_client,
                                                   tconf):
     """
@@ -66,7 +66,7 @@ def do_test_replica_removing_with_backup_degraded(looper,
     with delay_rules(stashers, cDelay(delay=sys.maxsize, instId=instance_to_remove)):
         vdr_send_batches_of_random_and_check(looper,
                                              txnPoolNodeSet,
-                                             sdk_pool_handle,
+                                             pool_handle,
                                              sdk_wallet_client,
                                              num_reqs=30,
                                              num_batches=15)

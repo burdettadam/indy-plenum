@@ -42,7 +42,7 @@ def catchuped(node):
 
 def test_6th_node_join_after_view_change_by_master_restart(
         looper, txnPoolNodeSet, tdir, tconf,
-        allPluginsPath, vdr_pool_handle,
+        allPluginsPath, pool_handle,
         vdr_wallet_steward,
         limitTestRunningTime):
     """
@@ -64,18 +64,18 @@ def test_6th_node_join_after_view_change_by_master_restart(
         looper.run(eventually(catchuped, node, timeout=2 * timeout))
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet, custom_timeout=timeout)
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle, vdr_wallet_steward, 5)
+                              pool_handle, vdr_wallet_steward, 5)
 
     new_epsilon_node = add_new_node(looper,
                                     txnPoolNodeSet,
-                                    vdr_pool_handle,
+                                    pool_handle,
                                     vdr_wallet_steward,
                                     tdir,
                                     tconf,
                                     allPluginsPath,
                                     name='Epsilon')
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle, vdr_wallet_steward, 5)
+                              pool_handle, vdr_wallet_steward, 5)
     """
     check that pool and domain ledgers for new node are in synced state
     """
@@ -93,10 +93,10 @@ def test_6th_node_join_after_view_change_by_master_restart(
     for node in txnPoolNodeSet:
         looper.run(eventually(catchuped, node, timeout=3 * timeout))
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle, vdr_wallet_steward, 2)
+                              pool_handle, vdr_wallet_steward, 2)
     new_psi_node = add_new_node(looper,
                                 txnPoolNodeSet,
-                                vdr_pool_handle,
+                                pool_handle,
                                 vdr_wallet_steward,
                                 tdir,
                                 tconf,

@@ -25,11 +25,11 @@ def stop_node(node_to_stop, looper, pool_nodes):
 
 def test_quorum_after_f_plus_2_nodes_but_not_primary_turned_off_and_later_on(
         looper, allPluginsPath, tdir, tconf,
-        txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client):
+        txnPoolNodeSet, pool_handle, vdr_wallet_client):
     nodes = txnPoolNodeSet
 
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               1)
 
@@ -39,7 +39,7 @@ def test_quorum_after_f_plus_2_nodes_but_not_primary_turned_off_and_later_on(
     checkViewNoForNodes(nodes[:4], expectedViewNo=0)
 
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               1)
 
@@ -49,7 +49,7 @@ def test_quorum_after_f_plus_2_nodes_but_not_primary_turned_off_and_later_on(
     checkViewNoForNodes(nodes[:3], expectedViewNo=0)
 
     sdk_reqs3 = vdr_send_random_requests(looper,
-                                         vdr_pool_handle,
+                                         pool_handle,
                                          vdr_wallet_client,
                                          1)
     with pytest.raises(PoolLedgerTimeoutException):
@@ -62,7 +62,7 @@ def test_quorum_after_f_plus_2_nodes_but_not_primary_turned_off_and_later_on(
     checkViewNoForNodes(nodes[:2], expectedViewNo=0)
 
     sdk_reqs4 = vdr_send_random_requests(looper,
-                                         vdr_pool_handle,
+                                         pool_handle,
                                          vdr_wallet_client,
                                          1)
     with pytest.raises(PoolLedgerTimeoutException):
@@ -74,7 +74,7 @@ def test_quorum_after_f_plus_2_nodes_but_not_primary_turned_off_and_later_on(
     checkViewNoForNodes(nodes[:2] + nodes[4:], expectedViewNo=0)
 
     sdk_reqs5 = vdr_send_random_requests(looper,
-                                         vdr_pool_handle,
+                                         pool_handle,
                                          vdr_wallet_client,
                                          1)
     with pytest.raises(PoolLedgerTimeoutException):
@@ -87,7 +87,7 @@ def test_quorum_after_f_plus_2_nodes_but_not_primary_turned_off_and_later_on(
     checkViewNoForNodes(nodes[:2] + nodes[3:], expectedViewNo=0)
 
     sdk_reqs6 = vdr_send_random_requests(looper,
-                                         vdr_pool_handle,
+                                         pool_handle,
                                          vdr_wallet_client,
                                          1)
     vdr_get_replies(looper, sdk_reqs6)
@@ -98,6 +98,6 @@ def test_quorum_after_f_plus_2_nodes_but_not_primary_turned_off_and_later_on(
     checkViewNoForNodes(nodes, expectedViewNo=0)
 
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              vdr_pool_handle,
+                              pool_handle,
                               vdr_wallet_client,
                               1)

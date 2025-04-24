@@ -23,7 +23,7 @@ def tconf(tconf):
 @pytest.mark.skip(reason="With new view change we don't clear requests")
 def test_replica_clear_collections_after_view_change(looper,
                                                      txnPoolNodeSet,
-                                                     vdr_pool_handle,
+                                                     pool_handle,
                                                      vdr_wallet_client,
                                                      tconf,
                                                      tdir,
@@ -42,7 +42,7 @@ def test_replica_clear_collections_after_view_change(looper,
 
     stashers = [n.nodeIbStasher for n in txnPoolNodeSet]
     with delay_rules(stashers, cDelay(delay=sys.maxsize, instId=1)):
-        vdr_send_random_and_check(looper, txnPoolNodeSet, vdr_pool_handle,
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
                                   vdr_wallet_steward, 1)
 
         trigger_view_change(txnPoolNodeSet)
@@ -53,7 +53,7 @@ def test_replica_clear_collections_after_view_change(looper,
     # + 1 because of lastPrePrepareSeqNo was not dropped after view_change
     vdr_send_batches_of_random_and_check(looper,
                                          txnPoolNodeSet,
-                                         vdr_pool_handle,
+                                         pool_handle,
                                          vdr_wallet_client,
                                          num_reqs=reqs_for_checkpoint + 1)
 

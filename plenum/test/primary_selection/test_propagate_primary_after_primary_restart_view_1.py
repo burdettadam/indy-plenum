@@ -29,7 +29,7 @@ IC_DELAY_SEC = 100
 
 
 def test_propagate_primary_after_primary_restart_view_1(
-        looper, txnPoolNodeSet, tconf, vdr_pool_handle, vdr_wallet_steward, tdir, allPluginsPath):
+        looper, txnPoolNodeSet, tconf, pool_handle, vdr_wallet_steward, tdir, allPluginsPath):
     """
     Delay instance change msgs to prevent view change during primary restart
     to test propagate primary for primary node.
@@ -41,7 +41,7 @@ def test_propagate_primary_after_primary_restart_view_1(
     ensure_view_change(looper, txnPoolNodeSet)
     checkViewNoForNodes(txnPoolNodeSet, expectedViewNo=1)
 
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, pool_handle)
 
     old_ppseqno = _get_ppseqno(txnPoolNodeSet)
     assert (old_ppseqno > 0)
@@ -76,7 +76,7 @@ def test_propagate_primary_after_primary_restart_view_1(
     # check ppSeqNo the same
     _get_ppseqno(txnPoolNodeSet)
 
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, vdr_pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_steward, pool_handle)
 
     new_ppseqno = _get_ppseqno(txnPoolNodeSet)
     assert (new_ppseqno > old_ppseqno)

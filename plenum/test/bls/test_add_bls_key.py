@@ -13,7 +13,7 @@ nodes_wth_bls = 0
 
 def test_add_bls_one_node(looper,
                           txnPoolNodeSet,
-                          vdr_pool_handle,
+                          pool_handle,
                           vdr_wallet_stewards, vdr_wallet_client):
     '''
     Added BLS key for 1st Node;
@@ -24,12 +24,12 @@ def test_add_bls_one_node(looper,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
                          sdk_wallet_stewards=vdr_wallet_stewards,
                          sdk_wallet_client=vdr_wallet_client,
-                         sdk_pool_handle=vdr_pool_handle)
+                         pool_handle=pool_handle)
 
 
 def test_add_bls_two_nodes(looper,
                            txnPoolNodeSet,
-                           vdr_pool_handle,
+                           pool_handle,
                            vdr_wallet_stewards,
                            vdr_wallet_client):
     '''
@@ -41,12 +41,12 @@ def test_add_bls_two_nodes(looper,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
                          sdk_wallet_stewards=vdr_wallet_stewards,
                          sdk_wallet_client=vdr_wallet_client,
-                         sdk_pool_handle=vdr_pool_handle)
+                         pool_handle=pool_handle)
 
 
 def test_add_bls_three_nodes(looper,
                              txnPoolNodeSet,
-                             vdr_pool_handle,
+                             pool_handle,
                              vdr_wallet_stewards,
                              vdr_wallet_client):
     '''
@@ -70,12 +70,12 @@ def test_add_bls_three_nodes(looper,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
                          sdk_wallet_stewards=vdr_wallet_stewards,
                          sdk_wallet_client=vdr_wallet_client,
-                         sdk_pool_handle=vdr_pool_handle)
+                         pool_handle=pool_handle)
 
 
 def test_add_bls_all_nodes(looper,
                            txnPoolNodeSet,
-                           vdr_pool_handle,
+                           pool_handle,
                            vdr_wallet_stewards,
                            vdr_wallet_client):
     '''
@@ -87,4 +87,4 @@ def test_add_bls_all_nodes(looper,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
                          sdk_wallet_stewards=vdr_wallet_stewards,
                          sdk_wallet_client=vdr_wallet_client,
-                         sdk_pool_handle=vdr_pool_handle)
+                         pool_handle=pool_handle)

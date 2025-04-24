@@ -92,10 +92,10 @@ def aml_request_kwargs(vdr_wallet_trustee):
     )
 
 
-# Note. sdk_pool_handle is necessary since it sets proper
+# Note. pool_handle is necessary since it sets proper
 # Protocol Version for requests
 @pytest.fixture(scope="module")
-def taa_aml_request_module(looper, aml_request_kwargs, vdr_pool_handle):
+def taa_aml_request_module(looper, aml_request_kwargs, pool_handle):
     res = looper.loop.run_until_complete(
         build_acceptance_mechanisms_request(
             aml_request_kwargs['identifier'],
@@ -108,7 +108,7 @@ def taa_aml_request_module(looper, aml_request_kwargs, vdr_pool_handle):
 
 
 @pytest.fixture(scope="function")
-def taa_aml_request(looper, aml_request_kwargs, vdr_pool_handle):
+def taa_aml_request(looper, aml_request_kwargs, pool_handle):
     aml_request_kwargs = deepcopy(aml_request_kwargs)
     aml_request_kwargs['operation'][AML_VERSION] = randomString()
     aml_request_kwargs['operation'][AML_CONTEXT] = randomString()
@@ -126,23 +126,23 @@ def taa_aml_request(looper, aml_request_kwargs, vdr_pool_handle):
 @pytest.fixture(scope="module")
 def set_txn_author_agreement_aml(
         looper, txnPoolNodeSet, taa_aml_request_module,
-        vdr_pool_handle, vdr_wallet_trustee
+        pool_handle, vdr_wallet_trustee
 ):
     req = vdr_sign_and_send_prepared_request(
-        looper, vdr_wallet_trustee, vdr_pool_handle, taa_aml_request_module)
+        looper, vdr_wallet_trustee, pool_handle, taa_aml_request_module)
     return vdr_get_and_check_replies(looper, [req])[0]
 
 
 @pytest.fixture(scope='module')
 def set_txn_author_agreement(
-        looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_trustee
+        looper, txnPoolNodeSet, pool_handle, vdr_wallet_trustee
 ):
     def wrapped(text=None, version=None, retired=None, ratified=None):
         random_taa = gen_random_txn_author_agreement()
         text = random_taa[0] if text is None else text
         version = random_taa[1] if version is None else version
         ratified = get_utc_epoch() - 600 if ratified is None else ratified
-        res = _set_txn_author_agreement(looper, vdr_pool_handle, vdr_wallet_trustee, text, version, ratified, retired)
+        res = _set_txn_author_agreement(looper, pool_handle, vdr_wallet_trustee, text, version, ratified, retired)
         ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)
         return res
 
@@ -151,11 +151,11 @@ def set_txn_author_agreement(
 
 @pytest.fixture(scope='module')
 def get_txn_author_agreement(
-        looper, txnPoolNodeSet, vdr_pool_handle, vdr_wallet_client
+        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client
 ):
     def wrapped(digest=None, version=None, timestamp=None):
         return _get_txn_author_agreement(
-            looper, vdr_pool_handle, vdr_wallet_client,
+            looper, pool_handle, vdr_wallet_client,
             digest=digest, version=version, timestamp=timestamp
         )
 
