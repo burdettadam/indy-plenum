@@ -20,7 +20,7 @@ def tconf(tconf):
 
 def test_delay_commits(txnPoolNodeSet, looper,
                        pool_handle,
-                       vdr_wallet_client,
+                       wallet_client,
                        tconf):
     """
     #3
@@ -42,7 +42,7 @@ def test_delay_commits(txnPoolNodeSet, looper,
     node X can't finish second transaction
     """
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 1)
+                              wallet_client, 1)
     nodes_stashers = [n.nodeIbStasher for n in txnPoolNodeSet
                       if n != txnPoolNodeSet[-1]]
     for _ in range(2):
@@ -51,21 +51,21 @@ def test_delay_commits(txnPoolNodeSet, looper,
                                               txnPoolNodeSet[-1],
                                               looper,
                                               pool_handle,
-                                              vdr_wallet_client)
+                                              wallet_client)
 
 
 def do_view_change_with_delayed_commits_on_all_but_one(nodes, nodes_without_one_stashers,
                                           except_node,
                                           looper,
                                           pool_handle,
-                                          sdk_wallet_client):
+                                          wallet_client):
     new_view_no = except_node.viewNo + 1
     old_last_ordered = except_node.master_replica.last_ordered_3pc
     # delay commits for all nodes except node X
     with delay_rules(nodes_without_one_stashers, cDelay(sys.maxsize)):
         # send one  request
         requests2 = vdr_send_random_requests(looper, pool_handle,
-                                             sdk_wallet_client, 1)
+                                             wallet_client, 1)
 
         def last_ordered(node: Node, last_ordered):
             assert node.master_replica.last_ordered_3pc == last_ordered
@@ -83,7 +83,7 @@ def do_view_change_with_delayed_commits_on_all_but_one(nodes, nodes_without_one_
 
     vdr_get_replies(looper, requests2)
     ensure_all_nodes_have_same_data(looper, nodes)
-    vdr_ensure_pool_functional(looper, nodes, sdk_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, nodes, wallet_client, pool_handle)
 
 
 def last_prepared_certificate(nodes, num):

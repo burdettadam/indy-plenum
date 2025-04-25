@@ -38,7 +38,7 @@ def tconf(tconf):
 def test_slow_node_reverts_unordered_state_during_catchup(looper,
                                                           txnPoolNodeSet,
                                                           pool_handle,
-                                                          vdr_wallet_client):
+                                                          wallet_client):
     """
     Delay COMMITs to a node such that when it needs to catchup, it needs to
     revert some unordered state. Also till this time the node should have
@@ -50,7 +50,7 @@ def test_slow_node_reverts_unordered_state_during_catchup(looper,
     be processed since catchup was done for older ledger.
     """
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 3 * Max3PCBatchSize)
+                              wallet_client, 3 * Max3PCBatchSize)
     nprs = getNonPrimaryReplicas(txnPoolNodeSet, 0)
     slow_node = nprs[-1].node
     other_nodes = [n for n in txnPoolNodeSet if n != slow_node]
@@ -74,7 +74,7 @@ def test_slow_node_reverts_unordered_state_during_catchup(looper,
                              delay_batches * Max3PCBatchSize)
 
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 6 * Max3PCBatchSize)
+                              wallet_client, 6 * Max3PCBatchSize)
     ensure_all_nodes_have_same_data(looper, other_nodes)
     waitNodeDataInequality(looper, slow_node, *other_nodes)
 
@@ -143,5 +143,5 @@ def test_slow_node_reverts_unordered_state_during_catchup(looper,
     checkProtocolInstanceSetup(looper, txnPoolNodeSet, retryWait=1)
     ensure_all_nodes_have_same_data(looper, nodes=txnPoolNodeSet)
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 2 * Max3PCBatchSize)
+                              wallet_client, 2 * Max3PCBatchSize)
     ensure_all_nodes_have_same_data(looper, nodes=txnPoolNodeSet)

@@ -25,14 +25,14 @@ def poolAfterSomeTxns(
         looper,
         txnPoolNodeSet,
         pool_handle,
-        vdr_wallet_client,
+        wallet_client,
         request):
     txnCount = getValueFromModule(request, "txnCount", 5)
     vdr_send_random_and_check(looper, txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               txnCount)
-    yield looper, pool_handle, vdr_wallet_client
+    yield looper, pool_handle, wallet_client
 
 
 @pytest.fixture

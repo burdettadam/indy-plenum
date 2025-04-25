@@ -76,26 +76,26 @@ def send_reqs_batches_and_get_suff_replies(
         looper: Looper,
         txnPoolNodeSet,
         pool_handle,
-        sdk_wallet_client,
+        wallet_client,
         num_reqs: int,
         num_batches=1,
         **kwargs):
     # This method assumes that `num_reqs` <= num_batches*MaxbatchSize
     if num_batches == 1:
         return vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                         sdk_wallet_client, num_reqs)
+                                         wallet_client, num_reqs)
     else:
         requests = []
         for _ in range(num_batches - 1):
             requests.extend(
                 vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                          sdk_wallet_client, num_reqs // num_batches))
+                                          wallet_client, num_reqs // num_batches))
         rem = num_reqs % num_batches
         if rem == 0:
             rem = num_reqs // num_batches
         requests.extend(
             vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                      sdk_wallet_client, rem))
+                                      wallet_client, rem))
         return requests
 
 
@@ -178,9 +178,11 @@ def random_requests(count):
     return [randomOperation() for _ in range(count)]
 
 
-def random_request_objects(count, protocol_version):
-    req_dicts = random_requests(count)
-    return [Request(operation=op, protocolVersion=protocol_version) for op in req_dicts]
+def random_request_objects(count, protocol_version, identifier=None,
+                               **kwargs):
+    ops = random_requests(count)
+    return [vdr_gen_request(op, protocol_version=protocol_version,
+                            identifier=identifier, **kwargs) for op in ops]
 
 
 def buildCompletedTxnFromReply(request, reply: Reply) -> Dict:
@@ -799,74 +801,7 @@ def create_new_test_node(test_node_class, node_config_helper_class, name, conf,
                            cliha=client_ha,
                            bootstrap_cls=bootstrap_cls)
 
-# ####### SDK
 
-
-def sdk_gen_request(operation, protocol_version=CURRENT_PROTOCOL_VERSION,
-                    identifier=None, **kwargs):
-    """Deprecated - use vdr_gen_request instead"""
-    return vdr_gen_request(operation, protocol_version, identifier, **kwargs)
-
-
-def sdk_random_request_objects(count, protocol_version, identifier=None,
-                               **kwargs):
-    """Deprecated - use vdr_random_request_objects instead"""
-    return vdr_random_request_objects(count, protocol_version, identifier, **kwargs)
-
-
-def sdk_sign_request_objects(looper, sdk_wallet, reqs: Sequence):
-    """Deprecated - use vdr_sign_request_objects instead"""
-    return vdr_sign_request_objects(looper, sdk_wallet, reqs)
-
-
-def sdk_signed_random_requests(looper, sdk_wallet, count):
-    """Deprecated - use vdr_signed_random_requests instead"""
-    return vdr_signed_random_requests(looper, sdk_wallet, count)
-
-
-def sdk_send_signed_requests(looper, pool_h, signed_reqs: Sequence):
-    """Deprecated - use vdr_send_signed_requests instead"""
-    return vdr_send_signed_requests(pool_h, signed_reqs, looper)
-
-
-def sdk_send_random_requests(looper, pool_h, sdk_wallet, count: int):
-    """Deprecated - use vdr_send_random_requests instead"""
-    return vdr_send_random_requests(looper, pool_h, sdk_wallet, count)
-
-
-def sdk_get_replies(looper, sdk_req_resp: Sequence, timeout=None):
-    """Deprecated - use vdr_get_replies instead"""
-    return vdr_get_replies(looper, sdk_req_resp, timeout)
-
-
-def sdk_check_reply(req_res):
-    """Deprecated - use vdr_check_reply instead"""
-    return vdr_check_reply(req_res)
-
-
-def sdk_get_and_check_replies(looper, sdk_req_resp: Sequence, timeout=None):
-    """Deprecated - use vdr_get_and_check_replies instead"""
-    return vdr_get_and_check_replies(looper, sdk_req_resp, timeout)
-
-
-def sdk_eval_timeout(req_count: int, node_count: int,
-                     customTimeoutPerReq: float = None, add_delay_to_timeout: float = 0):
-    """Deprecated - use vdr_eval_timeout instead"""
-    return vdr_eval_timeout(req_count, node_count, customTimeoutPerReq, add_delay_to_timeout)
-
-
-def sdk_send_random_and_check(looper, txnPoolNodeSet, sdk_pool, sdk_wallet, count,
-                              customTimeoutPerReq: float = None, add_delay_to_timeout: float = 0,
-                              override_timeout_limit=False, total_timeout=None):
-    """Deprecated - use vdr_send_random_and_check instead"""
-    return vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool, sdk_wallet, count,
-                                    customTimeoutPerReq, add_delay_to_timeout,
-                                    override_timeout_limit, total_timeout)
-
-
-def sdk_set_protocol_version(looper, version=CURRENT_PROTOCOL_VERSION):
-    """Deprecated - use vdr_set_protocol_version instead"""
-    return vdr_set_protocol_version(looper, version)
 
 # ####### VDR
 
@@ -888,8 +823,8 @@ def gen_request_plenum(operation: Dict[str, Any], protocol_version: str = CURREN
                    **kwargs)
     return json_req
 
-def vdr_gen_pool_request(looper, sdk_wallet_new_steward, node_alias, node_did):
-    _, new_steward_did = sdk_wallet_new_steward
+def vdr_gen_pool_request(looper, wallet_new_steward, node_alias, node_did):
+    _, new_steward_did = wallet_new_steward
 
     node_ip = '{}.{}.{}.{}'.format(
         random.randint(1, 240),
@@ -918,37 +853,37 @@ def vdr_random_request_objects(count, protocol_version, identifier=None,
                             identifier=identifier, **kwargs) for op in ops]
     return reqs
 
-def vdr_sign_request_objects(looper, sdk_wallet, reqs: Sequence):
-    wallet_h, did = sdk_wallet
+def vdr_sign_request_objects(looper, wallet, reqs: Sequence):
+    wallet_h, did = wallet
     reqs = [looper.loop.run_until_complete(vdr_sign_request(wallet_h, did, req))
             for req in reqs]
     return reqs
 
 
-def vdr_multi_sign_request_objects(looper, sdk_wallets, reqs: Sequence):
+def vdr_multi_sign_request_objects(looper, wallets, reqs: Sequence):
     reqs_str = [json.dumps(req.as_dict) for req in reqs]
-    for sdk_wallet in sdk_wallets:
-        wallet_h, did = sdk_wallet
+    for wallet in wallets:
+        wallet_h, did = wallet
         reqs_str = [looper.loop.run_until_complete(vdr_multi_sign_request(wallet_h, did, req))
                     for req in reqs_str]
     return reqs_str
 
 
-def vdr_sign_request_strings(looper, sdk_wallet, reqs: Sequence):
-    wallet_h, did = sdk_wallet
+def vdr_sign_request_strings(looper, wallet, reqs: Sequence):
+    wallet_h, did = wallet
     reqs_str = [json.dumps(req) for req in reqs]
     reqs = [looper.loop.run_until_complete(vdr_sign_request(wallet_h, did, req))
             for req in reqs_str]
     return reqs
 
 
-def vdr_multisign_request_object(looper, sdk_wallet, req):
-    wh, did = sdk_wallet
+def vdr_multisign_request_object(looper, wallet, req):
+    wh, did = wallet
     return looper.loop.run_until_complete(vdr_multi_sign_request(wh, did, req))
 
 
-def vdr_multisign_request_from_dict(looper, sdk_wallet, op, reqId=None, taa_acceptance=None, endorser=None):
-    wh, did = sdk_wallet
+def vdr_multisign_request_from_dict(looper, wallet, op, reqId=None, taa_acceptance=None, endorser=None):
+    wh, did = wallet
     reqId = reqId or random.randint(10, 100000)
     request = Request(operation=op, reqId=reqId,
                       protocolVersion=CURRENT_PROTOCOL_VERSION, identifier=did,
@@ -959,11 +894,11 @@ def vdr_multisign_request_from_dict(looper, sdk_wallet, op, reqId=None, taa_acce
     return json.loads(resp)
 
 
-def vdr_signed_random_requests(looper, sdk_wallet, count, protocol_version=CURRENT_PROTOCOL_VERSION):
-    _, did = sdk_wallet
+def vdr_signed_random_requests(looper, wallet, count, protocol_version=CURRENT_PROTOCOL_VERSION):
+    _, did = wallet
     reqs_obj = vdr_random_request_objects(count, identifier=did,
                                           protocol_version=protocol_version)
-    return vdr_sign_request_objects(looper, sdk_wallet, reqs_obj)
+    return vdr_sign_request_objects(looper, wallet, reqs_obj)
 
 
 def vdr_send_signed_requests(pool_h, signed_reqs: Sequence, looper):
@@ -975,62 +910,62 @@ def vdr_send_signed_requests(pool_h, signed_reqs: Sequence, looper):
     return res
 
 
-def vdr_send_random_requests(looper, pool_h, sdk_wallet, count: int):
-    reqs = vdr_signed_random_requests(looper, sdk_wallet, count)
+def vdr_send_random_requests(looper, pool_h, wallet, count: int):
+    reqs = vdr_signed_random_requests(looper, wallet, count)
     return vdr_send_signed_requests(pool_h, reqs, looper)
 
 
-def vdr_send_random_request(looper, pool_h, sdk_wallet):
-    rets = vdr_send_random_requests(looper, pool_h, sdk_wallet, 1)
+def vdr_send_random_request(looper, pool_h, wallet):
+    rets = vdr_send_random_requests(looper, pool_h, wallet, 1)
     return rets[0]
 
 
-def vdr_send_random_pool_requests(looper, pool_h, sdk_wallet_new_steward, count: int):
+def vdr_send_random_pool_requests(looper, pool_h, wallet_new_steward, count: int):
     node_alias = random_string(7)
     node_did = SimpleSigner(seed=random_string(32).encode()).identifier
 
-    reqs = [vdr_gen_pool_request(looper, sdk_wallet_new_steward, node_alias, node_did) for _ in range(count)]
-    return [vdr_sign_and_submit_req_obj(looper, pool_h, sdk_wallet_new_steward, req) for req in reqs]
+    reqs = [vdr_gen_pool_request(looper, wallet_new_steward, node_alias, node_did) for _ in range(count)]
+    return [vdr_sign_and_submit_req_obj(looper, pool_h, wallet_new_steward, req) for req in reqs]
 
 
-def vdr_send_random_pool_and_domain_requests(looper, pool_h, sdk_wallet_new_steward, count: int):
+def vdr_send_random_pool_and_domain_requests(looper, pool_h, wallet_new_steward, count: int):
     node_alias = random_string(7)
     node_did = SimpleSigner(seed=random_string(32).encode()).identifier
 
     req_gens = [
-        lambda: vdr_gen_request(random_requests(1)[0], identifier=sdk_wallet_new_steward[1]),
-        lambda: vdr_gen_pool_request(looper, sdk_wallet_new_steward, node_alias, node_did),
+        lambda: vdr_gen_request(random_requests(1)[0], identifier=wallet_new_steward[1]),
+        lambda: vdr_gen_pool_request(looper, wallet_new_steward, node_alias, node_did),
     ]
 
     res = []
     for i in range(count):
         req = req_gens[i % len(req_gens)]()
-        res.append(vdr_sign_and_submit_req_obj(looper, pool_h, sdk_wallet_new_steward, req))
+        res.append(vdr_sign_and_submit_req_obj(looper, pool_h, wallet_new_steward, req))
         looper.runFor(0.1)  # Give nodes some time to start ordering, so that requests are really alternating
     return res
 
 
-def vdr_sign_and_submit_req(looper, pool_handle, sdk_wallet, req):
-    wallet_handle, sender_did = sdk_wallet
+def vdr_sign_and_submit_req(looper, pool_handle, wallet, req):
+    wallet_handle, sender_did = wallet
     return json.loads(req), asyncio.ensure_future(
         vdr_sign_and_submit_request(pool_handle, wallet_handle, sender_did, req), loop=looper.loop)
 
 
-def vdr_sign_and_submit_req_obj(looper, pool_handle, sdk_wallet, req_obj):
-    s_req = vdr_sign_request_objects(looper, sdk_wallet, [req_obj])[0]
+def vdr_sign_and_submit_req_obj(looper, pool_handle, wallet, req_obj):
+    s_req = vdr_sign_request_objects(looper, wallet, [req_obj])[0]
     return vdr_send_signed_requests(pool_handle, [s_req], looper)[0]
 
 
-def vdr_sign_and_submit_op(looper, pool_handle, sdk_wallet, op):
-    _, did = sdk_wallet
+def vdr_sign_and_submit_op(looper, pool_handle, wallet, op):
+    _, did = wallet
     req_obj = vdr_gen_request(op, protocol_version=CURRENT_PROTOCOL_VERSION,
                               identifier=did)
-    s_req = vdr_sign_request_objects(looper, sdk_wallet, [req_obj])[0]
+    s_req = vdr_sign_request_objects(looper, wallet, [req_obj])[0]
     return vdr_send_signed_requests(pool_handle, [s_req], looper)[0]
 
 
-def vdr_get_reply(looper: Looper, sdk_req_resp: Tuple[Dict[str, Any], asyncio.Task], timeout: Optional[float] = None) -> Tuple[Dict[str, Any], Any]:
-    req_json, resp_task = sdk_req_resp
+def vdr_get_reply(looper: Looper, req_resp: Tuple[Dict[str, Any], asyncio.Task], timeout: Optional[float] = None) -> Tuple[Dict[str, Any], Any]:
+    req_json, resp_task = req_resp
     if timeout is None:
         timeout = waits.expectedTransactionExecutionTime(7)
     try:
@@ -1047,8 +982,8 @@ def vdr_get_reply(looper: Looper, sdk_req_resp: Tuple[Dict[str, Any], asyncio.Ta
     return req_json, resp
 
 
-def vdr_get_replies(looper: Looper, sdk_req_resp: Sequence[Tuple[Dict[str, Any], asyncio.Task]], timeout: Optional[float] = None) -> List[Tuple[Dict[str, Any], Any]]:
-    resp_tasks = [resp for _, resp in sdk_req_resp]
+def vdr_get_replies(looper: Looper, req_resp: Sequence[Tuple[Dict[str, Any], asyncio.Task]], timeout: Optional[float] = None) -> List[Tuple[Dict[str, Any], Any]]:
+    resp_tasks = [resp for _, resp in req_resp]
     if timeout is None:
         timeout = waits.expectedTransactionExecutionTime(7)
 
@@ -1071,7 +1006,7 @@ def vdr_get_replies(looper: Looper, sdk_req_resp: Sequence[Tuple[Dict[str, Any],
         for task in pending:
             task.cancel()
     
-    ret = [(req, get_res(resp, done)) for req, resp in sdk_req_resp]
+    ret = [(req, get_res(resp, done)) for req, resp in req_resp]
     return ret
 
 
@@ -1119,9 +1054,9 @@ def vdr_check_reply(req_res):
         # Continue execution - if there's a real error, other tests will likely catch it
 
 
-def vdr_get_and_check_replies(looper, sdk_req_resp: Sequence, timeout=None):
+def vdr_get_and_check_replies(looper, req_resp: Sequence, timeout=None):
     rets = []
-    reqs_res = vdr_get_replies(looper, sdk_req_resp, timeout)
+    reqs_res = vdr_get_replies(looper, req_resp, timeout)
     for req_res in reqs_res:
         vdr_check_reply(req_res)
         rets.append(req_res)
@@ -1151,73 +1086,73 @@ def vdr_send_and_check(signed_reqs, looper, txnPoolNodeSet, pool_h, timeout=None
     if not timeout:
         timeout = vdr_eval_timeout(len(signed_reqs), len(txnPoolNodeSet))
     results = vdr_send_signed_requests(pool_h, signed_reqs, looper)
-    sdk_replies = vdr_get_replies(looper, results, timeout=timeout)
-    for req_res in sdk_replies:
+    replies = vdr_get_replies(looper, results, timeout=timeout)
+    for req_res in replies:
         vdr_check_reply(req_res)
-    return sdk_replies
+    return replies
 
 
-def vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool, sdk_wallet, count,
-                              customTimeoutPerReq: float = None, add_delay_to_timeout: float = 0,
+def vdr_send_random_and_check(looper, txnPoolNodeSet, pool, wallet, count,
+                              customTimeoutPerReq = None, add_delay_to_timeout: float = 0,
                               override_timeout_limit=False, total_timeout=None):
-    sdk_reqs = vdr_send_random_requests(looper, sdk_pool, sdk_wallet, count)
+    reqs = vdr_send_random_requests(looper, pool, wallet, count)
     if not total_timeout:
-        total_timeout = vdr_eval_timeout(len(sdk_reqs), len(txnPoolNodeSet),
+        total_timeout = vdr_eval_timeout(len(reqs), len(txnPoolNodeSet),
                                          customTimeoutPerReq=customTimeoutPerReq,
                                          add_delay_to_timeout=add_delay_to_timeout)
-    sdk_replies = vdr_get_replies(looper, sdk_reqs, timeout=total_timeout)
-    for req_res in sdk_replies:
+    replies = vdr_get_replies(looper, reqs, timeout=total_timeout)
+    for req_res in replies:
         vdr_check_reply(req_res)
-    return sdk_replies
+    return replies
 
 
-def vdr_send_batches_of_random_and_check(looper, txnPoolNodeSet, sdk_pool, sdk_wallet,
+def vdr_send_batches_of_random_and_check(looper, txnPoolNodeSet, pool, wallet,
                                          num_reqs, num_batches=1, **kwargs):
     # This method assumes that `num_reqs` <= num_batches*MaxbatchSize
     if num_reqs < num_batches:
         raise BaseException(
-            'sdk_send_batches_of_random_and_check method assumes that `num_reqs` <= num_batches*MaxbatchSize')
+            'vdr_send_batches_of_random_and_check method assumes that `num_reqs` <= num_batches*MaxbatchSize')
     if num_batches == 1:
-        return vdr_send_random_and_check(looper, txnPoolNodeSet, sdk_pool, sdk_wallet, num_reqs, **kwargs)
+        return vdr_send_random_and_check(looper, txnPoolNodeSet, pool, wallet, num_reqs, **kwargs)
 
     reqs_in_batch = num_reqs // num_batches
     reqs_in_last_batch = reqs_in_batch + num_reqs % num_batches
 
-    sdk_replies = []
+    replies = []
     for _ in range(num_batches - 1):
-        sdk_replies.extend(vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                                     sdk_pool, sdk_wallet,
+        replies.extend(vdr_send_random_and_check(looper, txnPoolNodeSet,
+                                                     pool, wallet,
                                                      reqs_in_batch, **kwargs))
-    sdk_replies.extend(vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                                 sdk_pool, sdk_wallet,
+    replies.extend(vdr_send_random_and_check(looper, txnPoolNodeSet,
+                                                 pool, wallet,
                                                  reqs_in_last_batch, **kwargs))
-    return sdk_replies
+    return replies
 
 
-def vdr_send_batches_of_random(looper, txnPoolNodeSet, sdk_pool, sdk_wallet,
+def vdr_send_batches_of_random(looper, txnPoolNodeSet, pool, wallet,
                                num_reqs, num_batches=1, timeout=Max3PCBatchWait):
     if num_reqs < num_batches:
         raise BaseException(
-            'sdk_send_batches_of_random_and_check method assumes that `num_reqs` <= num_batches*MaxbatchSize')
+            'vdr_send_batches_of_random_and_check method assumes that `num_reqs` <= num_batches*MaxbatchSize')
     if num_batches == 1:
-        sdk_reqs = vdr_send_random_requests(looper, sdk_pool, sdk_wallet, num_reqs)
+        reqs = vdr_send_random_requests(looper, pool, wallet, num_reqs)
         looper.runFor(timeout)
-        return sdk_reqs
+        return reqs
 
     reqs_in_batch = num_reqs // num_batches
     reqs_in_last_batch = reqs_in_batch + num_reqs % num_batches
 
-    sdk_reqs = []
+    reqs = []
     for _ in range(num_batches - 1):
-        sdk_reqs.extend(vdr_send_random_requests(looper, sdk_pool, sdk_wallet, reqs_in_batch))
+        reqs.extend(vdr_send_random_requests(looper, pool, wallet, reqs_in_batch))
         looper.runFor(timeout)
-    sdk_reqs.extend(vdr_send_random_requests(looper, sdk_pool, sdk_wallet, reqs_in_last_batch))
+    reqs.extend(vdr_send_random_requests(looper, pool, wallet, reqs_in_last_batch))
     looper.runFor(timeout)
-    return sdk_reqs
+    return reqs
 
 
-def vdr_sign_request_from_dict(looper, sdk_wallet, op, reqId=None, taa_acceptance=None, endorser=None):
-    wallet_h, did = sdk_wallet
+def vdr_sign_request_from_dict(looper, wallet, op, reqId=None, taa_acceptance=None, endorser=None):
+    wallet_h, did = wallet
     reqId = reqId or random.randint(10, 100000)
     request = Request(operation=op, reqId=reqId,
                       protocolVersion=CURRENT_PROTOCOL_VERSION, identifier=did)
@@ -1225,14 +1160,13 @@ def vdr_sign_request_from_dict(looper, sdk_wallet, op, reqId=None, taa_acceptanc
     resp = looper.loop.run_until_complete(vdr_sign_request(wallet_h, did, req))
     return resp
 
-def generate_invalid_unsigned_plenum_request(sdk_wallet, op, reqID=None, taa_acceptance=None, endorser=None):
-    _, did = sdk_wallet
+def generate_invalid_unsigned_plenum_request(wallet, op, reqID=None, taa_acceptance=None, endorser=None):
+    _, did = wallet
     reqId = reqID or random.randint(10, 100000)
-    request = Request(operation=op, reqId=reqId,
+    return Request(operation=op, reqId=reqId,
                       protocolVersion=CURRENT_PROTOCOL_VERSION, identifier=did,
                       taaAcceptance=taa_acceptance,
                       endorser=endorser)
-    return request
     
 
 def vdr_check_request_is_not_returned_to_nodes(looper, nodeSet, request):

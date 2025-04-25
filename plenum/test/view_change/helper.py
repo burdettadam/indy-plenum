@@ -40,7 +40,7 @@ def start_stopped_node(stopped_node, looper, tconf,
     return restarted_node
 
 
-def provoke_and_check_view_change(looper, nodes, newViewNo, pool_handle, sdk_wallet_client):
+def provoke_and_check_view_change(looper, nodes, newViewNo, pool_handle, wallet_client):
     if {n.viewNo for n in nodes} == {newViewNo}:
         return True
 
@@ -53,7 +53,7 @@ def provoke_and_check_view_change(looper, nodes, newViewNo, pool_handle, sdk_wal
     else:
         logger.info('Master instance has not degraded yet, '
                     'sending more requests')
-        vdr_send_random_requests(looper, pool_handle, sdk_wallet_client)
+        vdr_send_random_requests(looper, pool_handle, wallet_client)
         assert False
 
 
@@ -61,7 +61,7 @@ def provoke_and_wait_for_view_change(looper,
                                      nodeSet,
                                      expectedViewNo,
                                      pool_handle,
-                                     sdk_wallet_client,
+                                     wallet_client,
                                      customTimeout=None):
     timeout = customTimeout or waits.expectedPoolViewChangeStartedTimeout(
         len(nodeSet))
@@ -71,18 +71,18 @@ def provoke_and_wait_for_view_change(looper,
                                  nodeSet,
                                  expectedViewNo,
                                  pool_handle,
-                                 sdk_wallet_client,
+                                 wallet_client,
                                  timeout=timeout))
 
 
 def simulate_slow_master(looper, txnPoolNodeSet, pool_handle,
-                         sdk_wallet_steward, delay=10, num_reqs=4):
+                         wallet_steward, delay=10, num_reqs=4):
     m_primary_node = get_master_primary_node(list(txnPoolNodeSet))
     # Delay processing of PRE-PREPARE from all non primary replicas of master
     # so master's performance falls and view changes
     delayNonPrimaries(txnPoolNodeSet, 0, delay)
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              sdk_wallet_steward, num_reqs)
+                              wallet_steward, num_reqs)
     return m_primary_node
 
 
@@ -293,12 +293,12 @@ def ensure_view_change_complete_by_primary_restart(
 
 def view_change_in_between_3pc(looper, nodes, slow_nodes,
                                pool_handle,
-                               sdk_wallet_client,
+                               wallet_client,
                                slow_delay=1, wait=None):
-    vdr_send_random_and_check(looper, nodes, pool_handle, sdk_wallet_client, 4)
+    vdr_send_random_and_check(looper, nodes, pool_handle, wallet_client, 4)
     delay_3pc_messages(slow_nodes, 0, delay=slow_delay)
 
-    vdr_send_random_requests(looper, pool_handle, sdk_wallet_client, 10)
+    vdr_send_random_requests(looper, pool_handle, wallet_client, 10)
     if wait:
         looper.runFor(wait)
 
@@ -311,9 +311,9 @@ def view_change_in_between_3pc(looper, nodes, slow_nodes,
     ensure_all_nodes_have_same_data(looper, nodes)
 
     vdr_send_random_and_check(looper, nodes, pool_handle,
-                              sdk_wallet_client, 5, total_timeout=30)
+                              wallet_client, 5, total_timeout=30)
     vdr_send_random_and_check(looper, nodes, pool_handle,
-                              sdk_wallet_client, 5, total_timeout=30)
+                              wallet_client, 5, total_timeout=30)
 
 
 def view_change_in_between_3pc_random_delays(
@@ -321,17 +321,17 @@ def view_change_in_between_3pc_random_delays(
         nodes,
         slow_nodes,
         pool_handle,
-        sdk_wallet_client,
+        wallet_client,
         tconf,
         min_delay=0,
         max_delay=0):
-    vdr_send_random_and_check(looper, nodes, pool_handle, sdk_wallet_client, 4)
+    vdr_send_random_and_check(looper, nodes, pool_handle, wallet_client, 4)
 
     # max delay should not be more than catchup timeout.
     max_delay = max_delay or tconf.NEW_VIEW_TIMEOUT - 1
     delay_3pc_messages(slow_nodes, 0, min_delay=min_delay, max_delay=max_delay)
 
-    vdr_send_random_requests(looper, pool_handle, sdk_wallet_client, 10)
+    vdr_send_random_requests(looper, pool_handle, wallet_client, 10)
 
     ensure_view_change_complete(looper,
                                 nodes,
@@ -340,15 +340,15 @@ def view_change_in_between_3pc_random_delays(
 
     reset_delays_and_process_delayeds(slow_nodes)
 
-    vdr_send_random_and_check(looper, nodes, pool_handle, sdk_wallet_client, 10)
+    vdr_send_random_and_check(looper, nodes, pool_handle, wallet_client, 10)
 
 
-def add_new_node(looper, nodes, pool_handle, sdk_wallet_steward,
+def add_new_node(looper, nodes, pool_handle, wallet_steward,
                  tdir, tconf, all_plugins_path, name=None, wait_till_added=True):
     node_name = name or "Psi"
     new_steward_name = "testClientSteward" + randomString(3)
     _, new_node = vdr_add_new_steward_and_node(
-        looper, pool_handle, sdk_wallet_steward,
+        looper, pool_handle, wallet_steward,
         new_steward_name, node_name, tdir, tconf,
         allPluginsPath=all_plugins_path, wait_till_added=wait_till_added)
     if wait_till_added:

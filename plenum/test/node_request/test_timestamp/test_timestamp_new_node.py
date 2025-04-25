@@ -14,7 +14,7 @@ TestRunningTimeLimitSec = 200
 
 def test_new_node_accepts_timestamp(tconf, looper, txnPoolNodeSet,
                                     vdr_node_created_after_some_txns,
-                                    vdr_wallet_client, pool_handle):
+                                    wallet_client, pool_handle):
     """
     A new node joins the pool and is able to function properly without
     """
@@ -24,7 +24,7 @@ def test_new_node_accepts_timestamp(tconf, looper, txnPoolNodeSet,
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               count=10)
     waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:-1])
 
@@ -35,7 +35,7 @@ def test_new_node_accepts_timestamp(tconf, looper, txnPoolNodeSet,
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               count=Max3PCBatchSize * 3)
     # No suspicions were raised by new_node
     assert get_timestamp_suspicion_count(new_node) == old_susp_count
@@ -47,7 +47,7 @@ def test_new_node_accepts_timestamp(tconf, looper, txnPoolNodeSet,
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               count=Max3PCBatchSize * 3)
     for node in txnPoolNodeSet:
         assert suspicions[node.name] == get_timestamp_suspicion_count(node)

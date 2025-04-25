@@ -15,13 +15,13 @@ from stp_core.loop.eventually import eventually
 
 def test_view_change_with_different_prepare_certificate(looper, txnPoolNodeSet,
                                                         pool_handle,
-                                                        vdr_wallet_client):
+                                                        wallet_client):
     """
     Check that a node without pre-prepare but with quorum of prepares wouldn't
     use this transaction as a last in prepare certificate
     """
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 1)
+                              wallet_client, 1)
     slow_node = txnPoolNodeSet[-1]
     # delay preprepares and message response with preprepares.
     with delay_rules(slow_node.nodeIbStasher, ppDelay(delay=sys.maxsize)):
@@ -29,7 +29,7 @@ def test_view_change_with_different_prepare_certificate(looper, txnPoolNodeSet,
                          msg_rep_delay(delay=sys.maxsize,
                                        types_to_delay=[PREPREPARE, ])):
             last_ordered = slow_node.master_replica.last_ordered_3pc
-            vdr_send_random_request(looper, pool_handle, vdr_wallet_client)
+            vdr_send_random_request(looper, pool_handle, wallet_client)
             looper.run(eventually(check_prepare_certificate,
                                   txnPoolNodeSet[0:-1],
                                   last_ordered[1] + 1))
@@ -40,4 +40,4 @@ def test_view_change_with_different_prepare_certificate(looper, txnPoolNodeSet,
             ensureElectionsDone(looper, txnPoolNodeSet)
 
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, wallet_client, pool_handle)

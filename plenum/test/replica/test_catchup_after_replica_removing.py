@@ -8,7 +8,6 @@ from plenum.test.helper import vdr_send_random_and_check, assertExp, vdr_get_and
     view_change_timeout
 from plenum.test.node_catchup.helper import waitNodeDataEquality
 
-from plenum.test.pool_transactions.conftest import sdk_node_theta_added
 from plenum.test.pool_transactions.helper import vdr_add_new_nym, prepare_new_node_data, vdr_prepare_node_request, \
     vdr_sign_and_send_prepared_request, create_and_start_new_node, demote_node
 from plenum.test.test_node import checkNodesConnected, TestNode, ensureElectionsDone
@@ -31,8 +30,8 @@ def test_catchup_after_replica_removing(looper, pool_handle, txnPoolNodeSet,
     waitNodeDataEquality(looper, *txnPoolNodeSet)
 
     index, node_for_demote = [(i, n) for i, n in enumerate(txnPoolNodeSet) if n.replicas[1].isPrimary][0]
-    sdk_wallet_steward = vdr_wallet_stewards[index]
-    demote_node(looper, sdk_wallet_steward, pool_handle, node_for_demote)
+    wallet_steward = vdr_wallet_stewards[index]
+    demote_node(looper, wallet_steward, pool_handle, node_for_demote)
     txnPoolNodeSet.pop(index)
 
     # we are expecting 2 view changes here since Beta is selected as a master Primary on view=1

@@ -34,7 +34,7 @@ def tconf(tconf):
 
 
 @pytest.fixture()
-def setup(txnPoolNodeSet, looper, pool_handle, vdr_wallet_client):
+def setup(txnPoolNodeSet, looper, pool_handle, wallet_client):
     global initial_ledger_size
     A, B, C, D = txnPoolNodeSet  # type: TestNode
     lagged_node = C
@@ -42,7 +42,7 @@ def setup(txnPoolNodeSet, looper, pool_handle, vdr_wallet_client):
     delay(Commit, frm=frm, to=lagged_node, howlong=howlong)
     initial_ledger_size = lagged_node.domainLedger.size
     request_couple_json = vdr_send_random_requests(
-        looper, pool_handle, vdr_wallet_client, 1)
+        looper, pool_handle, wallet_client, 1)
     return request_couple_json
 
 
@@ -53,7 +53,7 @@ def setup(txnPoolNodeSet, looper, pool_handle, vdr_wallet_client):
 # before all Prepares received.
 def test_req_drop_on_commit_phase_on_non_primary_and_then_ordered(
         tconf, setup, looper, txnPoolNodeSet,
-        vdr_wallet_client, pool_handle):
+        wallet_client, pool_handle):
     global initial_ledger_size
     A, B, C, D = txnPoolNodeSet  # type: TestNode
     lagged_node = C
@@ -104,4 +104,4 @@ def test_req_drop_on_commit_phase_on_non_primary_and_then_ordered(
 
     looper.run(eventually(check_ledger_size, retryWait=.5, timeout=timeout))
 
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, wallet_client, pool_handle)

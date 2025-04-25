@@ -31,12 +31,12 @@ CONTEXT2 = randomString()
 TIMESTAMP_V2 = None  # type: Optional[int]
 
 
-def send_aml_request(looper, sdk_wallet_trustee, pool_handle, version, aml, context):
+def send_aml_request(looper, wallet_trustee, pool_handle, version, aml, context):
     req = looper.loop.run_until_complete(build_acceptance_mechanisms_request(
-        sdk_wallet_trustee[1],
+        wallet_trustee[1],
         aml,
         version, context))
-    req = vdr_sign_and_send_prepared_request(looper, sdk_wallet_trustee, pool_handle, req)
+    req = vdr_sign_and_send_prepared_request(looper, wallet_trustee, pool_handle, req)
     return vdr_get_and_check_replies(looper, [req])[0]
 
 
@@ -98,32 +98,32 @@ def taa_aml_value(result, version, aml, context):
     })
 
 
-def test_get_taa_aml_static_validation_fails(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+def test_get_taa_aml_static_validation_fails(looper, txnPoolNodeSet, pool_handle, wallet_client):
     req = {
         OPERATION: {
             TXN_TYPE: GET_TXN_AUTHOR_AGREEMENT_AML,
             'timestamp': randint(1, 2147483647),
             'version': randomString()
         },
-        f.IDENTIFIER.nm: vdr_wallet_client[1],
+        f.IDENTIFIER.nm: wallet_client[1],
         f.REQ_ID.nm: randint(1, 2147483647),
         f.PROTOCOL_VERSION.nm: CURRENT_PROTOCOL_VERSION
     }
-    rep = vdr_sign_and_send_prepared_request(looper, vdr_wallet_client, pool_handle, json.dumps(req))
+    rep = vdr_sign_and_send_prepared_request(looper, wallet_client, pool_handle, json.dumps(req))
     with pytest.raises(RequestNackedException) as e:
         vdr_get_and_check_replies(looper, [rep])
     e.match('cannot be used in GET_TXN_AUTHOR_AGREEMENT_AML request together')
 
 
-def test_get_taa_aml_works_on_clear_state(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
-    reply = sdk_get_taa_aml(looper, pool_handle, vdr_wallet_client)[1]
+def test_get_taa_aml_works_on_clear_state(looper, txnPoolNodeSet, pool_handle, wallet_client):
+    reply = sdk_get_taa_aml(looper, pool_handle, wallet_client)[1]
     assert reply['op'] == REPLY
     assert reply['result']['data'] is None
 
 
 def test_get_taa_aml_returns_latest_taa_by_default(looper, nodeSetWithTaa,
-                                                   pool_handle, vdr_wallet_client):
-    reply = sdk_get_taa_aml(looper, pool_handle, vdr_wallet_client)[1]
+                                                   pool_handle, wallet_client):
+    reply = sdk_get_taa_aml(looper, pool_handle, wallet_client)[1]
     assert reply['op'] == REPLY
 
     result = reply['result']
@@ -132,8 +132,8 @@ def test_get_taa_aml_returns_latest_taa_by_default(looper, nodeSetWithTaa,
 
 
 def test_get_taa_aml_can_return_taa_for_old_version(looper, nodeSetWithTaa,
-                                                    pool_handle, vdr_wallet_client):
-    reply = sdk_get_taa_aml(looper, pool_handle, vdr_wallet_client, version=V1)[1]
+                                                    pool_handle, wallet_client):
+    reply = sdk_get_taa_aml(looper, pool_handle, wallet_client, version=V1)[1]
 
     assert reply['op'] == REPLY
 
@@ -143,8 +143,8 @@ def test_get_taa_aml_can_return_taa_for_old_version(looper, nodeSetWithTaa,
 
 
 def test_get_taa_aml_can_return_taa_for_current_version(looper, nodeSetWithTaa,
-                                                        pool_handle, vdr_wallet_client):
-    reply = sdk_get_taa_aml(looper, pool_handle, vdr_wallet_client, version=V2)[1]
+                                                        pool_handle, wallet_client):
+    reply = sdk_get_taa_aml(looper, pool_handle, wallet_client, version=V2)[1]
 
     assert reply['op'] == REPLY
 
@@ -154,9 +154,9 @@ def test_get_taa_aml_can_return_taa_for_current_version(looper, nodeSetWithTaa,
 
 
 def test_get_taa_aml_doesnt_return_taa_for_nonexistent_version(looper, nodeSetWithTaa,
-                                                               pool_handle, vdr_wallet_client):
+                                                               pool_handle, wallet_client):
     invalid_version = randomString(16)
-    reply = sdk_get_taa_aml(looper, pool_handle, vdr_wallet_client,
+    reply = sdk_get_taa_aml(looper, pool_handle, wallet_client,
                             version=invalid_version)[1]
     assert reply['op'] == REPLY
 
@@ -166,8 +166,8 @@ def test_get_taa_aml_doesnt_return_taa_for_nonexistent_version(looper, nodeSetWi
 
 
 def test_get_taa_aml_can_return_taa_aml_for_old_ts(looper, nodeSetWithTaa,
-                                                   pool_handle, vdr_wallet_client):
-    reply = sdk_get_taa_aml(looper, pool_handle, vdr_wallet_client,
+                                                   pool_handle, wallet_client):
+    reply = sdk_get_taa_aml(looper, pool_handle, wallet_client,
                             timestamp=TIMESTAMP_V2 - 2)[1]
     assert reply['op'] == REPLY
 
@@ -177,8 +177,8 @@ def test_get_taa_aml_can_return_taa_aml_for_old_ts(looper, nodeSetWithTaa,
 
 
 def test_get_taa_aml_can_return_taa_aml_for_fresh_ts(looper, nodeSetWithTaa,
-                                                     pool_handle, vdr_wallet_client):
-    reply = sdk_get_taa_aml(looper, pool_handle, vdr_wallet_client,
+                                                     pool_handle, wallet_client):
+    reply = sdk_get_taa_aml(looper, pool_handle, wallet_client,
                             timestamp=TIMESTAMP_V2 + 2)[1]
     assert reply['op'] == REPLY
 
@@ -189,8 +189,8 @@ def test_get_taa_aml_can_return_taa_aml_for_fresh_ts(looper, nodeSetWithTaa,
 
 # TODO: Change to nodeSetWithTaa when SDK will support this case
 def test_get_taa_aml_doesnt_return_taa_aml_when_it_didnt_exist(looper, nodeSetWithTaaAlwaysResponding,
-                                                               pool_handle, vdr_wallet_client):
-    reply = sdk_get_taa_aml(looper, pool_handle, vdr_wallet_client,
+                                                               pool_handle, wallet_client):
+    reply = sdk_get_taa_aml(looper, pool_handle, wallet_client,
                             timestamp=TIMESTAMP_V1 - 3)[1]
     assert reply['op'] == REPLY
 

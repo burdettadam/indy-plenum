@@ -11,10 +11,10 @@ def demote_primary_node(looper,
                         initial_pool_of_nodes,
                         pool_of_nodes,
                         pool_handle,
-                        sdk_wallet_stewards):
+                        wallet_stewards):
     demoted_node = [node for node in pool_of_nodes if node.has_master_primary][0]
     indx = initial_pool_of_nodes.index(demoted_node)
-    demote_node(looper, sdk_wallet_stewards[indx],
+    demote_node(looper, wallet_stewards[indx],
                 pool_handle, demoted_node)
     pool_of_nodes = list(set(pool_of_nodes) - {demoted_node})
 
@@ -28,7 +28,7 @@ def test_restart_primaries_then_demote(
         vdr_wallet_stewards):
     """
     """
-    sdk_wallet_steward = vdr_wallet_stewards[0]
+    wallet_steward = vdr_wallet_stewards[0]
     logger.info("1. Restart Node1")
     pool_of_nodes = ensure_view_change_by_primary_restart(looper,
                                                           txnPoolNodeSet,
@@ -40,7 +40,7 @@ def test_restart_primaries_then_demote(
 
     # ensure pool is working properly
     vdr_send_random_and_check(looper, pool_of_nodes, pool_handle,
-                              sdk_wallet_steward, 1)
+                              wallet_steward, 1)
 
     logger.info("2. Restart Node2")
     pool_of_nodes = ensure_view_change_by_primary_restart(looper,
@@ -53,7 +53,7 @@ def test_restart_primaries_then_demote(
 
     # ensure pool is working properly
     vdr_send_random_and_check(looper, pool_of_nodes, pool_handle,
-                              sdk_wallet_steward, 1)
+                              wallet_steward, 1)
 
     logger.info("3. Demote Node3")
     # demote the node
@@ -68,5 +68,5 @@ def test_restart_primaries_then_demote(
 
     # ensure pool is working properly
     vdr_send_random_and_check(looper, pool_of_nodes, pool_handle,
-                              sdk_wallet_steward, 10)
+                              wallet_steward, 10)
     ensure_all_nodes_have_same_data(looper, nodes=pool_of_nodes)

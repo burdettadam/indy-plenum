@@ -29,16 +29,16 @@ def tconf(tconf):
 
 def check_get_auction_txn(expected_result,
                           looper,
-                          sdk_wallet_steward,
+                          wallet_steward,
                           pool_handle):
     seqNo = get_seq_no(expected_result)
 
-    _, steward_did = sdk_wallet_steward
+    _, steward_did = wallet_steward
     request = vdr_build_get_txn_request(looper, steward_did, seqNo, ledger_type=str(AUCTION_LEDGER_ID))
 
     request_couple = \
         vdr_sign_and_send_prepared_request(looper,
-                                           sdk_wallet_steward,
+                                           wallet_steward,
                                            pool_handle,
                                            request)
     result = vdr_get_and_check_replies(looper,

@@ -25,7 +25,7 @@ def tconf(tconf):
 
 
 def test_resend_inst_ch_in_progress_v_ch(txnPoolNodeSet, looper, pool_handle,
-                                         vdr_wallet_client, tdir, tconf, allPluginsPath):
+                                         wallet_client, tdir, tconf, allPluginsPath):
     old_view = viewNoForNodes(txnPoolNodeSet)
 
     # disconnect two nodes. One of them should be next master primary in case of view change.
@@ -47,4 +47,4 @@ def test_resend_inst_ch_in_progress_v_ch(txnPoolNodeSet, looper, pool_handle,
 
     looper.run(eventually(checks, timeout=tconf.NEW_VIEW_TIMEOUT * 2.5, retryWait=1))
 
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, wallet_client, pool_handle)

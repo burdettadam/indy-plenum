@@ -16,12 +16,12 @@ TestRunningTimeLimitSec = 200
 def testChangeNodeHaForNonPrimary(looper, txnPoolNodeSet,
                                   poolTxnData, poolTxnStewardNames, tconf, tdir,
                                   pool_handle, vdr_wallet_stewards,
-                                  vdr_wallet_client):
+                                  wallet_client):
     changeNodeHa(looper,
                  txnPoolNodeSet,
                  tconf,
                  shouldBePrimary=False,
                  tdir=tdir,
                  pool_handle=pool_handle,
-                 sdk_wallet_stewards=vdr_wallet_stewards,
-                 sdk_wallet_client=vdr_wallet_client)
+                 wallet_stewards=vdr_wallet_stewards,
+                 wallet_client=wallet_client)

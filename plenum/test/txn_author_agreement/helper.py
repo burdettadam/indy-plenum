@@ -84,7 +84,7 @@ def set_txn_author_agreement(
     )
 
 
-def sdk_get_txn_author_agreement(looper, pool_handle, sdk_wallet,
+def sdk_get_txn_author_agreement(looper, pool_handle, wallet,
                                  digest: Optional[str] = None,
                                  version: Optional[str] = None,
                                  timestamp: Optional[int] = None):
@@ -95,8 +95,8 @@ def sdk_get_txn_author_agreement(looper, pool_handle, sdk_wallet,
         params[GET_TXN_AUTHOR_AGREEMENT_VERSION] = version
     if timestamp is not None:
         params['timestamp'] = timestamp
-    req = looper.loop.run_until_complete(build_get_txn_author_agreement_request(sdk_wallet[1], json.dumps(params)))
-    rep = vdr_sign_and_submit_req(looper, pool_handle, sdk_wallet, req)
+    req = looper.loop.run_until_complete(build_get_txn_author_agreement_request(wallet[1], json.dumps(params)))
+    rep = vdr_sign_and_submit_req(looper, pool_handle, wallet, req)
     return vdr_get_and_check_replies(looper, [rep])[0]
 
 
@@ -114,31 +114,22 @@ def sdk_get_taa_aml(looper, pool_handle, sdk_wallet,
     return vdr_get_and_check_replies(looper, [rep])[0]
 
 
-def get_txn_author_agreement(
-        looper, pool_handle, sdk_wallet,
-        digest: Optional[str] = None,
-        version: Optional[str] = None,
-        timestamp: Optional[int] = None
-) -> Optional[TaaData]:
-    """Get transaction author agreement data"""
-    reply = sdk_get_txn_author_agreement(
-        looper, pool_handle, sdk_wallet,
-        digest=digest, version=version, timestamp=timestamp
-    )[1]
-
-    assert reply[OP_FIELD_NAME] == REPLY
-    result = reply[f.RESULT.nm]
-
-    if result[DATA] is None:
-        return None
+def get_txn_author_agreement(looper, pool_handle, wallet,
+                            digest: Optional[str] = None,
+                            version: Optional[str] = None,
+                            timestamp: Optional[int] = None) -> Tuple[Dict[str, Any], Any]:
+    """Get transaction author agreement"""
+    params = {}
+    if digest is not None:
+        params[GET_TXN_AUTHOR_AGREEMENT_DIGEST] = digest
+    if version is not None:
+        params[GET_TXN_AUTHOR_AGREEMENT_VERSION] = version
+    if timestamp is not None:
+        params['timestamp'] = timestamp
         
-    return TaaData(
-        text=result[DATA][TXN_AUTHOR_AGREEMENT_TEXT],
-        version=result[DATA][TXN_AUTHOR_AGREEMENT_VERSION],
-        seq_no=result[f.SEQ_NO.nm],
-        txn_time=result[TXN_TIME],
-        digest=result[DATA][TXN_AUTHOR_AGREEMENT_DIGEST]
-    )
+    req = looper.loop.run_until_complete(build_get_txn_author_agreement_request(wallet[1], json.dumps(params)))
+    rep = vdr_sign_and_submit_req(looper, pool_handle, wallet, req)
+    return vdr_get_and_check_replies(looper, [rep])[0]
 
 
 def get_aml_req_handler(node):
@@ -254,35 +245,6 @@ def vdr_send_txn_author_agreement_with_retirement(
     return reply
 
 
-def vdr_get_txn_author_agreement(looper, pool_handle, vdr_wallet,
-                                version: Optional[str] = None,
-                                digest: Optional[str] = None,
-                                timestamp: Optional[int] = None) -> Tuple[Dict[str, Any], Any]:
-    """Get transaction author agreement using VDR"""
-    params: Dict[str, Any] = {}
-    if version:
-        params['version'] = version
-    if digest:
-        params['digest'] = digest
-    if timestamp:
-        params['timestamp'] = timestamp
-    req = looper.loop.run_until_complete(build_get_txn_author_agreement_request(vdr_wallet[1], json.dumps(params)))
-    return vdr_sign_and_submit_req(looper, pool_handle, vdr_wallet, req)
-
-
-def vdr_get_taa_aml(looper, pool_handle, vdr_wallet,
-                   timestamp: Optional[int] = None,
-                   version: Optional[str] = None) -> Dict[str, Any]:
-    """Get transaction author agreement acceptance mechanisms using VDR"""
-    # Convert None to 0 for timestamp if not provided
-    ts = timestamp if timestamp is not None else 0
-    # Use empty string for version if not provided
-    ver = version if version is not None else ""
-    req = looper.loop.run_until_complete(build_get_acceptance_mechanisms_request(vdr_wallet[1], ts, ver))
-    rep = vdr_sign_and_submit_req(looper, pool_handle, vdr_wallet, req)
-    return rep
-
-
 def vdr_get_txn_author_agreement_aml(
         looper, pool_handle, vdr_wallet,
         version: Optional[str] = None,
@@ -290,9 +252,8 @@ def vdr_get_txn_author_agreement_aml(
         write_reply: bool = False
 ) -> Tuple[Dict[str, Any], Any]:
     """Get transaction author agreement AML using VDR"""
-    reply = vdr_get_txn_author_agreement(
+    return get_txn_author_agreement(
         looper, pool_handle, vdr_wallet,
         version=version,
         timestamp=timestamp
     )
-    return reply

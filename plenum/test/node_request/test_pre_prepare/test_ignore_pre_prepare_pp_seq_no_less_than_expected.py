@@ -6,7 +6,7 @@ from plenum.test.test_node import getNonPrimaryReplicas
 
 def test_ignore_pre_prepare_pp_seq_no_less_than_expected(looper,
                                                          txnPoolNodeSet,
-                                                         vdr_wallet_client,
+                                                         wallet_client,
                                                          pool_handle):
     """
     A node should NOT pend a pre-prepare request which
@@ -22,7 +22,7 @@ def test_ignore_pre_prepare_pp_seq_no_less_than_expected(looper,
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               count=1)
     assert len(replica._ordering_service.prePreparesPendingPrevPP) == 0, \
         "the pending request buffer is empty"

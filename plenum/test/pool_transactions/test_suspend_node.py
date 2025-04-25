@@ -32,10 +32,10 @@ def test_steward_suspends_node_and_promote_with_new_ha(
         tdir, tconf,
         pool_handle,
         vdr_wallet_steward,
-        sdk_node_theta_added,
+        node_theta_added,
         poolTxnStewardData,
         allPluginsPath):
-    new_steward_wallet, new_node = sdk_node_theta_added
+    new_steward_wallet, new_node = node_theta_added
     looper.run(checkNodesConnected(txnPoolNodeSet + [new_node]))
     demote_node(looper, new_steward_wallet, pool_handle, new_node)
     # Check suspended node does not exist in any nodeReg or remotes of

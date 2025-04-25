@@ -19,7 +19,7 @@ def test_catchup_with_old_txn_metadata_digest_format(tdir, tconf,
                                                      looper,
                                                      txnPoolNodeSet,
                                                      pool_handle,
-                                                     vdr_wallet_client,
+                                                     wallet_client,
                                                      monkeypatch):
     lagging_node = txnPoolNodeSet[-1]
     lagging_stasher = lagging_node.nodeIbStasher
@@ -50,7 +50,7 @@ def test_catchup_with_old_txn_metadata_digest_format(tdir, tconf,
 
     # Order some transactions, with one node discarding messages
     with delay_rules_without_processing(lagging_stasher, delay_3pc()):
-        reps = vdr_send_random_requests(looper, pool_handle, vdr_wallet_client, 10)
+        reps = vdr_send_random_requests(looper, pool_handle, wallet_client, 10)
         looper.run(eventually(check_nodes_domain_ledger, other_nodes, initial_size + 10))
         assert lagging_node.domainLedger.size == initial_size
 

@@ -27,8 +27,8 @@ def trigger_view_change(nodes):
 def check_view_change_adding_new_node(looper, tdir, tconf, allPluginsPath,
                                       txnPoolNodeSet,
                                       pool_handle,
-                                      sdk_wallet_client,
-                                      sdk_wallet_steward,
+                                      wallet_client,
+                                      wallet_steward,
                                       slow_nodes=[],
                                       delay_commit=False,
                                       delay_pre_prepare=False,
@@ -54,7 +54,7 @@ def check_view_change_adding_new_node(looper, tdir, tconf, allPluginsPath,
     # as it can not authenticate it due to lack of Steward txn applied
     new_steward_wallet_handle = vdr_add_new_nym(looper,
                                                 pool_handle,
-                                                sdk_wallet_steward,
+                                                wallet_steward,
                                                 alias='New_Steward',
                                                 role=STEWARD_STRING)
 
@@ -87,7 +87,7 @@ def check_view_change_adding_new_node(looper, tdir, tconf, allPluginsPath,
             waitForViewChange(looper, old_set, 4)
     ensureElectionsDone(looper, old_set)
 
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, sdk_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, wallet_client, pool_handle)
 
 
 def check_has_commits(nodes):
@@ -95,7 +95,7 @@ def check_has_commits(nodes):
         assert len(n.master_replica._ordering_service.commits) > 0
 
 
-def check_view_change_one_slow_node(looper, txnPoolNodeSet, pool_handle, sdk_wallet_client,
+def check_view_change_one_slow_node(looper, txnPoolNodeSet, pool_handle, wallet_client,
                                     vc_counts, slow_node_is_next_primary,
                                     delay_commit=True,
                                     delay_pre_prepare=True):
@@ -119,7 +119,7 @@ def check_view_change_one_slow_node(looper, txnPoolNodeSet, pool_handle, sdk_wal
     # delay OldViewPrePrepareReply so that slow node doesn't receive PrePrepares before ReOrdering phase finishes
     with delay_rules(delayed_node.nodeIbStasher, old_view_pp_reply_delay()):
         with delay_rules_without_processing(delayed_node.nodeIbStasher, *delayers):
-            vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, sdk_wallet_client, 1)
+            vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, 1)
             trigger_view_change(txnPoolNodeSet)
             if vc_counts == 2:
                 for node in txnPoolNodeSet:
@@ -132,5 +132,5 @@ def check_view_change_one_slow_node(looper, txnPoolNodeSet, pool_handle, sdk_wal
 
     ensureElectionsDone(looper, txnPoolNodeSet, customTimeout=30)
 
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, sdk_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, wallet_client, pool_handle)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)

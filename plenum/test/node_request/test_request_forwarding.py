@@ -11,7 +11,7 @@ def test_all_replicas_hold_request_keys(
         perf_chk_patched,
         looper,
         txnPoolNodeSet,
-        vdr_wallet_client,
+        wallet_client,
         pool_handle):
     """
     All replicas whether primary or non primary hold request keys of forwarded
@@ -36,7 +36,7 @@ def test_all_replicas_hold_request_keys(
                     assert len(r._ordering_service.requestQueues[DOMAIN_LEDGER_ID]) == 0
 
     reqs = vdr_signed_random_requests(looper,
-                                      vdr_wallet_client,
+                                      wallet_client,
                                       tconf.Max3PCBatchSize - 1)
     req_resps = vdr_send_signed_requests(pool_handle, reqs, looper)
     # Only non primary replicas should have all request keys with them

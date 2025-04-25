@@ -11,7 +11,7 @@ from plenum.common.util import randomString, get_utc_epoch
 
 from plenum.test.helper import vdr_get_and_check_replies
 from plenum.test.pool_transactions.helper import vdr_sign_and_send_prepared_request
-from .helper import sdk_send_txn_author_agreement, sdk_get_txn_author_agreement
+from .helper import sdk_send_txn_author_agreement, get_txn_author_agreement
 
 
 def test_send_valid_txn_author_agreement_before_aml_fails(set_txn_author_agreement):
@@ -58,7 +58,7 @@ def test_create_txn_author_agreement_succeeds(looper, set_txn_author_agreement_a
                                   ratified=ratified)
 
     # Make sure TAA successfully written as latest TAA
-    rep = sdk_get_txn_author_agreement(looper, pool_handle, vdr_wallet_trustee)[1]
+    rep = get_txn_author_agreement(looper, pool_handle, vdr_wallet_trustee)[1]
     assert rep[OP_FIELD_NAME] == REPLY
     taa = rep['result'][DATA]
     assert taa[TXN_AUTHOR_AGREEMENT_VERSION] == version
@@ -67,7 +67,7 @@ def test_create_txn_author_agreement_succeeds(looper, set_txn_author_agreement_a
     assert TXN_AUTHOR_AGREEMENT_RETIREMENT_TS not in taa
 
     # Make sure TAA also available using version
-    rep = sdk_get_txn_author_agreement(looper, pool_handle, vdr_wallet_trustee, version=version)[1]
+    rep = get_txn_author_agreement(looper, pool_handle, vdr_wallet_trustee, version=version)[1]
     assert rep[OP_FIELD_NAME] == REPLY
     assert rep['result'][DATA] == taa
 
@@ -192,7 +192,7 @@ def test_txn_author_agreement_retire_non_latest(looper, set_txn_author_agreement
                                   retired=retired_1)
 
     # Make sure old TAA is retired
-    rep = sdk_get_txn_author_agreement(looper, pool_handle, vdr_wallet_trustee, version=version_1)[1]
+    rep = get_txn_author_agreement(looper, pool_handle, vdr_wallet_trustee, version=version_1)[1]
     assert rep[OP_FIELD_NAME] == REPLY
     taa = rep['result'][DATA]
     assert taa[TXN_AUTHOR_AGREEMENT_VERSION] == version_1
@@ -201,7 +201,7 @@ def test_txn_author_agreement_retire_non_latest(looper, set_txn_author_agreement
     assert taa[TXN_AUTHOR_AGREEMENT_RETIREMENT_TS] == retired_1
 
     # Make sure new TAA is not retired
-    rep = sdk_get_txn_author_agreement(looper, pool_handle, vdr_wallet_trustee, version=version_2)[1]
+    rep = get_txn_author_agreement(looper, pool_handle, vdr_wallet_trustee, version=version_2)[1]
     assert rep[OP_FIELD_NAME] == REPLY
     taa = rep['result'][DATA]
     assert taa[TXN_AUTHOR_AGREEMENT_VERSION] == version_2
@@ -210,7 +210,7 @@ def test_txn_author_agreement_retire_non_latest(looper, set_txn_author_agreement
     assert TXN_AUTHOR_AGREEMENT_RETIREMENT_TS not in taa
 
     # Make sure latest TAA is not changed
-    rep = sdk_get_txn_author_agreement(looper, pool_handle, vdr_wallet_trustee, version=version_2)[1]
+    rep = get_txn_author_agreement(looper, pool_handle, vdr_wallet_trustee, version=version_2)[1]
     assert rep[OP_FIELD_NAME] == REPLY
     assert taa == rep['result'][DATA]
 
@@ -240,30 +240,30 @@ def test_txn_author_agreement_retire_latest_fails(looper, set_txn_author_agreeme
 @pytest.mark.parametrize('retired_offset', [300, -300, -900])
 @pytest.mark.parametrize('updated_retired_offset', [300, -300, -900, None])
 def text_txn_author_agreement_can_change_retirement(looper, set_txn_author_agreement_aml,
-                                                      pool_handle, sdk_wallet_trustee,
+                                                      pool_handle, wallet_trustee,
                                                       retired_offset, updated_retired_offset):
     version_1, text_1, ratified_1 = randomString(16), randomString(1024), get_utc_epoch() - 600
-    sdk_send_txn_author_agreement(looper, pool_handle, sdk_wallet_trustee,
+    sdk_send_txn_author_agreement(looper, pool_handle, wallet_trustee,
                                   version=version_1,
                                   text=text_1,
                                   ratified=ratified_1)
 
     version_2, text_2, ratified_2 = randomString(16), randomString(1024), get_utc_epoch() - 600
-    sdk_send_txn_author_agreement(looper, pool_handle, sdk_wallet_trustee,
+    sdk_send_txn_author_agreement(looper, pool_handle, wallet_trustee,
                                   version=version_2,
                                   text=text_2,
                                   ratified=ratified_2)
 
     retired_1 = get_utc_epoch() + retired_offset
-    sdk_send_txn_author_agreement(looper, pool_handle, sdk_wallet_trustee, version=version_1,
+    sdk_send_txn_author_agreement(looper, pool_handle, wallet_trustee, version=version_1,
                                   retired=retired_1)
 
     updated_retired_1 = get_utc_epoch() + updated_retired_offset if updated_retired_offset is not None else None
-    sdk_send_txn_author_agreement(looper, pool_handle, sdk_wallet_trustee, version=version_1,
+    sdk_send_txn_author_agreement(looper, pool_handle, wallet_trustee, version=version_1,
                                   retired=retired_1)
 
     # Make sure old TAA is retired
-    rep = sdk_get_txn_author_agreement(looper, pool_handle, sdk_wallet_trustee, version=version_1)[1]
+    rep = get_txn_author_agreement(looper, pool_handle, wallet_trustee, version=version_1)[1]
     assert rep[OP_FIELD_NAME] == REPLY
     taa = rep['result'][DATA]
     assert taa[TXN_AUTHOR_AGREEMENT_VERSION] == version_1
@@ -275,7 +275,7 @@ def text_txn_author_agreement_can_change_retirement(looper, set_txn_author_agree
         assert taa[TXN_AUTHOR_AGREEMENT_RETIREMENT_TS] == updated_retired_1
 
     # Make sure new TAA is not retired
-    rep = sdk_get_txn_author_agreement(looper, pool_handle, sdk_wallet_trustee, version=version_2)[1]
+    rep = get_txn_author_agreement(looper, pool_handle, wallet_trustee, version=version_2)[1]
     assert rep[OP_FIELD_NAME] == REPLY
     taa = rep['result'][DATA]
     assert taa[TXN_AUTHOR_AGREEMENT_VERSION] == version_2
@@ -284,7 +284,7 @@ def text_txn_author_agreement_can_change_retirement(looper, set_txn_author_agree
     assert TXN_AUTHOR_AGREEMENT_RETIREMENT_TS not in taa
 
     # Make sure latest TAA is not changed
-    rep = sdk_get_txn_author_agreement(looper, pool_handle, sdk_wallet_trustee, version=version_2)[1]
+    rep = get_txn_author_agreement(looper, pool_handle, wallet_trustee, version=version_2)[1]
     assert rep[OP_FIELD_NAME] == REPLY
     assert taa == rep['result'][DATA]
 

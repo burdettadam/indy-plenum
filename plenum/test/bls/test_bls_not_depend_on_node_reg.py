@@ -17,9 +17,9 @@ serializer = Base58Serializer()
 
 
 def test_bls_not_depend_on_node_reg(looper, txnPoolNodeSet,
-                                    pool_handle, vdr_wallet_client):
+                                    pool_handle, wallet_client):
     vdr_send_batches_of_random_and_check(looper, txnPoolNodeSet,
-                                         pool_handle, vdr_wallet_client, 3, 3)
+                                         pool_handle, wallet_client, 3, 3)
 
     node = txnPoolNodeSet[2]
     last_pre_prepare = \
@@ -44,10 +44,10 @@ def test_bls_not_depend_on_node_reg(looper, txnPoolNodeSet,
 
 
 def test_order_after_demote_and_restart(looper, txnPoolNodeSet,
-                                        pool_handle, vdr_wallet_client, tdir, tconf, allPluginsPath,
+                                        pool_handle, wallet_client, tdir, tconf, allPluginsPath,
                                         vdr_wallet_stewards):
     vdr_send_batches_of_random_and_check(looper, txnPoolNodeSet,
-                                         pool_handle, vdr_wallet_client, 3, 3)
+                                         pool_handle, wallet_client, 3, 3)
 
     primary_node = txnPoolNodeSet[0]
     node_to_stop = txnPoolNodeSet[1]
@@ -71,7 +71,7 @@ def test_order_after_demote_and_restart(looper, txnPoolNodeSet,
     ensureElectionsDone(looper=looper, nodes=txnPoolNodeSet, check_primaries=False)
 
     vdr_send_batches_of_random_and_check(looper, txnPoolNodeSet,
-                                         pool_handle, vdr_wallet_client, 1, 1)
+                                         pool_handle, wallet_client, 1, 1)
 
     def get_current_bls_keys(node):
         bls_keys_raw_dict = node.master_replica._bls_bft_replica._bls_bft.bls_key_register._current_bls_keys

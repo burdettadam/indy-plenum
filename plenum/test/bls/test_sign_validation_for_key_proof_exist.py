@@ -16,7 +16,7 @@ def test_switched_off_sign_validation_for_key_proof_exist(looper,
                                                           txnPoolNodeSet,
                                                           pool_handle,
                                                           vdr_wallet_stewards,
-                                                          vdr_wallet_client,
+                                                          wallet_client,
                                                           monkeypatch,
                                                           validate_bls_signature_without_key_proof):
     '''

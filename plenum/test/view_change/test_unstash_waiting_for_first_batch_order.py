@@ -25,12 +25,12 @@ def tconf(tconf):
 
 
 def test_unstash_waiting_for_first_batch_ordered(
-        looper, txnPoolNodeSet, vdr_wallet_client, pool_handle, tconf):
+        looper, txnPoolNodeSet, wallet_client, pool_handle, tconf):
     lagged_node = txnPoolNodeSet[-1]
     other_nodes = list(set(txnPoolNodeSet) - {lagged_node})
 
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              pool_handle, vdr_wallet_client, 1)
+                              pool_handle, wallet_client, 1)
 
     with delay_rules(lagged_node.nodeIbStasher, cDelay()):
         ensure_view_change(looper, txnPoolNodeSet)
@@ -38,7 +38,7 @@ def test_unstash_waiting_for_first_batch_ordered(
                             instances_list=range(getRequiredInstances(len(txnPoolNodeSet))))
 
         vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                  pool_handle, vdr_wallet_client, 2)
+                                  pool_handle, wallet_client, 2)
 
     ensureElectionsDone(looper, txnPoolNodeSet)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)

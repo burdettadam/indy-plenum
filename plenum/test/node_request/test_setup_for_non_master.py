@@ -28,12 +28,12 @@ def backup_replicas_synced(nodes, last_ordered):
 
 def test_integration_setup_last_ordered_after_catchup(looper, txnPoolNodeSet,
                                                 vdr_wallet_steward,
-                                                vdr_wallet_client,
+                                                wallet_client,
                                                 pool_handle, tdir,
                                                 tconf, allPluginsPath):
     start_view_no = txnPoolNodeSet[0].viewNo
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              pool_handle, vdr_wallet_client, 1)
+                              pool_handle, wallet_client, 1)
     _, new_node = vdr_add_new_steward_and_node(
         looper, pool_handle, vdr_wallet_steward,
         'EpsilonSteward', 'Epsilon', tdir, tconf,
@@ -44,7 +44,7 @@ def test_integration_setup_last_ordered_after_catchup(looper, txnPoolNodeSet,
     waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:-1],
                          exclude_from_check=['check_last_ordered_3pc_backup'])
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              pool_handle, vdr_wallet_client, 1)
+                              pool_handle, wallet_client, 1)
     looper.run(eventually(backup_replicas_synced, txnPoolNodeSet, (start_view_no + 1, 2)))
     for node in txnPoolNodeSet:
         for replica in node.replicas.values():

@@ -5,7 +5,7 @@ from plenum.common.constants import DATA, TXN_AUTHOR_AGREEMENT_RETIREMENT_TS, TX
 from plenum.common.exceptions import RequestRejectedException
 from plenum.common.types import f
 from plenum.common.util import get_utc_epoch, randomString
-from .helper import sdk_send_txn_author_agreement_disable, sdk_get_txn_author_agreement, sdk_send_txn_author_agreement
+from .helper import sdk_send_txn_author_agreement_disable, get_txn_author_agreement, sdk_send_txn_author_agreement
 
 
 def test_send_valid_txn_author_agreement_succeeds_and_disable(
@@ -19,16 +19,16 @@ def test_send_valid_txn_author_agreement_succeeds_and_disable(
     taa1 = set_txn_author_agreement(taa1.text, taa1.version, retirement_ts, ratified=ratified)
     sdk_send_txn_author_agreement_disable(looper, pool_handle, vdr_wallet_trustee)
 
-    reply = sdk_get_txn_author_agreement(
+    reply = get_txn_author_agreement(
         looper, pool_handle, vdr_wallet_trustee)[1]
     assert reply[f.RESULT.nm][DATA] is None
 
-    reply = sdk_get_txn_author_agreement(
+    reply = get_txn_author_agreement(
         looper, pool_handle, vdr_wallet_trustee, version=taa2.version)[1]
     result = reply[f.RESULT.nm]
     assert result[DATA][TXN_AUTHOR_AGREEMENT_RETIREMENT_TS] == result[TXN_TIME]
 
-    reply = sdk_get_txn_author_agreement(
+    reply = get_txn_author_agreement(
         looper, pool_handle, vdr_wallet_trustee, version=taa1.version)[1]
     result = reply[f.RESULT.nm]
     assert result[DATA][TXN_AUTHOR_AGREEMENT_RETIREMENT_TS] == retirement_ts

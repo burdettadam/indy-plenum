@@ -48,7 +48,7 @@ def test_new_node_view_changer_state_is_fresh_enough(tconf, freshness_monitor_se
 
 
 def test_view_change_doesnt_happen_if_pool_is_left_alone(looper, tconf, txnPoolNodeSet,
-                                                         vdr_wallet_client, pool_handle):
+                                                         wallet_client, pool_handle):
     current_view_no = txnPoolNodeSet[0].viewNo
     for node in txnPoolNodeSet:
         assert node.viewNo == current_view_no
@@ -58,7 +58,7 @@ def test_view_change_doesnt_happen_if_pool_is_left_alone(looper, tconf, txnPoolN
     for node in txnPoolNodeSet:
         assert node.viewNo == current_view_no
 
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, wallet_client, pool_handle)
 
 
 def test_view_changer_state_is_not_fresh_in_view_change(tconf,

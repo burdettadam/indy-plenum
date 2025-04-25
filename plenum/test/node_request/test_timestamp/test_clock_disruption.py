@@ -20,7 +20,7 @@ TestRunningTimeLimitSec = 200
 
 @pytest.mark.skip(reason='Pending implementation')
 def test_nodes_with_bad_clock(tconf, looper, txnPoolNodeSet,
-                              vdr_wallet_client, pool_handle):
+                              wallet_client, pool_handle):
     """
     All nodes have bad clocks but they eventaully get repaired, an example of
     nodes being cut off from NTP server for some time or NTP sync disabled
@@ -29,7 +29,7 @@ def test_nodes_with_bad_clock(tconf, looper, txnPoolNodeSet,
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               count=Max3PCBatchSize * 3)
     ledger_sizes = {node.name: node.domainLedger.size for node in
                     txnPoolNodeSet}
@@ -45,7 +45,7 @@ def test_nodes_with_bad_clock(tconf, looper, txnPoolNodeSet,
             ppr_always_wrong=False)
 
     for _ in range(5):
-        vdr_send_random_request(looper, pool_handle, vdr_wallet_client)
+        vdr_send_random_request(looper, pool_handle, wallet_client)
         looper.runFor(.2)
 
     # Let some time pass
@@ -74,5 +74,5 @@ def test_nodes_with_bad_clock(tconf, looper, txnPoolNodeSet,
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               count=Max3PCBatchSize * 2)

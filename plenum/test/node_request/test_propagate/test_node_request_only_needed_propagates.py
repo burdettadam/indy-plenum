@@ -23,7 +23,7 @@ def setup(txnPoolNodeSet):
 
 
 def test_node_request_only_needed_propagates(looper, setup, txnPoolNodeSet,
-                                             vdr_wallet_client, pool_handle, tconf):
+                                             wallet_client, pool_handle, tconf):
     """
     One of node lacks sufficient propagates
     """
@@ -40,7 +40,7 @@ def test_node_request_only_needed_propagates(looper, setup, txnPoolNodeSet,
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               sent_reqs)
     looper.runFor(delay * 1.5)
     propagates_count = len(txnPoolNodeSet) - 1

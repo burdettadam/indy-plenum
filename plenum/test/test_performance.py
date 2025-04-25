@@ -65,14 +65,14 @@ def change_checkpoint_freq(tconf):
 @skipper
 def test_node_load(looper, txnPoolNodeSet,
                    pool_handle,
-                   vdr_wallet_client,
+                   wallet_client,
                    capsys):
     client_batches = 150
     txns_per_batch = 25
     for i in range(client_batches):
         s = perf_counter()
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client, txns_per_batch)
+                                  wallet_client, txns_per_batch)
         with capsys.disabled():
             print('{} executed {} client txns in {:.2f} seconds'.
                   format(i + 1, txns_per_batch, perf_counter() - s))
@@ -82,7 +82,7 @@ def test_node_load(looper, txnPoolNodeSet,
 def test_node_load_consistent_time(tconf, change_checkpoint_freq,
                                    disable_node_monitor_config, looper,
                                    txnPoolNodeSet, capsys,
-                                   pool_handle, vdr_wallet_client):
+                                   pool_handle, wallet_client):
     # One of the reason memory grows is because spylog grows
 
     client_batches = 300
@@ -110,7 +110,7 @@ def test_node_load_consistent_time(tconf, change_checkpoint_freq,
     for i in range(client_batches):
         s = perf_counter()
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client, txns_per_batch)
+                                  wallet_client, txns_per_batch)
         t = perf_counter() - s
         with capsys.disabled():
             print('{} executed {} client txns in {:.2f} seconds'.
@@ -152,7 +152,7 @@ def test_node_load_consistent_time(tconf, change_checkpoint_freq,
 @skipper
 def test_node_load_after_add(vdr_new_node_caught_up, txnPoolNodeSet,
                              looper, pool_handle,
-                             vdr_wallet_client, capsys):
+                             wallet_client, capsys):
     """
     A node that restarts after some transactions should eventually get the
     transactions which happened while it was down
@@ -167,21 +167,21 @@ def test_node_load_after_add(vdr_new_node_caught_up, txnPoolNodeSet,
     for i in range(client_batches):
         s = perf_counter()
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client, txns_per_batch)
+                                  wallet_client, txns_per_batch)
         with capsys.disabled():
             print('{} executed {} client txns in {:.2f} seconds'.
                   format(i + 1, txns_per_batch, perf_counter() - s))
 
     logger.debug("Starting the stopped node, {}".format(new_node))
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 5)
+                              wallet_client, 5)
     waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:4])
 
 
 @skipper
 def test_node_load_after_add_then_disconnect(vdr_new_node_caught_up, txnPoolNodeSet,
                                              tconf, looper, pool_handle,
-                                             vdr_wallet_client,
+                                             wallet_client,
                                              tdirWithPoolTxns, allPluginsPath,
                                              capsys):
     """
@@ -201,7 +201,7 @@ def test_node_load_after_add_then_disconnect(vdr_new_node_caught_up, txnPoolNode
     for i in range(client_batches):
         s = perf_counter()
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client, txns_per_batch)
+                                  wallet_client, txns_per_batch)
         with capsys.disabled():
             print('{} executed {} client txns in {:.2f} seconds'.
                   format(i + 1, txns_per_batch, perf_counter() - s))
@@ -236,7 +236,7 @@ def test_node_load_after_add_then_disconnect(vdr_new_node_caught_up, txnPoolNode
                          customTimeout=timeout)
 
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 5)
+                              wallet_client, 5)
     waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:4])
 
 
@@ -254,7 +254,7 @@ def test_node_load_after_disconnect(looper, txnPoolNodeSet, tconf,
                                     allPluginsPath,
                                     tdirWithPoolTxns,
                                     pool_handle,
-                                    vdr_wallet_client,
+                                    wallet_client,
                                     capsys):
     nodes = txnPoolNodeSet
     x = nodes[-1]
@@ -271,7 +271,7 @@ def test_node_load_after_disconnect(looper, txnPoolNodeSet, tconf,
     for i in range(client_batches):
         s = perf_counter()
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client, txns_per_batch)
+                                  wallet_client, txns_per_batch)
         with capsys.disabled():
             print('{} executed {} client txns in {:.2f} seconds'.
                   format(i + 1, txns_per_batch, perf_counter() - s))
@@ -289,7 +289,7 @@ def test_node_load_after_one_node_drops_all_msgs(
         looper,
         txnPoolNodeSet,
         pool_handle,
-        vdr_wallet_client,
+        wallet_client,
         capsys):
     nodes = txnPoolNodeSet
     x = nodes[-1]
@@ -308,7 +308,7 @@ def test_node_load_after_one_node_drops_all_msgs(
     for i in range(client_batches):
         s = perf_counter()
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client, txns_per_batch)
+                                  wallet_client, txns_per_batch)
         with capsys.disabled():
             print('{} executed {} client txns in {:.2f} seconds'.
                   format(i + 1, txns_per_batch, perf_counter() - s))

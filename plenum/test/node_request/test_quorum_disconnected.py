@@ -19,7 +19,7 @@ whitelist = ['InvalidSignature']
 
 def test_6_nodes_pool_cannot_reach_quorum_with_2_disconnected(
         txnPoolNodeSet, looper, pool_handle,
-        vdr_wallet_client):
+        wallet_client):
     '''
     Check that we can not reach consensus when more than n-f nodes
     are disconnected: disconnect 2 of 6 nodes
@@ -34,7 +34,7 @@ def test_6_nodes_pool_cannot_reach_quorum_with_2_disconnected(
             looper, current_node_set, node, stopNode=False)
         current_node_set.remove(node)
 
-    reqs = vdr_signed_random_requests(looper, vdr_wallet_client, 1)
+    reqs = vdr_signed_random_requests(looper, wallet_client, 1)
     with pytest.raises(PoolLedgerTimeoutException):
         vdr_send_and_check(reqs, looper, txnPoolNodeSet, pool_handle)
     check_request_is_not_returned_to_nodes(

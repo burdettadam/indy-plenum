@@ -14,7 +14,7 @@ logger = getlogger()
 
 
 def test_master_primary_different_from_previous(txnPoolNodeSet, looper,
-                                                pool_handle, vdr_wallet_client):
+                                                pool_handle, wallet_client):
     """
     After a view change, primary must be different from previous primary for
     master instance, it does not matter for other instance. The primary is
@@ -36,4 +36,4 @@ def test_master_primary_different_from_previous(txnPoolNodeSet, looper,
     pr.outBoxTestStasher.resetDelays()
 
     # The new primary can still process requests
-    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 5)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, 5)

@@ -39,8 +39,8 @@ def afterElection(setup):
 
 def test_6_nodes_pool_cannot_reach_quorum_with_2_faulty(afterElection, looper,
                                                         txnPoolNodeSet, prepared1,
-                                                        vdr_wallet_client, pool_handle):
-    reqs = vdr_signed_random_requests(looper, vdr_wallet_client, 1)
+                                                        wallet_client, pool_handle):
+    reqs = vdr_signed_random_requests(looper, wallet_client, 1)
     with pytest.raises(PoolLedgerTimeoutException):
         vdr_send_and_check(reqs, looper, txnPoolNodeSet, pool_handle)
     check_request_is_not_returned_to_nodes(

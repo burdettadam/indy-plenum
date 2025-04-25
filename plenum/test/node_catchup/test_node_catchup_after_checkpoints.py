@@ -22,7 +22,7 @@ def test_node_catchup_after_checkpoints(
         reqs_for_checkpoint,
         txnPoolNodeSet,
         pool_handle,
-        vdr_wallet_client,
+        wallet_client,
         broken_node_and_others):
     """
     A node misses 3pc messages and checkpoints during some period but later it
@@ -36,7 +36,7 @@ def test_node_catchup_after_checkpoints(
 
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
                                            pool_handle,
-                                           vdr_wallet_client,
+                                           wallet_client,
                                            reqs_for_checkpoint + max_batch_size)
 
     waitNodeDataInequality(looper, broken_node, *other_nodes)
@@ -51,7 +51,7 @@ def test_node_catchup_after_checkpoints(
 
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
                                            pool_handle,
-                                           vdr_wallet_client,
+                                           wallet_client,
                                            (Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP + 1) *
                                            reqs_for_checkpoint - max_batch_size)
 
@@ -70,7 +70,7 @@ def test_node_catchup_after_checkpoints(
 
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
                                            pool_handle,
-                                           vdr_wallet_client,
+                                           wallet_client,
                                            reqs_for_checkpoint + max_batch_size)
 
     waitNodeDataEquality(looper, repaired_node, *other_nodes)

@@ -19,7 +19,7 @@ logger = getlogger()
 def test_catch_up_after_demoted(
         txnPoolNodeSet,
         vdr_node_set_with_node_added_after_some_txns,
-        vdr_wallet_client):
+        wallet_client):
     logger.info(
         "1. add a new node after sending some txns and check that catch-up "
         "is done (the new node is up to date)")
@@ -39,7 +39,7 @@ def test_catch_up_after_demoted(
     logger.info("3. send more requests, "
                 "so that the new node's state is outdated")
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 5)
+                              wallet_client, 5)
     checkNodeDataForInequality(new_node, *txnPoolNodeSet[:-1])
 
     logger.info("4. turn the new node on")

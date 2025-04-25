@@ -14,14 +14,14 @@ def limitTestRunningTime():
     return 150
 
 
-def add_new_node(looper, nodes, pool_handle, sdk_wallet_steward,
+def add_new_node(looper, nodes, pool_handle, wallet_steward,
                  tdir, tconf, all_plugins_path, name=None):
     node_name = name or randomString(5)
     new_steward_name = "testClientSteward" + randomString(3)
     new_steward_wallet_handle, new_node = \
         vdr_add_new_steward_and_node(looper,
                                      pool_handle,
-                                     sdk_wallet_steward,
+                                     wallet_steward,
                                      new_steward_name,
                                      node_name,
                                      tdir,

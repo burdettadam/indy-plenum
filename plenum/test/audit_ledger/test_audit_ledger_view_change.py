@@ -16,7 +16,7 @@ nodeCount = 6
 
 @pytest.mark.skip(reason="INDY-2276. Issue with adding node that will change f value")
 def test_audit_ledger_view_change(looper, txnPoolNodeSet,
-                                  pool_handle, vdr_wallet_client, vdr_wallet_steward,
+                                  pool_handle, wallet_client, vdr_wallet_steward,
                                   initial_domain_size, initial_pool_size, initial_config_size,
                                   tdir,
                                   tconf,
@@ -62,7 +62,7 @@ def test_audit_ledger_view_change(looper, txnPoolNodeSet,
         looper.run(checkNodesConnected(other_nodes + [new_node]))
 
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client, 1)
+                                  wallet_client, 1)
 
         check_audit_ledger_updated(audit_size_initial, [slow_node],
                                    audit_txns_added=0)

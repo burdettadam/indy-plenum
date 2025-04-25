@@ -10,12 +10,12 @@ def nodes_by_rank(txnPoolNodeSet):
                                  key=operator.itemgetter(0))]
 
 
-def vdr_ensure_pool_functional(looper, nodes, sdk_wallet, sdk_pool,
+def vdr_ensure_pool_functional(looper, nodes, wallet, pool,
                                num_reqs=10, num_batches=2):
     vdr_send_batches_of_random_and_check(looper,
                                          nodes,
-                                         sdk_pool,
-                                         sdk_wallet,
+                                         pool,
+                                         wallet,
                                          num_reqs,
                                          num_batches)
     ensure_all_nodes_have_same_data(looper, nodes, custom_timeout=30)

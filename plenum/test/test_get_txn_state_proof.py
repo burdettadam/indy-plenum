@@ -11,12 +11,12 @@ from plenum.test.wallet_helper import vdr_create_and_store_did, vdr_sign_and_sub
 from indy_vdr import ledger
 
 
-def nym_on_ledger(looper, pool_handle, sdk_wallet_client, sdk_wallet_steward, seed=None):
-    did_future = vdr_create_and_store_did(sdk_wallet_client[0], seed)
+def nym_on_ledger(looper, pool_handle, wallet_client, wallet_steward, seed=None):
+    did_future = vdr_create_and_store_did(wallet_client[0], seed)
     did, vk = looper.loop.run_until_complete(did_future)
-    nym_req_future = ledger.build_nym_request(sdk_wallet_steward[1], did, vk, None, None)
+    nym_req_future = ledger.build_nym_request(wallet_steward[1], did, vk, None, None)
     nym_req = looper.loop.run_until_complete(nym_req_future)
-    nym_resp_future = vdr_sign_and_submit_request(pool_handle, sdk_wallet_steward[0], sdk_wallet_steward[1], nym_req)
+    nym_resp_future = vdr_sign_and_submit_request(pool_handle, wallet_steward[0], wallet_steward[1], nym_req)
     nym_resp = looper.loop.run_until_complete(nym_resp_future)
     nym = json.loads(nym_resp)
     assert nym["result"]
@@ -25,10 +25,10 @@ def nym_on_ledger(looper, pool_handle, sdk_wallet_client, sdk_wallet_steward, se
     return nym["result"][TXN_METADATA][TXN_METADATA_SEQ_NO]
 
 
-def attrib_on_ledger(looper, pool_handle, sdk_wallet_steward, sdk_client_wallet):
-    attrib_req_future = ledger.build_attrib_request(sdk_wallet_steward[1], sdk_client_wallet[1], None, "{}", None)
+def attrib_on_ledger(looper, pool_handle, wallet_steward, wallet_client):
+    attrib_req_future = ledger.build_attrib_request(wallet_steward[1], wallet_client[1], None, "{}", None)
     attrib_req = looper.loop.run_until_complete(attrib_req_future)
-    attrib_resp_future = vdr_sign_and_submit_request(pool_handle, sdk_wallet_steward[0], sdk_wallet_steward[1], attrib_req)
+    attrib_resp_future = vdr_sign_and_submit_request(pool_handle, wallet_steward[0], wallet_steward[1], attrib_req)
     attrib_resp = looper.loop.run_until_complete(attrib_resp_future)
     attrib = json.loads(attrib_resp)
     print(attrib)
@@ -38,11 +38,11 @@ def attrib_on_ledger(looper, pool_handle, sdk_wallet_steward, sdk_client_wallet)
     return attrib["result"][TXN_METADATA][TXN_METADATA_SEQ_NO]
 
 
-def aml_on_ledger(looper, pool_handle, sdk_wallet_trustee):
+def aml_on_ledger(looper, pool_handle, wallet_trustee):
     ver = random.randint(1, 10000)
-    aml_req_future = ledger.build_acceptance_mechanisms_request(sdk_wallet_trustee[1], "{\"test\":\"aml\"}", str(ver), None)
+    aml_req_future = ledger.build_acceptance_mechanisms_request(wallet_trustee[1], "{\"test\":\"aml\"}", str(ver), None)
     aml_req = looper.loop.run_until_complete(aml_req_future)
-    aml_resp_future = vdr_sign_and_submit_request(pool_handle, sdk_wallet_trustee[0], sdk_wallet_trustee[1], aml_req)
+    aml_resp_future = vdr_sign_and_submit_request(pool_handle, wallet_trustee[0], wallet_trustee[1], aml_req)
     aml_resp = looper.loop.run_until_complete(aml_resp_future)
     aml = json.loads(aml_resp)
     assert aml["result"]
@@ -56,14 +56,14 @@ def aml_on_ledger(looper, pool_handle, sdk_wallet_trustee):
     (['NYM', 'NYM', 'NYM'], 1, "DOMAIN"),
     (['NYM', 'AML', 'NYM'], 1, "CONFIG")
 ])
-def transactions(request, looper, pool_handle, vdr_wallet_client, vdr_wallet_steward, vdr_wallet_trustee):
+def transactions(request, looper, pool_handle, wallet_client, vdr_wallet_steward, vdr_wallet_trustee):
     txns, for_get, id = request.param
     res = []
 
     for txn in txns:
         seq_no = -1
         if txn == 'NYM':
-            seq_no = nym_on_ledger(looper, pool_handle, vdr_wallet_client, vdr_wallet_steward)
+            seq_no = nym_on_ledger(looper, pool_handle, wallet_client, vdr_wallet_steward)
         elif txn == 'AML':
             seq_no = aml_on_ledger(looper, pool_handle, vdr_wallet_trustee)
         res.append(seq_no)
@@ -81,7 +81,7 @@ def nodeSetAlwaysResponding(request, txnPoolNodeSet, transactions):
             yield txnPoolNodeSet
 
 
-def sdk_get_txn(looper, pool_handle, seq_no, ledger_id):
+def get_txn(looper, pool_handle, seq_no, ledger_id):
     get_txn_request_future = ledger.build_get_txn_request(None, ledger_id, seq_no)
     get_txn_request = looper.loop.run_until_complete(get_txn_request_future)
     get_txn_response_future = pool_handle.submit_request(get_txn_request)
@@ -91,6 +91,6 @@ def sdk_get_txn(looper, pool_handle, seq_no, ledger_id):
 
 def test_get_txn_audit_proof(nodeSetAlwaysResponding, looper, pool_handle, transactions):
     seq_no, ledger = transactions
-    response = sdk_get_txn(looper, pool_handle, seq_no, ledger)
+    response = get_txn(looper, pool_handle, seq_no, ledger)
     resp_json = json.loads(response)
     assert resp_json[OP_FIELD_NAME] == "REPLY"

@@ -11,30 +11,30 @@ nodeCount = 4
 def test_get_txn_after_bls_key_rotation(looper, txnPoolNodeSet,
                                         vdr_wallet_stewards,
                                         vdr_wallet_trustee,
-                                        vdr_wallet_client,
+                                        wallet_client,
                                         pool_handle):
     check_update_bls_key(node_num=0, saved_multi_sigs_count=4,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
-                         sdk_wallet_stewards=vdr_wallet_stewards,
-                         sdk_wallet_client=vdr_wallet_client,
+                         wallet_stewards=vdr_wallet_stewards,
+                         wallet_client=wallet_client,
                          pool_handle=pool_handle,
                          pool_refresh=False)
     check_update_bls_key(node_num=1, saved_multi_sigs_count=4,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
-                         sdk_wallet_stewards=vdr_wallet_stewards,
-                         sdk_wallet_client=vdr_wallet_client,
+                         wallet_stewards=vdr_wallet_stewards,
+                         wallet_client=wallet_client,
                          pool_handle=pool_handle,
                          pool_refresh=False)
     check_update_bls_key(node_num=2, saved_multi_sigs_count=4,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
-                         sdk_wallet_stewards=vdr_wallet_stewards,
-                         sdk_wallet_client=vdr_wallet_client,
+                         wallet_stewards=vdr_wallet_stewards,
+                         wallet_client=wallet_client,
                          pool_handle=pool_handle,
                          pool_refresh=False)
     check_update_bls_key(node_num=3, saved_multi_sigs_count=4,
                          looper=looper, txnPoolNodeSet=txnPoolNodeSet,
-                         sdk_wallet_stewards=vdr_wallet_stewards,
-                         sdk_wallet_client=vdr_wallet_client,
+                         wallet_stewards=vdr_wallet_stewards,
+                         wallet_client=wallet_client,
                          pool_handle=pool_handle,
                          pool_refresh=False)
 
@@ -43,14 +43,14 @@ def test_get_txn_after_bls_key_rotation(looper, txnPoolNodeSet,
         with delay_rules_without_processing(txnPoolNodeSet[1].nodeIbStasher, cDelay(delay=1200, sender_filter=txnPoolNodeSet[0].name)):
             with delay_rules_without_processing(txnPoolNodeSet[2].nodeIbStasher, cDelay(delay=1200, sender_filter=txnPoolNodeSet[1].name)):
                 with delay_rules_without_processing(txnPoolNodeSet[3].nodeIbStasher, cDelay(delay=1200, sender_filter=txnPoolNodeSet[2].name)):
-                    did_future = vdr_create_and_store_did(vdr_wallet_client[0])
+                    did_future = vdr_create_and_store_did(wallet_client[0])
                     did, verkey = looper.loop.run_until_complete(did_future)
-                    nym_request_future = ledger.build_nym_request(vdr_wallet_trustee[1], did, verkey, None, None)
+                    nym_request_future = ledger.build_nym_request(vdr_wallet_trustee[1], did, verkey)
                     nym_request = looper.loop.run_until_complete(nym_request_future)
                     nym_response_future = vdr_sign_and_submit_request(pool_handle, vdr_wallet_trustee[0], vdr_wallet_trustee[1], nym_request)
                     looper.loop.run_until_complete(nym_response_future)
 
-                    get_txn_request_future = ledger.build_get_txn_request(vdr_wallet_client[1], "DOMAIN", 1)
+                    get_txn_request_future = ledger.build_get_txn_request(wallet_client[1], "DOMAIN", 1)
                     get_txn_request = looper.loop.run_until_complete(get_txn_request_future)
                     get_txn_response_future = pool_handle.submit_request(get_txn_request)
                     looper.loop.run_until_complete(get_txn_response_future)

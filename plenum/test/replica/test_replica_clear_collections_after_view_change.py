@@ -24,7 +24,7 @@ def tconf(tconf):
 def test_replica_clear_collections_after_view_change(looper,
                                                      txnPoolNodeSet,
                                                      pool_handle,
-                                                     vdr_wallet_client,
+                                                     wallet_client,
                                                      tconf,
                                                      tdir,
                                                      allPluginsPath,
@@ -54,7 +54,7 @@ def test_replica_clear_collections_after_view_change(looper,
     vdr_send_batches_of_random_and_check(looper,
                                          txnPoolNodeSet,
                                          pool_handle,
-                                         vdr_wallet_client,
+                                         wallet_client,
                                          num_reqs=reqs_for_checkpoint + 1)
 
     def check_request_queues():

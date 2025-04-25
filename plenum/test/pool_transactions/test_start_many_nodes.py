@@ -11,11 +11,11 @@ nodeCount = 8
 
 def test_genesis_nodes(looper, txnPoolNodeSet,
                        pool_handle,
-                       vdr_wallet_client):
+                       wallet_client):
     assert len(txnPoolNodeSet) == nodeCount
     for node in txnPoolNodeSet:
         assertEquality(node.poolLedger.size, nodeCount)
         stw_count = sum(1 for _, txn in node.domainLedger.getAllTxn() if
                         (get_type(txn) == NYM) and (get_payload_data(txn).get(ROLE) == STEWARD))
         assertEquality(stw_count, nodeCount)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, wallet_client, pool_handle)

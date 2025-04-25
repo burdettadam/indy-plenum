@@ -48,7 +48,7 @@ def test_preprepares_and_prepares_recovery_after_catchup(tdir, tconf,
                                                          testNodeClass,
                                                          txnPoolNodeSet,
                                                          pool_handle,
-                                                         vdr_wallet_client,
+                                                         wallet_client,
                                                          allPluginsPath,
                                                          chkFreqPatched):
     """
@@ -57,7 +57,7 @@ def test_preprepares_and_prepares_recovery_after_catchup(tdir, tconf,
 
     node_to_restart = txnPoolNodeSet[-1]
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, NUM_OF_REQ)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, NUM_OF_REQ)
 
     # Check that all of the nodes except the slows one ordered the request
     looper.run(eventually(check_last_ordered, txnPoolNodeSet, (0, NUM_OF_REQ)))

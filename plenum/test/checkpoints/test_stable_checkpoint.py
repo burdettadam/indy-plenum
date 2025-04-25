@@ -23,7 +23,7 @@ def test_request_older_than_stable_checkpoint_removed(chkFreqPatched, looper, tx
     checkRequestCounts(txnPoolNodeSet, 2 * max_batch_size, 2)
 
     # From the steward send a request creating a user with None role
-    sdk_wallet_user = vdr_add_new_nym(looper, pool_handle, vdr_wallet_steward)
+    wallet_user = vdr_add_new_nym(looper, pool_handle, vdr_wallet_steward)
     looper.run(eventually(check_for_nodes, txnPoolNodeSet, check_stable_checkpoint, 0, retryWait=1, timeout=timeout))
     checkRequestCounts(txnPoolNodeSet, 2 * max_batch_size + 1, 3)
 
@@ -31,7 +31,7 @@ def test_request_older_than_stable_checkpoint_removed(chkFreqPatched, looper, tx
     # Dynamic validation of this request must fail since a user with None role cannot create users.
     # However, the 3PC-batch with the sent request must be ordered.
     with pytest.raises(RequestRejectedException):
-        vdr_add_new_nym(looper, pool_handle, sdk_wallet_user)
+        vdr_add_new_nym(looper, pool_handle, wallet_user)
     looper.run(eventually(check_for_nodes, txnPoolNodeSet, check_stable_checkpoint, 0, retryWait=1, timeout=timeout))
     checkRequestCounts(txnPoolNodeSet, 2 * max_batch_size + 2, 4)
 

@@ -20,19 +20,19 @@ def tconf(tconf):
 
 def test_two_view_changes_with_delayed_commits(txnPoolNodeSet, looper,
                                                pool_handle,
-                                               vdr_wallet_client,
+                                               wallet_client,
                                                tconf):
     # Perform view change with Delta acting as fast node
     # With current view change implementation its state will become different from other nodes
     do_view_change_with_pending_request_and_one_fast_node(txnPoolNodeSet[3], txnPoolNodeSet,
-                                                          looper, pool_handle, vdr_wallet_client)
+                                                          looper, pool_handle, wallet_client)
 
     # Perform view change with Alpha acting as fast node
     # With current view change implementation its state will become different from other nodes,
     # resulting in pool losing consensus and failing to finish view change at all
     do_view_change_with_pending_request_and_one_fast_node(txnPoolNodeSet[0], txnPoolNodeSet,
-                                                          looper, pool_handle, vdr_wallet_client)
+                                                          looper, pool_handle, wallet_client)
 
     # Check that pool can write transactions
-    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, 1)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)

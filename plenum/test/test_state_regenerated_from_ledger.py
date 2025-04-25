@@ -16,7 +16,7 @@ def test_state_regenerated_from_ledger(
         looper,
         txnPoolNodeSet,
         pool_handle,
-        vdr_wallet_client,
+        wallet_client,
         tdir,
         tconf,
         allPluginsPath):
@@ -26,7 +26,7 @@ def test_state_regenerated_from_ledger(
     sent_batches = 10
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
                                            pool_handle,
-                                           vdr_wallet_client,
+                                           wallet_client,
                                            5 * sent_batches,
                                            sent_batches)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)

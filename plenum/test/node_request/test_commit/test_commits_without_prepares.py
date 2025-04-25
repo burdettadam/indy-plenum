@@ -5,7 +5,7 @@ from plenum.test.helper import vdr_send_random_and_check
 
 
 def test_primary_receives_delayed_prepares(looper, txnPoolNodeSet,
-                                           vdr_wallet_client,
+                                           wallet_client,
                                            pool_handle):
     """
     Primary gets all PREPAREs after COMMITs
@@ -18,7 +18,7 @@ def test_primary_receives_delayed_prepares(looper, txnPoolNodeSet,
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               count=10)
 
     for node in other_nodes:

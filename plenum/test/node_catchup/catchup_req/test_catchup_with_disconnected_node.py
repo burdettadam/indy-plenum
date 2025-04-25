@@ -15,7 +15,7 @@ def test_catchup_with_disconnected_node(tdir, tconf,
                                         looper,
                                         txnPoolNodeSet,
                                         pool_handle,
-                                        vdr_wallet_client,
+                                        wallet_client,
                                         allPluginsPath,
                                         logsearch):
     '''
@@ -42,7 +42,7 @@ def test_catchup_with_disconnected_node(tdir, tconf,
 
     # Send more requests to active nodes
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, len(rest_nodes) * 3)
+                              wallet_client, len(rest_nodes) * 3)
     waitNodeDataEquality(looper, *rest_nodes)
 
     # Stop Gamma

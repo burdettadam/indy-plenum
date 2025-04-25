@@ -23,14 +23,14 @@ logger = getlogger()
 
 # noinspection PyIncorrectDocstring
 def testSendRequestWithoutSignatureFails(looper, txnPoolNodeSet,
-                                         pool_handle, vdr_wallet_client):
+                                         pool_handle, wallet_client):
     """
     A client request sent without a signature fails with an EmptySignature
     exception
     """
 
     # remove the client's ability to sign
-    requests = vdr_signed_random_requests(looper, vdr_wallet_client, 1)
+    requests = vdr_signed_random_requests(looper, wallet_client, 1)
     json_req = json.loads(requests[0])
     json_req['signature'] = None
     request = json.dumps(json_req)
@@ -62,12 +62,12 @@ def testSendRequestWithoutSignatureFails(looper, txnPoolNodeSet,
 
 # noinspection PyIncorrectDocstring
 def testReplyWhenRequestAlreadyExecuted(looper, txnPoolNodeSet, pool_handle,
-                                        vdr_wallet_client, sent1):
+                                        wallet_client, sent1):
     """
     When a request has already been executed the previously executed reply
     will be sent again to the client. An acknowledgement will not be sent
     for a repeated request.
     """
     vdr_get_and_check_replies(looper, sent1)
-    req = vdr_send_random_request(looper, pool_handle, vdr_wallet_client)
+    req = vdr_send_random_request(looper, pool_handle, wallet_client)
     vdr_get_and_check_replies(looper, [req])

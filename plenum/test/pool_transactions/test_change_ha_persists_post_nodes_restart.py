@@ -14,7 +14,7 @@ logger = getlogger()
 def testChangeHaPersistsPostNodesRestart(looper, txnPoolNodeSet,
                                          tdir, tconf,
                                          pool_handle,
-                                         vdr_wallet_client,
+                                         wallet_client,
                                          vdr_wallet_steward):
     new_steward_wallet, new_node = \
         vdr_add_new_steward_and_node(looper,
@@ -68,4 +68,4 @@ def testChangeHaPersistsPostNodesRestart(looper, txnPoolNodeSet,
     looper.run(checkNodesConnected(restartedNodes))
     waitNodeDataEquality(looper, node, *restartedNodes[:-1])
     vdr_pool_refresh(looper, pool_handle)
-    vdr_ensure_pool_functional(looper, restartedNodes, vdr_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, restartedNodes, wallet_client, pool_handle)

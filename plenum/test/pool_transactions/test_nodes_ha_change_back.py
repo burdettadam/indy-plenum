@@ -10,7 +10,7 @@ TestRunningTimeLimitSec = 200
 
 def testChangeNodeHaBack(looper, txnPoolNodeSet,
                          pool_handle,
-                         sdk_node_theta_added,
+                         node_theta_added,
                          tconf, tdir):
     """
     The case:
@@ -19,7 +19,7 @@ def testChangeNodeHaBack(looper, txnPoolNodeSet,
         ('wrong' HA). The Steward replaces back 'wrong' HA by 'correct' HA sending
         yet another one NODE txn.
     """
-    new_steward_wallet, new_node = sdk_node_theta_added
+    new_steward_wallet, new_node = node_theta_added
     client_ha = new_node.cliNodeReg['ThetaC']  # use the same client HA
     # do all exercises without the Node
     new_node.stop()

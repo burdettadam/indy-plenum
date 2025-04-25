@@ -31,7 +31,7 @@ def test_commit_signature_validation_integration(looper,
                                                  txnPoolNodeSet,
                                                  pool_handle,
                                                  vdr_wallet_steward,
-                                                 vdr_wallet_client,
+                                                 wallet_client,
                                                  tconf,
                                                  tdir):
     '''
@@ -92,7 +92,7 @@ def test_commit_signature_validation_integration(looper,
 
         looper.run(eventually(check_fast_nodes_ordered_request))
 
-        request2 = vdr_send_random_request(looper, pool_handle, vdr_wallet_client)
+        request2 = vdr_send_random_request(looper, pool_handle, wallet_client)
         looper.run(eventually(check_nodes_receive_pp, first_ordered[0], first_ordered[1] + 2))
 
         def check_nodes_receive_commits(view_no, seq_no):

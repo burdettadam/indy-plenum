@@ -7,21 +7,21 @@ from plenum.test.plugin.demo_plugin.constants import AUCTION_START, GET_AUCTION
 
 
 def send_auction_txn(looper,
-                     pool_handle, sdk_wallet_steward):
+                     pool_handle, wallet_steward):
     op = {
         TXN_TYPE: AUCTION_START,
         DATA: {'id': 'abc'}
     }
-    return successful_op(looper, op, sdk_wallet_steward, pool_handle)
+    return successful_op(looper, op, wallet_steward, pool_handle)
 
 
 def send_get_auction_txn(looper,
-                     pool_handle, sdk_wallet_steward):
+                     pool_handle, wallet_steward):
     op = {
         TXN_TYPE: GET_AUCTION,
         DATA: {'auction_id': 'id'}
     }
-    return successful_op(looper, op, sdk_wallet_steward, pool_handle)
+    return successful_op(looper, op, wallet_steward, pool_handle)
 
 
 def successful_op(looper, op, sdk_wallet, pool_handle):

@@ -18,8 +18,8 @@ def test_audit_ledger_multiple_ledgers_in_one_batch(txnPoolNodeSet):
         TXN_TYPE: PlenumTransactions.NYM.value,
         TARGET_NYM: "000000000000000000000000Trustee4" # This is a seed not a did
     }
-    #_, did = sdk_wallet_client
-    #target_did, verkey = looper.loop.run_until_complete(create_and_store_did(sdk_wallet_handle, seed=op[TARGET_NYM])) 
+    #_, did = wallet_client
+    #target_did, verkey = looper.loop.run_until_complete(create_and_store_did(wallet_handle, seed=op[TARGET_NYM])) 
     #nym_req = build_nym_request(did, target_did, verkey, version=CURRENT_PROTOCOL_VERSION)
     nym_req_plenum = gen_request_plenum(op, signatures={"sig1": "111"})
     node.write_manager.apply_request(nym_req_plenum, 10000)

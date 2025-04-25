@@ -11,7 +11,7 @@ def node_primary_disconnect_count(node):
     return pcm_service.spylog.count(pcm_service._primary_disconnected)
 
 
-def test_view_not_changed_when_short_disconnection(txnPoolNodeSet, looper, pool_handle, vdr_wallet_client,
+def test_view_not_changed_when_short_disconnection(txnPoolNodeSet, looper, pool_handle, wallet_client,
                                                    tdir, tconf, allPluginsPath):
     """
     When primary is disconnected but not long enough to trigger the timeout,
@@ -52,4 +52,4 @@ def test_view_not_changed_when_short_disconnection(txnPoolNodeSet, looper, pool_
     assert checkViewNoForNodes(txnPoolNodeSet) == view_no
 
     # Send some requests and make sure the request execute
-    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 5)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, 5)

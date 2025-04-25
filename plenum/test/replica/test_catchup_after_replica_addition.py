@@ -7,7 +7,7 @@ from plenum.common.util import getMaxFailures
 from plenum.test.helper import vdr_send_random_and_check, assertExp, vdr_get_and_check_replies
 from plenum.test.node_catchup.helper import waitNodeDataEquality
 
-from plenum.test.pool_transactions.conftest import sdk_node_theta_added
+from plenum.test.pool_transactions.conftest import node_theta_added
 from plenum.test.pool_transactions.helper import vdr_add_new_nym, prepare_new_node_data, vdr_prepare_node_request, \
     vdr_sign_and_send_prepared_request, create_and_start_new_node
 from plenum.test.test_node import checkNodesConnected, TestNode
@@ -16,12 +16,12 @@ from stp_core.loop.eventually import eventually
 nodeCount = 6
 
 
-def _send_txn_for_creating_node(looper, pool_handle, sdk_wallet_steward, tdir, new_node_name, clientIp,
+def _send_txn_for_creating_node(looper, pool_handle, wallet_steward, tdir, new_node_name, clientIp,
                                 clientPort, nodeIp, nodePort, bls_key, sigseed, key_proof):
     new_steward_name = "testClientSteward"
     new_steward_wallet_handle = vdr_add_new_nym(looper,
                                                 pool_handle,
-                                                sdk_wallet_steward,
+                                                wallet_steward,
                                                 alias=new_steward_name,
                                                 role=STEWARD_STRING)
 

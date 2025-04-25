@@ -18,7 +18,7 @@ def test_ordering_with_nodes_have_not_bls_key_proofs(looper,
                                                      txnPoolNodeSet,
                                                      pool_handle,
                                                      vdr_wallet_stewards,
-                                                     vdr_wallet_client,
+                                                     wallet_client,
                                                      monkeypatch,
                                                      validate_bls_signature_without_key_proof):
     '''

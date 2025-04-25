@@ -7,11 +7,11 @@ from plenum.test.view_change.helper import ensure_view_change
 
 
 def test_repeated_request_not_processed_if_already_ordered(
-        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+        looper, txnPoolNodeSet, pool_handle, wallet_client):
     delta = txnPoolNodeSet[3]
     initial_ledger_size = delta.domainLedger.size
 
-    one_req = vdr_signed_random_requests(looper, vdr_wallet_client, 1)
+    one_req = vdr_signed_random_requests(looper, wallet_client, 1)
     vdr_send_and_check(one_req, looper, txnPoolNodeSet, pool_handle)
 
     vdr_send_signed_requests(pool_handle, one_req, looper)
@@ -22,12 +22,12 @@ def test_repeated_request_not_processed_if_already_ordered(
 
 
 def test_belated_request_not_processed_if_already_ordered(
-        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+        looper, txnPoolNodeSet, pool_handle, wallet_client):
     delta = txnPoolNodeSet[3]
     initial_ledger_size = delta.domainLedger.size
     delta.clientIbStasher.delay(req_delay(300))
 
-    one_req = vdr_signed_random_requests(looper, vdr_wallet_client, 1)
+    one_req = vdr_signed_random_requests(looper, wallet_client, 1)
     vdr_send_and_check(one_req, looper, txnPoolNodeSet, pool_handle)
 
     delta.clientIbStasher.reset_delays_and_process_delayeds()
@@ -38,12 +38,12 @@ def test_belated_request_not_processed_if_already_ordered(
 
 
 def test_belated_propagate_not_processed_if_already_ordered(
-        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+        looper, txnPoolNodeSet, pool_handle, wallet_client):
     delta = txnPoolNodeSet[3]
     initial_ledger_size = delta.domainLedger.size
     delta.nodeIbStasher.delay(ppgDelay(300, 'Gamma'))
 
-    one_req = vdr_signed_random_requests(looper, vdr_wallet_client, 1)
+    one_req = vdr_signed_random_requests(looper, wallet_client, 1)
     vdr_send_and_check(one_req, looper, txnPoolNodeSet, pool_handle)
 
     delta.nodeIbStasher.reset_delays_and_process_delayeds()
@@ -54,13 +54,13 @@ def test_belated_propagate_not_processed_if_already_ordered(
 
 
 def test_repeated_request_not_processed_if_already_in_3pc_process(
-        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+        looper, txnPoolNodeSet, pool_handle, wallet_client):
     delta = txnPoolNodeSet[3]
     initial_ledger_size = delta.domainLedger.size
     for node in txnPoolNodeSet:
         node.nodeIbStasher.delay(cDelay(300))
 
-    one_req = vdr_signed_random_requests(looper, vdr_wallet_client, 1)
+    one_req = vdr_signed_random_requests(looper, wallet_client, 1)
     vdr_send_signed_requests(pool_handle, one_req, looper)
     looper.runFor(waits.expectedPropagateTime(len(txnPoolNodeSet)) +
                   waits.expectedPrePrepareTime(len(txnPoolNodeSet)) +
@@ -82,14 +82,14 @@ def test_repeated_request_not_processed_if_already_in_3pc_process(
 
 
 def test_belated_request_not_processed_if_already_in_3pc_process(
-        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+        looper, txnPoolNodeSet, pool_handle, wallet_client):
     delta = txnPoolNodeSet[3]
     initial_ledger_size = delta.domainLedger.size
     delta.clientIbStasher.delay(req_delay(300))
     for node in txnPoolNodeSet:
         node.nodeIbStasher.delay(cDelay(300))
 
-    one_req = vdr_signed_random_requests(looper, vdr_wallet_client, 1)
+    one_req = vdr_signed_random_requests(looper, wallet_client, 1)
     vdr_send_signed_requests(pool_handle, one_req, looper)
     looper.runFor(waits.expectedPropagateTime(len(txnPoolNodeSet)) +
                   waits.expectedPrePrepareTime(len(txnPoolNodeSet)) +
@@ -111,14 +111,14 @@ def test_belated_request_not_processed_if_already_in_3pc_process(
 
 
 def test_belated_propagate_not_processed_if_already_in_3pc_process(
-        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+        looper, txnPoolNodeSet, pool_handle, wallet_client):
     delta = txnPoolNodeSet[3]
     initial_ledger_size = delta.domainLedger.size
     delta.nodeIbStasher.delay(ppgDelay(300, 'Gamma'))
     for node in txnPoolNodeSet:
         node.nodeIbStasher.delay(cDelay(300))
 
-    one_req = vdr_signed_random_requests(looper, vdr_wallet_client, 1)
+    one_req = vdr_signed_random_requests(looper, wallet_client, 1)
     vdr_send_signed_requests(pool_handle, one_req, looper)
     looper.runFor(waits.expectedPropagateTime(len(txnPoolNodeSet)) +
                   waits.expectedPrePrepareTime(len(txnPoolNodeSet)) +
@@ -140,11 +140,11 @@ def test_belated_propagate_not_processed_if_already_in_3pc_process(
 
 
 def test_repeated_request_not_processed_after_view_change(
-        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+        looper, txnPoolNodeSet, pool_handle, wallet_client):
     delta = txnPoolNodeSet[3]
     initial_ledger_size = delta.domainLedger.size
 
-    one_req = vdr_signed_random_requests(looper, vdr_wallet_client, 1)
+    one_req = vdr_signed_random_requests(looper, wallet_client, 1)
     vdr_send_and_check(one_req, looper, txnPoolNodeSet, pool_handle)
 
     ensure_view_change(looper, txnPoolNodeSet)
@@ -158,12 +158,12 @@ def test_repeated_request_not_processed_after_view_change(
 
 
 def test_belated_request_not_processed_after_view_change(
-        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+        looper, txnPoolNodeSet, pool_handle, wallet_client):
     delta = txnPoolNodeSet[3]
     initial_ledger_size = delta.domainLedger.size
     delta.clientIbStasher.delay(req_delay(300))
 
-    one_req = vdr_signed_random_requests(looper, vdr_wallet_client, 1)
+    one_req = vdr_signed_random_requests(looper, wallet_client, 1)
     vdr_send_and_check(one_req, looper, txnPoolNodeSet, pool_handle)
 
     ensure_view_change(looper, txnPoolNodeSet)
@@ -177,12 +177,12 @@ def test_belated_request_not_processed_after_view_change(
 
 
 def test_belated_propagate_not_processed_after_view_change(
-        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+        looper, txnPoolNodeSet, pool_handle, wallet_client):
     delta = txnPoolNodeSet[3]
     initial_ledger_size = delta.domainLedger.size
     delta.nodeIbStasher.delay(ppgDelay(300, 'Gamma'))
 
-    one_req = vdr_signed_random_requests(looper, vdr_wallet_client, 1)
+    one_req = vdr_signed_random_requests(looper, wallet_client, 1)
     vdr_send_and_check(one_req, looper, txnPoolNodeSet, pool_handle)
 
     ensure_view_change(looper, txnPoolNodeSet)

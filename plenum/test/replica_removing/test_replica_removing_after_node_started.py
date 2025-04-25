@@ -31,7 +31,7 @@ def tconf(tconf):
 def test_replica_removing_after_node_started(looper,
                                              txnPoolNodeSet,
                                              pool_handle,
-                                             vdr_wallet_client,
+                                             wallet_client,
                                              tconf,
                                              tdir,
                                              allPluginsPath,

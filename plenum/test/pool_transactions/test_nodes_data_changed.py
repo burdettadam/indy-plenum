@@ -25,11 +25,11 @@ logger = getlogger()
 
 def test_node_alias_cannot_be_changed(looper, txnPoolNodeSet,
                                       pool_handle,
-                                      sdk_node_theta_added):
+                                      node_theta_added):
     """
     The node alias cannot be changed.
     """
-    new_steward_wallet, new_node = sdk_node_theta_added
+    new_steward_wallet, new_node = node_theta_added
     node_dest = hexToFriendly(new_node.nodestack.verhex)
     with pytest.raises(RequestRejectedException) as e:
         vdr_send_update_node(looper, new_steward_wallet, pool_handle,
@@ -43,13 +43,13 @@ def test_node_alias_cannot_be_changed(looper, txnPoolNodeSet,
 def testNodePortChanged(looper, txnPoolNodeSet,
                         vdr_wallet_steward,
                         pool_handle,
-                        sdk_node_theta_added,
+                        node_theta_added,
                         tdir, tconf):
     """
     A running node's port is changed
     """
     orig_view_no = txnPoolNodeSet[0].viewNo
-    new_steward_wallet, new_node = sdk_node_theta_added
+    new_steward_wallet, new_node = node_theta_added
 
     node_new_ha = genHa(1)
     new_port = node_new_ha.port
@@ -71,12 +71,12 @@ def testNodePortChanged(looper, txnPoolNodeSet,
 
 def test_fail_node_bls_key_validation(looper,
                                       pool_handle,
-                                      sdk_node_theta_added):
+                                      node_theta_added):
     """
     Test request for change node bls key with incorrect
     bls key proof of possession.
     """
-    new_steward_wallet, new_node = sdk_node_theta_added
+    new_steward_wallet, new_node = node_theta_added
     node_dest = hexToFriendly(new_node.nodestack.verhex)
     bls_key, key_proof = init_bls_keys(new_node.keys_dir, new_node.name)
     # change key_proof

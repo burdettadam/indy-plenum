@@ -19,12 +19,12 @@ def tconf(tconf, request):
     return tconf
 
 
-def sdk_node_theta_added(looper,
+def node_theta_added(looper,
                          txnPoolNodeSet,
                          tdir,
                          tconf,
                          pool_handle,
-                         sdk_wallet_steward,
+                         wallet_steward,
                          allPluginsPath,
                          testNodeClass=TestNode,
                          name=None):
@@ -33,7 +33,7 @@ def sdk_node_theta_added(looper,
     new_steward_wallet, new_node = \
         vdr_add_new_steward_and_node(looper,
                                      pool_handle,
-                                     sdk_wallet_steward,
+                                     wallet_steward,
                                      new_steward_name,
                                      new_node_name,
                                      tdir,
@@ -46,8 +46,8 @@ def sdk_node_theta_added(looper,
     return new_steward_wallet, new_node
 
 
-@pytest.fixture(scope='module', name='sdk_node_theta_added')
-def sdk_node_theta_added_fixture(looper,
+@pytest.fixture(scope='module', name='node_theta_added')
+def node_theta_added_fixture(looper,
                                  txnPoolNodeSet,
                                  tdir,
                                  tconf,
@@ -56,7 +56,7 @@ def sdk_node_theta_added_fixture(looper,
                                  allPluginsPath,
                                  testNodeClass=TestNode,
                                  name=None):
-    return sdk_node_theta_added(looper, txnPoolNodeSet, tdir, tconf, pool_handle, vdr_wallet_steward,
+    return node_theta_added(looper, txnPoolNodeSet, tdir, tconf, pool_handle, vdr_wallet_steward,
                                 allPluginsPath, testNodeClass, name)
 
 

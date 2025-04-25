@@ -33,18 +33,18 @@ def tconf(tconf, request):
 
 
 @pytest.fixture(scope="module")
-def pre_check(tconf, looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+def pre_check(tconf, looper, txnPoolNodeSet, pool_handle, wallet_client):
     # TODO: Maybe this needs to be extracted in another fixture
 
     for i in range(tconf.ProcessedBatchMapsToKeep - 1):
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client, 1)
+                                  wallet_client, 1)
 
     # All node maintain the same map from txn range to 3PC
     looper.run(eventually(chk_if_equal_txn_to_3pc, txnPoolNodeSet))
     for i in range(3):
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client, 1)
+                                  wallet_client, 1)
 
     # All node maintain the same map from txn range to 3PC and its equal to
     # `tconf.ProcessedBatchMapsToKeep` even after sending more batches than

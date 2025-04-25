@@ -47,10 +47,10 @@ def check_result(txnPoolNodeSet, req, should_have_proof):
 
 
 def test_make_proof_bls_enabled(looper, txnPoolNodeSet,
-                                pool_handle, vdr_wallet_client):
+                                pool_handle, wallet_client):
     reqs = vdr_json_couples_to_request_list(
         vdr_send_random_requests(
-            looper, pool_handle, vdr_wallet_client, 1))
+            looper, pool_handle, wallet_client, 1))
     wait_for_requests_ordered(looper, txnPoolNodeSet, reqs)
 
     req = reqs[0]
@@ -86,8 +86,8 @@ def test_make_proof_bls_enabled(looper, txnPoolNodeSet,
 
 
 def test_make_result_bls_enabled(looper, txnPoolNodeSet,
-                                 pool_handle, vdr_wallet_client):
-    req_dict, _ = vdr_send_random_requests(looper, pool_handle, vdr_wallet_client, 1)[0]
+                                 pool_handle, wallet_client):
+    req_dict, _ = vdr_send_random_requests(looper, pool_handle, wallet_client, 1)[0]
     req = vdr_json_to_plenum_request_object(req_dict)
     wait_for_requests_ordered(looper, txnPoolNodeSet, [req])
 
@@ -118,9 +118,9 @@ def test_make_result_protocol_version_less_than_state_proof(looper,
 
 
 def test_proof_in_write_reply(looper, txnPoolNodeSet,
-                              pool_handle, vdr_wallet_client):
+                              pool_handle, wallet_client):
     resp = vdr_send_random_and_check(looper, txnPoolNodeSet,
-                                     pool_handle, vdr_wallet_client, 1)
+                                     pool_handle, wallet_client, 1)
 
     req = resp[0][0]
     result = json.loads(resp[0][1]["Alpha"])['result'] # All nodes now return a reply from the request. All same info select alpha for test purposes
@@ -155,8 +155,8 @@ def test_proof_in_write_reply(looper, txnPoolNodeSet,
 
 
 def test_make_proof_committed_head_used(looper, txnPoolNodeSet,
-                                        pool_handle, vdr_wallet_client):
-    req_dict, _ = vdr_send_random_requests(looper, pool_handle, vdr_wallet_client, 1)[0]
+                                        pool_handle, wallet_client):
+    req_dict, _ = vdr_send_random_requests(looper, pool_handle, wallet_client, 1)[0]
     req = vdr_json_to_plenum_request_object(req_dict)
     wait_for_requests_ordered(looper, txnPoolNodeSet, [req])
     key = BuyHandler.prepare_buy_key(req.identifier, req.reqId)

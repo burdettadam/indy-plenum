@@ -19,7 +19,7 @@ def zmq_connection(vdr_test_node, request, looper):
     looper.removeProdable(vdr_test_node)
 
 
-def test_send_using_not_dealer_socket(zmq_connection, vdr_test_node, looper, vdr_wallet_client, logsearch):
+def test_send_using_not_dealer_socket(zmq_connection, vdr_test_node, looper, wallet_client, logsearch):
     default_log_level = logging.root.level
     Logger.setLogLevel(logging.DEBUG)
     logs, _ = logsearch(files=['zstack.py'], msgs=['Got too many values for unpack'])

@@ -38,7 +38,7 @@ def test_3pc_while_catchup_with_chkpoints_only(tdir, tconf,
                                                testNodeClass,
                                                txnPoolNodeSet,
                                                pool_handle,
-                                               vdr_wallet_client,
+                                               wallet_client,
                                                allPluginsPath):
     '''
     Check that catch-up is not started again even if a quorum of stashed checkpoints
@@ -52,7 +52,7 @@ def test_3pc_while_catchup_with_chkpoints_only(tdir, tconf,
 
     # Check that requests executed well
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 1)
+                              wallet_client, 1)
 
     # Stop one node
     waitNodeDataEquality(looper, lagging_node, *rest_nodes)
@@ -64,7 +64,7 @@ def test_3pc_while_catchup_with_chkpoints_only(tdir, tconf,
 
     # Send more requests to active nodes
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 1)
+                              wallet_client, 1)
     waitNodeDataEquality(looper, *rest_nodes)
 
     # Restart stopped node and wait for successful catch up
@@ -103,7 +103,7 @@ def test_3pc_while_catchup_with_chkpoints_only(tdir, tconf,
         num_checkpoints = Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP + 1
         num_reqs = reqs_for_checkpoint * num_checkpoints + 1
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client,
+                                  wallet_client,
                                   num_reqs)
         looper.run(
             eventually(check_last_ordered_3pc_on_all_replicas, rest_nodes,

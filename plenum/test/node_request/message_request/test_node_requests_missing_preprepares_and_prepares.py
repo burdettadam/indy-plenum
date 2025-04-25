@@ -16,7 +16,7 @@ nodeCount = 4
 
 
 def test_node_requests_missing_preprepares_and_prepares(
-        looper, txnPoolNodeSet, vdr_wallet_client, pool_handle,
+        looper, txnPoolNodeSet, wallet_client, pool_handle,
         tconf, tdir, allPluginsPath):
     """
     2 of 4 nodes go down (simulate this by dropping requests), so pool can not process any more incoming requests.
@@ -36,12 +36,12 @@ def test_node_requests_missing_preprepares_and_prepares(
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               INIT_REQS_CNT)
     init_ledger_size = txnPoolNodeSet[0].domainLedger.size
 
     with delay_rules_without_processing(disconnected_nodes_stashers, delay_3pc()):
-        vdr_send_random_requests(looper, pool_handle, vdr_wallet_client, MISSING_REQS_CNT)
+        vdr_send_random_requests(looper, pool_handle, wallet_client, MISSING_REQS_CNT)
         last_ordered_key = txnPoolNodeSet[0].master_replica.last_ordered_3pc
         looper.run(eventually(check_pp_out_of_sync,
                               alive_nodes,
@@ -61,7 +61,7 @@ def test_node_requests_missing_preprepares_and_prepares(
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               REQS_AFTER_RECONNECT_CNT)
     waitNodeDataEquality(looper, disconnected_nodes[0], *txnPoolNodeSet[:-1])
 

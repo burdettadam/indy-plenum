@@ -10,10 +10,10 @@ from plenum.test.testing_utils import FakeSomething
 
 
 @pytest.fixture()
-def requests(looper, vdr_wallet_client, pool_handle):
+def requests(looper, wallet_client, pool_handle):
     requests = []
     for i in range(5):
-        req = vdr_send_random_request(looper, pool_handle, vdr_wallet_client)
+        req = vdr_send_random_request(looper, pool_handle, wallet_client)
         req, _ = vdr_get_reply(looper, req, timeout=vdr_eval_timeout(1, 4))
         requests.append(req)
     return requests

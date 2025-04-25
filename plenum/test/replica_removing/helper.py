@@ -52,7 +52,7 @@ def check_replica_removed(node, start_replicas_count, instance_id):
 def do_test_replica_removing_with_backup_degraded(looper,
                                                   txnPoolNodeSet,
                                                   pool_handle,
-                                                  sdk_wallet_client,
+                                                  wallet_client,
                                                   tconf):
     """
       Node will change view even though it does not find the master to be degraded
@@ -67,7 +67,7 @@ def do_test_replica_removing_with_backup_degraded(looper,
         vdr_send_batches_of_random_and_check(looper,
                                              txnPoolNodeSet,
                                              pool_handle,
-                                             sdk_wallet_client,
+                                             wallet_client,
                                              num_reqs=30,
                                              num_batches=15)
 

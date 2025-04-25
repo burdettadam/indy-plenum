@@ -25,7 +25,7 @@ def test_new_node_catchup_plugin_ledger(txn_pool_node_set_post_creation, looper,
                len(node.getLedger(AUCTION_LEDGER_ID))
 
 
-def some_demo_txns(looper, sdk_wallet_steward, pool_handle):
+def some_demo_txns(looper, wallet_steward, pool_handle):
     id = 'xyz'
     ops = [
         {
@@ -47,13 +47,13 @@ def some_demo_txns(looper, sdk_wallet_steward, pool_handle):
     ]
 
     for op in ops:
-        successful_op(looper, op, sdk_wallet_steward, pool_handle)
+        successful_op(looper, op, wallet_steward, pool_handle)
 
 
 @pytest.mark.skip(reason="INDY-1297. Node does not catch up on reconnection anymore.")
 def test_disconnected_node_catchup_plugin_ledger_txns(looper,
                                                       txnPoolNodeSet,
-                                                      vdr_wallet_client,
+                                                      wallet_client,
                                                       pool_handle,
                                                       vdr_new_node_caught_up):
     """
@@ -65,7 +65,7 @@ def test_disconnected_node_catchup_plugin_ledger_txns(looper,
         looper, txnPoolNodeSet, new_node, stopNode=False)
 
     # Do some demo txns;
-    some_demo_txns(looper, vdr_wallet_client, pool_handle)
+    some_demo_txns(looper, wallet_client, pool_handle)
 
     # Make sure new node got out of sync
     waitNodeDataInequality(looper, new_node, *txnPoolNodeSet[:-1])

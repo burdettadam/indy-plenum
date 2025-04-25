@@ -15,7 +15,7 @@ def tconf(tconf):
 
 
 def test_view_change_happens_if_primary_is_slow_to_update_freshness(looper, tconf, txnPoolNodeSet,
-                                                                    vdr_wallet_client, pool_handle,
+                                                                    wallet_client, pool_handle,
                                                                     monkeypatch):
     monkeypatch.setattr(txnPoolNodeSet[0].master_replica._freshness_checker,
                         'freshness_timeout', 3 * FRESHNESS_TIMEOUT)
@@ -32,4 +32,4 @@ def test_view_change_happens_if_primary_is_slow_to_update_freshness(looper, tcon
 
     assert sum(1 for node in txnPoolNodeSet if has_freshness_instance_change(node)) >= 3
 
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, wallet_client, pool_handle)

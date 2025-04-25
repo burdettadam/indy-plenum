@@ -12,7 +12,7 @@ pp_delay = 3
 
 
 def testPrePrepareProcessedInOrder(perf_chk_patched, looper, txnPoolNodeSet,
-                                   pool_handle, vdr_wallet_client):
+                                   pool_handle, wallet_client):
     """
     A non-primary receives PRE-PREPARE out of order, it receives with ppSeqNo 2
      earlier than it receives the one with ppSeqNo 1 but it stashes the one
@@ -43,7 +43,7 @@ def testPrePrepareProcessedInOrder(perf_chk_patched, looper, txnPoolNodeSet,
                      format(node))
         node.nodeIbStasher.delay(specificPrePrepares)
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client,
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client,
                               (ppsToDelay + 1) * tconf.Max3PCBatchSize)
 
     checkNodesHaveSameRoots(txnPoolNodeSet)

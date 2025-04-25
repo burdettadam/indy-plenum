@@ -14,29 +14,29 @@ from stp_core.loop.eventually import eventually
 def test_lag_less_then_catchup(looper,
                                txnPoolNodeSet,
                                pool_handle,
-                               vdr_wallet_client):
+                               wallet_client):
     delayed_node = txnPoolNodeSet[-1]
     other_nodes = list(set(txnPoolNodeSet) - {delayed_node})
     checkViewNoForNodes(txnPoolNodeSet)
     last_ordered_before = delayed_node.master_replica.last_ordered_3pc
     with delay_rules_without_processing(delayed_node.nodeIbStasher, cDelay()):
         # Send txns for stable checkpoint
-        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, CHK_FREQ)
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, CHK_FREQ)
         # Check, that all of not slowed nodes has a stable checkpoint
         for n in other_nodes:
             assert n.master_replica._consensus_data.stable_checkpoint == CHK_FREQ
 
         # Send another txn. This txn will be reordered after view_change
-        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 1)
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, 1)
         trigger_view_change(txnPoolNodeSet)
         ensureElectionsDone(looper, txnPoolNodeSet)
 
         assert delayed_node.master_replica.last_ordered_3pc == last_ordered_before
 
     # Send txns for stabilize checkpoint on other nodes
-    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, CHK_FREQ - 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, CHK_FREQ - 1)
 
     pool_pp_seq_no = get_pp_seq_no(other_nodes)
     looper.run(eventually(lambda: assertExp(delayed_node.master_replica.last_ordered_3pc[1] == pool_pp_seq_no)))
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, wallet_client, pool_handle)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)

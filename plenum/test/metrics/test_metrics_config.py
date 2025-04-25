@@ -18,13 +18,13 @@ def tconf(tconf):
         tconf.METRICS_FLUSH_INTERVAL = old_metrics_flush_interval
 
 
-def test_kv_store_metrics_config(looper, txnPoolNodeSet, tdir, tconf, pool_handle, vdr_wallet_client):
+def test_kv_store_metrics_config(looper, txnPoolNodeSet, tdir, tconf, pool_handle, wallet_client):
     total_time = 1.5 * tconf.PerfCheckFreq
     total_iters = 5
     iter_time = total_time / total_iters
 
     for _ in range(total_iters):
-        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 15)
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, 15)
         looper.runFor(iter_time)
 
     for node in txnPoolNodeSet:

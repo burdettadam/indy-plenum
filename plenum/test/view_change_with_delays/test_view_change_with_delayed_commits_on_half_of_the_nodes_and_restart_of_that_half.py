@@ -15,7 +15,7 @@ def tconf(tconf):
 
 def test_view_change_with_delayed_commits_on_half_of_the_nodes_and_restart_of_that_half(txnPoolNodeSet, looper,
                                                                                         pool_handle,
-                                                                                        vdr_wallet_client, tconf, tdir,
+                                                                                        wallet_client, tconf, tdir,
                                                                                         allPluginsPath):
     """
     Order transactions on half of the pool
@@ -35,7 +35,7 @@ def test_view_change_with_delayed_commits_on_half_of_the_nodes_and_restart_of_th
         old_last_ordered=slow_nodes[0].master_replica.last_ordered_3pc,
         looper=looper,
         pool_handle=pool_handle,
-        sdk_wallet_client=vdr_wallet_client,
+        wallet_client=wallet_client,
         tconf=tconf,
         tdir=tdir,
         all_plugins_path=allPluginsPath,

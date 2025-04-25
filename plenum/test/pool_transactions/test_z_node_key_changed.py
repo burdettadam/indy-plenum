@@ -25,12 +25,12 @@ logger = getlogger()
 
 
 def testNodeKeysChanged(looper, txnPoolNodeSet, tdir,
-                        tconf, sdk_node_theta_added,
+                        tconf, node_theta_added,
                         pool_handle,
                         allPluginsPath=None):
     # 1. Add new node
     orig_view_no = txnPoolNodeSet[0].viewNo
-    new_steward_wallet, new_node = sdk_node_theta_added
+    new_steward_wallet, new_node = node_theta_added
 
     # 2. Stop new node and rotate its keys
     new_node.stop()
@@ -62,11 +62,11 @@ def testNodeKeysChanged(looper, txnPoolNodeSet, tdir,
     assert all(n.viewNo == orig_view_no for n in txnPoolNodeSet)
 
 
-def test_node_init_remote_keys_errors_not_suppressed(looper, txnPoolNodeSet, sdk_node_theta_added, monkeypatch,
+def test_node_init_remote_keys_errors_not_suppressed(looper, txnPoolNodeSet, node_theta_added, monkeypatch,
                                                      pool_handle):
     TEST_EXCEPTION_MESSAGE = 'Failed to create some cert files'
 
-    new_steward_wallet, new_node = sdk_node_theta_added
+    new_steward_wallet, new_node = node_theta_added
 
     new_node.stop()
     looper.removeProdable(name=new_node.name)

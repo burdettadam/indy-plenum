@@ -8,7 +8,7 @@ from plenum.test.helper import vdr_send_random_and_check
 
 
 def test_stable_checkpoint_when_one_instance_slow(chkFreqPatched, tconf, looper, txnPoolNodeSet, pool_handle,
-                                                  vdr_wallet_client, reqs_for_checkpoint):
+                                                  wallet_client, reqs_for_checkpoint):
     delay = 5
     pr = getPrimaryReplica(txnPoolNodeSet, 1)
     slowNode = pr.node
@@ -16,7 +16,7 @@ def test_stable_checkpoint_when_one_instance_slow(chkFreqPatched, tconf, looper,
     for n in otherNodes:
         n.nodeIbStasher.delay(ppDelay(delay, 1))
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, reqs_for_checkpoint)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, reqs_for_checkpoint)
     timeout = waits.expectedTransactionExecutionTime(len(txnPoolNodeSet)) + delay
     next_checkpoint = tconf.CHK_FREQ
     looper.run(eventually(check_for_nodes, txnPoolNodeSet, check_stable_checkpoint, next_checkpoint,

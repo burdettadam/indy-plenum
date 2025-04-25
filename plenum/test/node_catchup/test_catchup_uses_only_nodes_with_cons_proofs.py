@@ -32,12 +32,12 @@ def tconf(tconf):
 def test_catchup_uses_only_nodes_with_cons_proofs(looper,
                                                   txnPoolNodeSet,
                                                   pool_handle,
-                                                  vdr_wallet_client):
+                                                  wallet_client):
     lagging_node = txnPoolNodeSet[-1]
     other_nodes = txnPoolNodeSet[:-1]
 
     start_delaying(lagging_node.nodeIbStasher, delay_3pc())
-    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 10)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, 10)
 
     catchup_reqs = {node.name: start_delaying(node.nodeIbStasher, cqDelay())
                     for node in other_nodes}

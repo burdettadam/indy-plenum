@@ -31,14 +31,14 @@ whitelist = [ERORR_MSG]
 
 def testLoggingTxnStateForValidRequest(
         looper, logsearch, txnPoolNodeSet,
-        pool_handle, vdr_wallet_client):
+        pool_handle, wallet_client):
     logsPropagate, _ = logsearch(files=['propagator.py'], funcs=['propagate'],
                                  msgs=['propagating.*request.*from client'])
     logsOrdered, _ = logsearch(files=['ordering_service.py'], funcs=['_order_3pc_key'], msgs=['ordered batch request'])
     logsCommited, _ = logsearch(files=['node.py'], funcs=['executeBatch'], msgs=['committed batch request'])
 
     reqs = vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                     vdr_wallet_client, 1)
+                                     wallet_client, 1)
     req, _ = reqs[0]
 
     key = get_key_from_req(req)
@@ -48,20 +48,20 @@ def testLoggingTxnStateForValidRequest(
 
 
 def testLoggingTxnStateForInvalidRequest(
-        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, logsearch):
+        looper, txnPoolNodeSet, pool_handle, wallet_client, logsearch):
     logsPropagate, _ = logsearch(files=['propagator.py'], funcs=['propagate'],
                                  msgs=['propagating.*request.*from client'])
     logsReject, _ = logsearch(files=['ordering_service.py'], funcs=['_consume_req_queue_for_pre_prepare'],
                               msgs=['encountered exception.*while processing.*will reject'])
 
     seed = randomString(32)
-    wh, _ = vdr_wallet_client
+    wh, _ = wallet_client
 
     nym_request, _ = looper.loop.run_until_complete(
-        vdr_prepare_nym_request(vdr_wallet_client, seed,
+        vdr_prepare_nym_request(wallet_client, seed,
                             "name", STEWARD_STRING))
 
-    request_couple = vdr_sign_and_send_prepared_request(looper, vdr_wallet_client,
+    request_couple = vdr_sign_and_send_prepared_request(looper, wallet_client,
                                                         pool_handle, nym_request)
 
     with pytest.raises(RequestRejectedException) as e:

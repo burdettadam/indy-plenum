@@ -20,7 +20,7 @@ whitelist = ['cannot find remote with name']
 def test_replay_new_bouncing(txnPoolNodesLooper, txnPoolNodeSet, tconf, tdir,
                              testNodeClass, tmpdir_factory,
                              node_config_helper_class, allPluginsPath,
-                             some_txns_done, pool_handle, vdr_wallet_client):
+                             some_txns_done, pool_handle, wallet_client):
     alpha = txnPoolNodeSet[0]
     old_view_no = alpha.viewNo
     other_nodes = txnPoolNodeSet[1:]
@@ -33,7 +33,7 @@ def test_replay_new_bouncing(txnPoolNodesLooper, txnPoolNodeSet, tconf, tdir,
 
     vdr_send_random_and_check(txnPoolNodesLooper, other_nodes,
                               pool_handle,
-                              vdr_wallet_client, 10)
+                              wallet_client, 10)
     ensure_all_nodes_have_same_data(txnPoolNodesLooper, other_nodes)
 
     for node in other_nodes:
@@ -58,7 +58,7 @@ def test_replay_new_bouncing(txnPoolNodesLooper, txnPoolNodeSet, tconf, tdir,
 
     vdr_send_random_and_check(txnPoolNodesLooper, txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client, 10)
+                              wallet_client, 10)
     ensure_all_nodes_have_same_data(txnPoolNodesLooper, txnPoolNodeSet)
 
     for node in txnPoolNodeSet:

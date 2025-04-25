@@ -22,7 +22,7 @@ def tconf(tconf):
     tconf.Max3PCBatchSize = oldMax3PCBatchSize
 
 
-def test_replicas_prepare_time(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+def test_replicas_prepare_time(looper, txnPoolNodeSet, pool_handle, wallet_client):
     last_domain_seq_no = txnPoolNodeSet[0].domainLedger.size + 1
 
     # Check that each replica's PREPARE time is same as the PRE-PREPARE time
@@ -31,7 +31,7 @@ def test_replicas_prepare_time(looper, txnPoolNodeSet, pool_handle, vdr_wallet_c
         vdr_send_random_and_check(looper,
                                   txnPoolNodeSet,
                                   pool_handle,
-                                  vdr_wallet_client,
+                                  wallet_client,
                                   count=2)
         looper.runFor(1)
 
@@ -65,7 +65,7 @@ def test_replicas_prepare_time(looper, txnPoolNodeSet, pool_handle, vdr_wallet_c
 
 
 def test_non_primary_accepts_pre_prepare_time(looper, txnPoolNodeSet,
-                                              vdr_wallet_client, pool_handle):
+                                              wallet_client, pool_handle):
     """
     One of the non-primary has an in-correct clock so it thinks PRE-PREPARE
     has incorrect time
@@ -73,7 +73,7 @@ def test_non_primary_accepts_pre_prepare_time(looper, txnPoolNodeSet,
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               count=2)
     # send_reqs_to_nodes_and_verify_all_replies(looper, wallet1, client1, 2)
     # The replica having the bad clock
@@ -87,7 +87,7 @@ def test_non_primary_accepts_pre_prepare_time(looper, txnPoolNodeSet,
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               count=2)
 
     assert get_timestamp_suspicion_count(confused_npr.node) > old_susp_count

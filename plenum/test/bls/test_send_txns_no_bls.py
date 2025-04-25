@@ -11,7 +11,7 @@ def test_each_node_has_bls(txnPoolNodeSet):
 
 
 def test_send_txns_no_bls(looper, txnPoolNodeSet,
-                          pool_handle, vdr_wallet_client):
+                          pool_handle, wallet_client):
     sdk_check_bls_multi_sig_after_send(looper, txnPoolNodeSet,
-                                       pool_handle, vdr_wallet_client,
+                                       pool_handle, wallet_client,
                                        saved_multi_sigs_count=0)

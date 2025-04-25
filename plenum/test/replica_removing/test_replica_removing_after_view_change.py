@@ -22,7 +22,7 @@ def tconf(tconf):
 def test_replica_removing_after_view_change(looper,
                                             txnPoolNodeSet,
                                             pool_handle,
-                                            vdr_wallet_client,
+                                            wallet_client,
                                             tconf,
                                             tdir,
                                             allPluginsPath):

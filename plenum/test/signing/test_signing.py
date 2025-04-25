@@ -31,7 +31,7 @@ def testOneNodeAltersAClientRequest(looper,
                                     txnPoolNodeSet,
                                     evilAlpha,
                                     pool_handle,
-                                    vdr_wallet_client):
+                                    wallet_client):
     """Malicious Alpha node sends incorrect propagate. This test check that
     nodes raise InsufficientCorrectSignatures in validate this propagate"""
 
@@ -50,7 +50,7 @@ def testOneNodeAltersAClientRequest(looper,
         n.nodeIbStasher.delay(req_delay(0.250))
     pastNodes = []
 
-    sent1 = vdr_send_random_requests(looper, pool_handle, vdr_wallet_client, 1)
+    sent1 = vdr_send_random_requests(looper, pool_handle, wallet_client, 1)
     sent1 = vdr_get_replies(looper, sent1)
     #sent1 = sdk_json_to_request_object(request_couple_json[0][0])
     checkPropagated(looper, txnPoolNodeSet, sent1, faultyNodes)

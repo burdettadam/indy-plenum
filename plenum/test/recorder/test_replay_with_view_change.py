@@ -15,7 +15,7 @@ whitelist = ['cannot find remote with name']
 @pytest.mark.skip(reason="The test takes too much time! Needs to be re-factored")
 def test_view_change_after_some_txns(txnPoolNodesLooper, txnPoolNodeSet,
                                      some_txns_done, testNodeClass, viewNo,  # noqa
-                                     pool_handle, vdr_wallet_client,
+                                     pool_handle, wallet_client,
                                      node_config_helper_class, tconf, tdir,
                                      allPluginsPath, tmpdir_factory):
     """
@@ -26,7 +26,7 @@ def test_view_change_after_some_txns(txnPoolNodesLooper, txnPoolNodeSet,
     ensure_all_nodes_have_same_data(txnPoolNodesLooper, nodes=txnPoolNodeSet)
 
     vdr_send_random_and_check(txnPoolNodesLooper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 10)
+                              wallet_client, 10)
     ensure_all_nodes_have_same_data(txnPoolNodesLooper, txnPoolNodeSet)
 
     for node in txnPoolNodeSet:

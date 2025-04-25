@@ -10,7 +10,7 @@ from plenum.test.helper import vdr_send_random_and_check
 
 from plenum.test.pool_transactions.helper import \
     disconnect_node_and_ensure_disconnected, vdr_send_update_node
-from plenum.test.pool_transactions.conftest import sdk_node_theta_added
+from plenum.test.pool_transactions.conftest import node_theta_added
 
 from plenum.test.node_catchup.helper import ensure_all_nodes_have_same_data
 from plenum.test.view_change.helper import ensure_view_change_complete, \
@@ -29,7 +29,7 @@ def check_all_nodes_the_same_pool_list(nodes):
 
 @pytest.mark.skip("Too many sdk_pool_refresh")
 def test_primary_selection_after_demoted_node_promotion(
-        looper, txnPoolNodeSet, sdk_node_theta_added,
+        looper, txnPoolNodeSet, node_theta_added,
         pool_handle,
         tconf, tdir, allPluginsPath):
     """
@@ -45,7 +45,7 @@ def test_primary_selection_after_demoted_node_promotion(
         demoted / promoted node as a primary for some instanse
     """
 
-    new_steward_wallet, new_node = sdk_node_theta_added
+    new_steward_wallet, new_node = node_theta_added
 
     # viewNo0 = checkViewNoForNodes(txnPoolNodeSet)
     check_all_nodes_the_same_pool_list(txnPoolNodeSet)

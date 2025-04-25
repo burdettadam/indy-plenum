@@ -11,14 +11,14 @@ ledger_id = 1
 def test_receive_incorrect_catchup_request_with_end_greater_catchuptill(looper,
                                                                         txnPoolNodeSet,
                                                                         pool_handle,
-                                                                        vdr_wallet_client):
+                                                                        wallet_client):
     end = 15
     catchup_till = 10
     req = CatchupReq(ledger_id, 1, end, catchup_till)
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               4)
     ledger_manager = txnPoolNodeSet[0].ledgerManager
     ledger_manager.processCatchupReq(req, "frm")
@@ -31,14 +31,14 @@ def test_receive_incorrect_catchup_request_with_end_greater_catchuptill(looper,
 def test_receive_incorrect_catchup_request_with_start_greater_end(looper,
                                                                   txnPoolNodeSet,
                                                                   pool_handle,
-                                                                  vdr_wallet_client):
+                                                                  wallet_client):
     start = 10
     end = 5
     req = CatchupReq(ledger_id, start, end, 11)
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               4)
     ledger_manager = txnPoolNodeSet[0].ledgerManager
     ledger_manager.processCatchupReq(req, "frm")
@@ -52,13 +52,13 @@ def test_receive_incorrect_catchup_request_with_catchuptill_greater_ledger_size(
         looper,
         txnPoolNodeSet,
         pool_handle,
-        vdr_wallet_client):
+        wallet_client):
     catchup_till = 100
     req = CatchupReq(ledger_id, 1, 10, catchup_till)
     vdr_send_random_and_check(looper,
                               txnPoolNodeSet,
                               pool_handle,
-                              vdr_wallet_client,
+                              wallet_client,
                               4)
     ledger_manager = txnPoolNodeSet[0].ledgerManager
     ledger_manager.processCatchupReq(req, "frm")

@@ -24,7 +24,7 @@ def test_3pc_while_catchup(tdir, tconf,
                            testNodeClass,
                            txnPoolNodeSet,
                            pool_handle,
-                           vdr_wallet_client,
+                           wallet_client,
                            allPluginsPath):
     '''
     Tests that requests being ordered during catch-up are stashed and re-applied
@@ -37,7 +37,7 @@ def test_3pc_while_catchup(tdir, tconf,
 
     # Check that requests executed well
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 10)
+                              wallet_client, 10)
 
     # Stop one node
     waitNodeDataEquality(looper, lagging_node, *rest_nodes)
@@ -49,7 +49,7 @@ def test_3pc_while_catchup(tdir, tconf,
 
     # Send more requests to active nodes
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 10)
+                              wallet_client, 10)
     waitNodeDataEquality(looper, *rest_nodes)
 
     # Restart stopped node and wait for successful catch up
@@ -77,7 +77,7 @@ def test_3pc_while_catchup(tdir, tconf,
 
         # make sure that more requests are being ordered while catch-up is in progress
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client, 10)
+                                  wallet_client, 10)
 
         assert lagging_node.mode == Mode.syncing
         assert all(replica.stasher.stash_size(STASH_CATCH_UP) > 0 for inst_id, replica in lagging_node.replicas.items())

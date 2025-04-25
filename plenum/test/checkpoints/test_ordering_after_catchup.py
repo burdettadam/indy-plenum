@@ -11,14 +11,14 @@ LOG_SIZE = 3 * CHK_FREQ
 nodeCount = 4
 
 
-def add_new_node(looper, pool_nodes, pool_handle, sdk_wallet_steward,
+def add_new_node(looper, pool_nodes, pool_handle, wallet_steward,
                  tdir, tconf, all_plugins_path):
     name = randomString(6)
     node_name = "Node-" + name
     new_steward_name = "Steward-" + name
 
     _, new_node = vdr_add_new_steward_and_node(
-        looper, pool_handle, sdk_wallet_steward,
+        looper, pool_handle, wallet_steward,
         new_steward_name, node_name, tdir, tconf,
         allPluginsPath=all_plugins_path)
     pool_nodes.append(new_node)

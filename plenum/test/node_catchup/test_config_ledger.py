@@ -40,10 +40,10 @@ def read(key, looper, pool_handle, sdk_wallet):
     return json.loads(resp['result'][DATA])[key]
 
 
-def send_some_config_txns(looper, pool_handle, sdk_wallet_client, keys):
+def send_some_config_txns(looper, pool_handle, wallet_client, keys):
     for i in range(5):
         key, val = 'key_{}'.format(i + 1), randomString()
-        write(key, val, looper, pool_handle, sdk_wallet_client)
+        write(key, val, looper, pool_handle, wallet_client)
         keys[key] = val
     return keys
 
@@ -61,7 +61,7 @@ def setup(testNodeClass, txnPoolNodeSet):
         ca._query_types.add(READ_CONF)
 
 
-def test_config_ledger_txns(looper, setup, txnPoolNodeSet, vdr_wallet_client,
+def test_config_ledger_txns(looper, setup, txnPoolNodeSet, wallet_client,
                             pool_handle):
     """
     Do some writes and reads on the config ledger
@@ -80,34 +80,34 @@ def test_config_ledger_txns(looper, setup, txnPoolNodeSet, vdr_wallet_client,
 
     # Do a write txn
     key, val = 'test_key', 'test_val'
-    write(key, val, looper, pool_handle, vdr_wallet_client)
+    write(key, val, looper, pool_handle, wallet_client)
 
     for node in txnPoolNodeSet:
         assert len(node.getLedger(CONFIG_LEDGER_ID)) == (old_config_ledger_size + 1)
 
     state_root_hashes.add(state_roots_serializer.serialize(state.committedHeadHash))
 
-    assert read(key, looper, pool_handle, vdr_wallet_client) == val
+    assert read(key, looper, pool_handle, wallet_client) == val
     old_config_ledger_size += 1
 
     key, val = 'test_key', 'test_val1'
-    write(key, val, looper, pool_handle, vdr_wallet_client)
+    write(key, val, looper, pool_handle, wallet_client)
     for node in txnPoolNodeSet:
         assert len(node.getLedger(CONFIG_LEDGER_ID)) == (old_config_ledger_size + 1)
 
     state_root_hashes.add(state_roots_serializer.serialize(state.committedHeadHash))
 
-    assert read(key, looper, pool_handle, vdr_wallet_client) == val
+    assert read(key, looper, pool_handle, wallet_client) == val
     old_config_ledger_size += 1
 
     key, val = 'test_key1', 'test_val11'
-    write(key, val, looper, pool_handle, vdr_wallet_client)
+    write(key, val, looper, pool_handle, wallet_client)
     for node in txnPoolNodeSet:
         assert len(node.getLedger(CONFIG_LEDGER_ID)) == (old_config_ledger_size + 1)
 
     state_root_hashes.add(state_roots_serializer.serialize(state.committedHeadHash))
 
-    assert read(key, looper, pool_handle, vdr_wallet_client) == val
+    assert read(key, looper, pool_handle, wallet_client) == val
 
     for node in txnPoolNodeSet:
         # Not all batches might have BLS-sig but at least one of them will have
@@ -129,8 +129,8 @@ def keys():
 
 @pytest.fixture(scope="module")
 def some_config_txns_done(looper, setup, txnPoolNodeSet, keys,
-                          vdr_wallet_client, pool_handle):
-    return send_some_config_txns(looper, pool_handle, vdr_wallet_client, keys)
+                          wallet_client, pool_handle):
+    return send_some_config_txns(looper, pool_handle, wallet_client, keys)
 
 
 def start_stopped_node(stopped_node, looper, tconf,
@@ -162,7 +162,7 @@ def test_new_node_catchup_config_ledger(looper, some_config_txns_done,
 def test_restarted_node_catches_up_config_ledger_txns(looper,
                                                       some_config_txns_done,
                                                       txnPoolNodeSet,
-                                                      vdr_wallet_client,
+                                                      wallet_client,
                                                       pool_handle,
                                                       vdr_new_node_caught_up,
                                                       keys,
@@ -180,7 +180,7 @@ def test_restarted_node_catches_up_config_ledger_txns(looper,
 
     # Do some config txns; using a fixture as a method, passing some arguments
     # as None as they only make sense for the fixture (pre-requisites)
-    send_some_config_txns(looper, pool_handle, vdr_wallet_client, keys)
+    send_some_config_txns(looper, pool_handle, wallet_client, keys)
 
     # Make sure new node got out of sync
     for node in txnPoolNodeSet[:-1]:

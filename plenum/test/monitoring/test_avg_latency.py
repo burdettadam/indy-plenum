@@ -16,13 +16,13 @@ def tconf(tconf):
     tconf.MIN_LATENCY_COUNT = old_min_cnt
 
 @pytest.mark.skip(reason="Not used now")
-def testAvgReqLatency(looper, tconf, txnPoolNodeSet, vdr_wallet_client, pool_handle):
+def testAvgReqLatency(looper, tconf, txnPoolNodeSet, wallet_client, pool_handle):
     """
     Checking if average latency is being set
     """
-    _, wallet_did = vdr_wallet_client
+    _, wallet_did = wallet_client
     for i in range(txnCount):
-        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 1)
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, 1)
 
     for node in txnPoolNodeSet:  # type: Node
         mLat = node.monitor.getAvgLatencyForClient(wallet_did,

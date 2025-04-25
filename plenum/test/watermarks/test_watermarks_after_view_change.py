@@ -32,7 +32,7 @@ def test_watermarks_after_view_change(tdir, tconf,
                                       looper,
                                       txnPoolNodeSet,
                                       pool_handle,
-                                      vdr_wallet_client):
+                                      wallet_client):
     """
     Delay commit, checkpoint, InstanceChange and ViewChangeDone messages for lagging_node.
     Start ViewChange.
@@ -51,8 +51,8 @@ def test_watermarks_after_view_change(tdir, tconf,
                           customTimeout=waits.expectedPoolViewChangeStartedTimeout(len(txnPoolNodeSet)))
         ensure_all_nodes_have_same_data(looper, txnPoolNodeSet[:-1])
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client, 6)
+                                  wallet_client, 6)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 1)
+                              wallet_client, 1)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)

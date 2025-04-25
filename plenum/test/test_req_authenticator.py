@@ -45,7 +45,7 @@ def test_authenticator_registration(pre_reqs, registration):
 
 
 def test_authentication(looper, pre_reqs, registration,
-                        vdr_wallet_client,
+                        wallet_client,
                         pool_handle):
     _, core_authnr, req_authnr = pre_reqs
 
@@ -60,7 +60,7 @@ def test_authentication(looper, pre_reqs, registration,
     }
     # Just creating the request
     req = vdr_sign_and_submit_op(looper, pool_handle,
-                                 vdr_wallet_client, op)
+                                 wallet_client, op)
     with pytest.raises(NoAuthenticatorFound):
         req_authnr.authenticate(req[0])
 
@@ -72,19 +72,19 @@ def test_authentication(looper, pre_reqs, registration,
     }
     # Just creating the request
     req = vdr_sign_and_submit_op(looper, pool_handle,
-                                 vdr_wallet_client, op)
+                                 wallet_client, op)
     assert set() == req_authnr.authenticate(req[0])
 
     # identifier for write type
-    wh, did = vdr_wallet_client
-    req = vdr_new_client_request(None, randomString(), looper, vdr_wallet_client)
+    wh, did = wallet_client
+    req = vdr_new_client_request(None, randomString(), looper, wallet_client)
     core_authnr.addIdr(did,
                        looper.loop.run_until_complete(vdr_get_did_signing_key(wh, did)))
     assert req_authnr.authenticate(json.loads(req)) == {did, }
 
 
 def test_propagate_of_ordered_request_doesnt_stash_requests_in_authenticator(
-        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+        looper, txnPoolNodeSet, pool_handle, wallet_client):
 
     # Universal delayer
     def stopAll(msg):
@@ -100,7 +100,7 @@ def test_propagate_of_ordered_request_doesnt_stash_requests_in_authenticator(
          delay_rules(lastNode.clientIbStasher, stopAll):
         vdr_send_random_and_check(looper, txnPoolNodeSet,
                                   pool_handle,
-                                  vdr_wallet_client, 1)
+                                  wallet_client, 1)
         old_propagates = [n.spylog.count('processPropagate') for n in txnPoolNodeSet]
 
     def check_more_propagates_delivered():

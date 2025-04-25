@@ -9,7 +9,7 @@ from plenum.test.view_change.helper import ensure_view_change
 from stp_core.loop.eventually import eventually
 
 
-def test_view_change_done_delayed(txnPoolNodeSet, looper, pool_handle, vdr_wallet_client):
+def test_view_change_done_delayed(txnPoolNodeSet, looper, pool_handle, wallet_client):
     """
     A node is slow so is behind other nodes, after view change, it catches up
     but it also gets view change message as delayed, a node should start
@@ -28,7 +28,7 @@ def test_view_change_done_delayed(txnPoolNodeSet, looper, pool_handle, vdr_walle
         assert None not in {r.isPrimary for r in node.replicas.values()}
 
     vdr_send_batches_of_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                         vdr_wallet_client, 5 * 4, 4)
+                                         wallet_client, 5 * 4, 4)
 
     ensure_view_change(looper, nodes=txnPoolNodeSet)
 
@@ -45,7 +45,7 @@ def test_view_change_done_delayed(txnPoolNodeSet, looper, pool_handle, vdr_walle
     assert all(slow_node.viewNo == node.viewNo for node in other_nodes)
 
     # Send requests to make sure pool is functional
-    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 5)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, 5)
 
     # Repair network
     slow_node.reset_delays_and_process_delayeds()
@@ -57,5 +57,5 @@ def test_view_change_done_delayed(txnPoolNodeSet, looper, pool_handle, vdr_walle
     waitNodeDataEquality(looper, slow_node, *other_nodes)
 
     # Send more requests and compare data of all nodes
-    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 5)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, 5)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)

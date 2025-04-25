@@ -4,7 +4,7 @@ TestRunningTimeLimitSec = 300
 
 
 def test_view_change_in_between_3pc_all_nodes_random_delays(
-        txnPoolNodeSet, tconf, looper, pool_handle, vdr_wallet_client):
+        txnPoolNodeSet, tconf, looper, pool_handle, wallet_client):
     """
     - Slow processing 3PC messages for all nodes randomly
     - do view change
@@ -12,16 +12,16 @@ def test_view_change_in_between_3pc_all_nodes_random_delays(
     view_change_in_between_3pc_random_delays(looper, txnPoolNodeSet,
                                              txnPoolNodeSet,
                                              pool_handle,
-                                             vdr_wallet_client, tconf)
+                                             wallet_client, tconf)
 
 
 def test_view_change_in_between_3pc_all_nodes_random_delays_long_delay(
-        txnPoolNodeSet, looper, pool_handle, vdr_wallet_client, tconf):
+        txnPoolNodeSet, looper, pool_handle, wallet_client, tconf):
     """
     - Slow processing 3PC messages for all nodes randomly
     - do view change
     """
     view_change_in_between_3pc_random_delays(looper, txnPoolNodeSet,
                                              txnPoolNodeSet,
-                                             pool_handle, vdr_wallet_client, tconf,
+                                             pool_handle, wallet_client, tconf,
                                              min_delay=5)

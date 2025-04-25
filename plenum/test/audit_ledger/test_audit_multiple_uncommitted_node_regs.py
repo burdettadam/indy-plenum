@@ -8,7 +8,7 @@ from plenum.test.view_change.helper import add_new_node
 def test_audit_multiple_uncommitted_node_regs(looper, tdir, tconf, allPluginsPath,
                                               txnPoolNodeSet,
                                               pool_handle,
-                                              vdr_wallet_client,
+                                              wallet_client,
                                               vdr_wallet_steward):
     '''
     - Delay COMMITS on 1 Node
@@ -50,4 +50,4 @@ def test_audit_multiple_uncommitted_node_regs(looper, tdir, tconf, allPluginsPat
         start_delaying(new_node.nodeIbStasher, icDelay())
 
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet, custom_timeout=20)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, wallet_client, pool_handle)

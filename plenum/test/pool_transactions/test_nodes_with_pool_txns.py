@@ -47,15 +47,15 @@ def testStewardCannotAddMoreThanOneNode(looper, txnPoolNodeSet,
 def testClientConnectsToNewNode(looper,
                                 pool_handle,
                                 txnPoolNodeSet,
-                                sdk_node_theta_added,
-                                vdr_wallet_client):
+                                node_theta_added,
+                                wallet_client):
     """
     A client should be able to connect to a newly added node
     """
-    _, new_node = sdk_node_theta_added
+    _, new_node = node_theta_added
     logger.debug("{} connected to the pool".format(new_node))
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 1)
+                              wallet_client, 1)
 
 
 def testAdd2NewNodes(looper, txnPoolNodeSet,
@@ -149,7 +149,7 @@ def testNodesConnect(txnPoolNodeSet):
     pass
 
 
-def testNodesReceiveClientMsgs(looper, txnPoolNodeSet, vdr_wallet_client,
+def testNodesReceiveClientMsgs(looper, txnPoolNodeSet, wallet_client,
                                pool_handle):
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client,
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, wallet_client,
                                pool_handle)

@@ -151,11 +151,11 @@ def set_txn_author_agreement(
 
 @pytest.fixture(scope='module')
 def get_txn_author_agreement(
-        looper, txnPoolNodeSet, pool_handle, vdr_wallet_client
+        looper, txnPoolNodeSet, pool_handle, wallet_client
 ):
     def wrapped(digest=None, version=None, timestamp=None):
         return _get_txn_author_agreement(
-            looper, pool_handle, vdr_wallet_client,
+            looper, pool_handle, wallet_client,
             digest=digest, version=version, timestamp=timestamp
         )
 

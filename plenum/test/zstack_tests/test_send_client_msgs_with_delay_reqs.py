@@ -16,7 +16,7 @@ logger = getlogger()
 def test_resending_pending_client_msgs(looper,
                                        txnPoolNodeSet,
                                        pool_handle,
-                                       vdr_wallet_client,
+                                       wallet_client,
                                        vdr_wallet_steward,
                                        tdir, tconf, allPluginsPath,
                                        monkeypatch):
@@ -36,7 +36,7 @@ def test_resending_pending_client_msgs(looper,
     # Send the first request. Nodes should reject it.
     resp_task = vdr_add_new_nym(looper,
                                 pool_handle,
-                                vdr_wallet_client,
+                                wallet_client,
                                 role=TRUSTEE_STRING,
                                 no_wait=True)
     looper.run(
@@ -47,7 +47,7 @@ def test_resending_pending_client_msgs(looper,
     monkeypatch.delattr(problem_node.clientstack.listener, 'send_multipart', raising=True)
 
     # Send the second request.
-    sdk_reqs = vdr_send_random_requests(looper, pool_handle, vdr_wallet_client, 1)
+    sdk_reqs = vdr_send_random_requests(looper, pool_handle, wallet_client, 1)
 
     # Waiting reject for the first request, which will sent with a reply for the second request.
     with pytest.raises(RequestRejectedException, match="Only Steward is allowed to do these transactions"):

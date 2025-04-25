@@ -40,10 +40,10 @@ def patch_nym_validation(txnPoolNodeSet):
 
 
 @pytest.fixture(scope='function')
-def nym_txn_data(looper, vdr_wallet_client):
+def nym_txn_data(looper, wallet_client):
     seed = randomString(32)
 
-    wh, _ = vdr_wallet_client
+    wh, _ = wallet_client
     sender_did, sender_verkey = \
         looper.loop.run_until_complete(vdr_create_and_store_did(wh, seed))
     return wh, randomString(5), sender_did, sender_verkey
@@ -61,7 +61,7 @@ def test_create_did_without_endorser(looper, txnPoolNodeSet, nym_txn_data, pool_
     assert details[VERKEY] == sender_verkey
 
 
-def test_create_did_without_endorser_empty_verkey(looper, nym_txn_data, vdr_wallet_client, pool_handle,
+def test_create_did_without_endorser_empty_verkey(looper, nym_txn_data, wallet_client, pool_handle,
                                             patch_nym_validation):
     wh, alias, sender_did, sender_verkey = nym_txn_data
 
@@ -73,11 +73,11 @@ def test_create_did_without_endorser_empty_verkey(looper, nym_txn_data, vdr_wall
         vdr_get_and_check_replies(looper, [request_couple])
 
 
-def test_create_did_without_endorser_different_dest(looper, nym_txn_data, vdr_wallet_client, pool_handle,
+def test_create_did_without_endorser_different_dest(looper, nym_txn_data, wallet_client, pool_handle,
                                                     patch_nym_validation):
     wh, alias, sender_did, sender_verkey = nym_txn_data
 
-    nym_request = build_nym_request(sender_did, vdr_wallet_client[1], sender_verkey, alias, NEW_ROLE)
+    nym_request = build_nym_request(sender_did, wallet_client[1], sender_verkey, alias, NEW_ROLE)
 
     request_couple = vdr_sign_and_send_prepared_request(looper, (wh, sender_did), pool_handle, nym_request)
 

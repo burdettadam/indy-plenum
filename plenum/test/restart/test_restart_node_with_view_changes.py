@@ -19,7 +19,7 @@ def test_restart_node_with_view_changes(tdir, tconf,
                                         looper,
                                         txnPoolNodeSet,
                                         pool_handle,
-                                        vdr_wallet_client,
+                                        wallet_client,
                                         allPluginsPath):
     '''
     1. Stop the node Delta
@@ -49,7 +49,7 @@ def test_restart_node_with_view_changes(tdir, tconf,
 
     # Send more requests to active nodes
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, len(rest_nodes) * 3)
+                              wallet_client, len(rest_nodes) * 3)
     waitNodeDataEquality(looper, *rest_nodes)
 
     # Restart stopped node
@@ -115,5 +115,5 @@ def test_restart_node_with_view_changes(tdir, tconf,
                         instances_list=range(txnPoolNodeSet[0].requiredNumberOfInstances))
 
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 1)
+                              wallet_client, 1)
     waitNodeDataEquality(looper, *txnPoolNodeSet)

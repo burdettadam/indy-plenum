@@ -21,7 +21,7 @@ def tconf(tconf):
 
 
 def test_restart_to_same_view_with_killed_primary(looper, txnPoolNodeSet, tconf, tdir, allPluginsPath,
-                                                  pool_handle, vdr_wallet_client):
+                                                  pool_handle, wallet_client):
     restart_timeout = tconf.ToleratePrimaryDisconnection + \
                       waits.expectedPoolElectionTimeout(len(txnPoolNodeSet))
 
@@ -39,7 +39,7 @@ def test_restart_to_same_view_with_killed_primary(looper, txnPoolNodeSet, tconf,
     ensureElectionsDone(looper, alive_nodes, instances_list=range(3))
 
     # Add transaction to ledger
-    vdr_send_random_and_check(looper, alive_nodes, pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_and_check(looper, alive_nodes, pool_handle, wallet_client, 1)
 
     # Restart majority group
     majority_before_restart = majority.copy()
@@ -66,4 +66,4 @@ def test_restart_to_same_view_with_killed_primary(looper, txnPoolNodeSet, tconf,
     ensureElectionsDone(looper, alive_nodes, instances_list=range(3))
 
     # Check that all nodes are still functional
-    vdr_ensure_pool_functional(looper, alive_nodes, vdr_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, alive_nodes, wallet_client, pool_handle)

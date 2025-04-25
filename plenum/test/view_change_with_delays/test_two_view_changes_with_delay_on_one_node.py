@@ -20,7 +20,7 @@ def tconf(tconf):
 
 
 def test_two_view_changes_with_delay_on_one_node(
-        txnPoolNodeSet, looper, pool_handle, vdr_wallet_client, tconf):
+        txnPoolNodeSet, looper, pool_handle, wallet_client, tconf):
     """
     Perform two view changes in such a way that a view change is performed on
     one slow node later than on the other nodes so that delayed Commits are
@@ -29,10 +29,10 @@ def test_two_view_changes_with_delay_on_one_node(
     that verify that a new request can be ordered.
     """
     do_view_change_with_delay_on_one_node(txnPoolNodeSet[-1], txnPoolNodeSet, looper,
-                                          pool_handle, vdr_wallet_client)
+                                          pool_handle, wallet_client)
 
     do_view_change_with_delay_on_one_node(txnPoolNodeSet[0], txnPoolNodeSet, looper,
-                                          pool_handle, vdr_wallet_client)
+                                          pool_handle, wallet_client)
 
-    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 1)
+    vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, 1)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)

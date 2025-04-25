@@ -4,13 +4,13 @@ from plenum.test.conftest import getValueFromModule
 from plenum.test.node_catchup.helper import waitNodeDataEquality
 from plenum.test.primary_selection.helper import check_newly_added_nodes, \
     getPrimaryNodesIdxs
-from plenum.test.pool_transactions.conftest import sdk_node_theta_added_fixture
+from plenum.test.pool_transactions.conftest import node_theta_added_fixture
 
 
-def sdk_one_node_added(looper, txnPoolNodeSet, sdk_node_theta_added):
+def sdk_one_node_added(looper, txnPoolNodeSet, node_theta_added):
     # New node knows primary same primary as others and has rank greater
     # than others
-    _, new_node = sdk_node_theta_added
+    _, new_node = node_theta_added
     waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:-1],
                          exclude_from_check=['check_last_ordered_3pc_backup'])
     check_newly_added_nodes(looper, txnPoolNodeSet, [new_node])
@@ -18,8 +18,8 @@ def sdk_one_node_added(looper, txnPoolNodeSet, sdk_node_theta_added):
 
 
 @pytest.fixture(scope='module', name='sdk_one_node_added')
-def sdk_one_node_added_fixture(looper, txnPoolNodeSet, sdk_node_theta_added):
-    return sdk_one_node_added(looper, txnPoolNodeSet, sdk_node_theta_added)
+def sdk_one_node_added_fixture(looper, txnPoolNodeSet, node_theta_added):
+    return sdk_one_node_added(looper, txnPoolNodeSet, node_theta_added)
 
 
 @pytest.fixture(scope="module")

@@ -8,16 +8,16 @@ NUM_BATCHES = 3
 TXNS_IN_BATCH = 5
 
 
-def create_txns(looper, sdk_wallet_client, count=TXNS_IN_BATCH):
-    reqs = vdr_signed_random_requests(looper, sdk_wallet_client, count)
+def create_txns(looper, wallet_client, count=TXNS_IN_BATCH):
+    reqs = vdr_signed_random_requests(looper, wallet_client, count)
     return [reqToTxn(req) for req in reqs]
 
 
 @pytest.fixture(scope='module')
-def created_txns(ledger, looper, vdr_wallet_client):
+def created_txns(ledger, looper, wallet_client):
     txns = []
     for i in range(NUM_BATCHES):
-        txns.append(create_txns(looper, vdr_wallet_client, TXNS_IN_BATCH))
+        txns.append(create_txns(looper, wallet_client, TXNS_IN_BATCH))
     return txns
 
 

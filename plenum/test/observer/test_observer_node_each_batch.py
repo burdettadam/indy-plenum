@@ -37,11 +37,11 @@ def fake_node(txnPoolNodeSet,
 @pytest.fixture(scope="module")
 def observed_data_msgs(looper,
                        txnPoolNodeSet,
-                       pool_handle, vdr_wallet_client):
+                       pool_handle, wallet_client):
     txnPoolNodeSet[0]._observable.add_observer("observer1",
                                                ObserverSyncPolicyType.EACH_BATCH)
     vdr_send_random_and_check(looper, txnPoolNodeSet,
-                              pool_handle, vdr_wallet_client,
+                              pool_handle, wallet_client,
                               10)
 
     msgs = []

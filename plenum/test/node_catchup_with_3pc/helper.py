@@ -23,7 +23,7 @@ def check_catchup_with_skipped_commits_received_before_catchup(catchup_state,
                                                                looper,
                                                                txnPoolNodeSet,
                                                                pool_handle,
-                                                               sdk_wallet_new_steward):
+                                                               wallet_new_steward):
     lagging_node = txnPoolNodeSet[-1]
     lagging_stasher = lagging_node.nodeIbStasher
     other_nodes = txnPoolNodeSet[:-1]
@@ -49,7 +49,7 @@ def check_catchup_with_skipped_commits_received_before_catchup(catchup_state,
     # Order pool requests while delaying first two commits on lagging node
     with delay_rules(lagging_stasher, delay_3pc(before=init_pp_seq_no + 3, msgs=Commit)):
         # Send some pool requests
-        reqs = vdr_send_random_pool_requests(looper, pool_handle, sdk_wallet_new_steward, 4)
+        reqs = vdr_send_random_pool_requests(looper, pool_handle, wallet_new_steward, 4)
         vdr_get_and_check_replies(looper, reqs)
 
     # Make sure pool is in expected state

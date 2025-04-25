@@ -24,18 +24,18 @@ def testOnlyAStewardCanAddAnotherSteward(looper,
                                          txnPoolNodeSet,
                                          pool_handle,
                                          vdr_wallet_steward,
-                                         vdr_wallet_client):
+                                         wallet_client):
     vdr_add_new_nym(looper, pool_handle, vdr_wallet_steward,
                     alias='testSteward' + randomString(3), role=STEWARD_STRING)
 
     seed = randomString(32)
-    wh, _ = vdr_wallet_client
+    wh, _ = wallet_client
 
     nym_request, steward_did = looper.loop.run_until_complete(
-        vdr_prepare_nym_request(vdr_wallet_client, seed,
+        vdr_prepare_nym_request(wallet_client, seed,
                             'testSteward2', 'STEWARD'))
 
-    request_couple = vdr_sign_and_send_prepared_request(looper, vdr_wallet_client,
+    request_couple = vdr_sign_and_send_prepared_request(looper, wallet_client,
                                                         pool_handle, nym_request)
     total_timeout = vdr_eval_timeout(1, len(txnPoolNodeSet))
     request_couple = vdr_get_replies(looper, [request_couple], total_timeout)[0]

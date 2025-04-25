@@ -25,7 +25,7 @@ LOG_SIZE = 3 * CHK_FREQ
 
 def test_complete_short_checkpoint_not_included_in_lag_for_catchup(
         looper, chkFreqPatched, reqs_for_checkpoint, txnPoolNodeSet,
-        pool_handle, vdr_wallet_steward, vdr_wallet_client,
+        pool_handle, vdr_wallet_steward, wallet_client,
         tdir, tconf, allPluginsPath):
     """
     Verifies that if the first stored own checkpoint has a not aligned lower
@@ -57,7 +57,7 @@ def test_complete_short_checkpoint_not_included_in_lag_for_catchup(
     # on the new node replicas so it will not be stabilized on them.
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
                                            pool_handle,
-                                           vdr_wallet_client,
+                                           wallet_client,
                                            reqs_for_checkpoint - 2 * max_batch_size)
 
     waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:-1], exclude_from_check=['check_last_ordered_3pc_backup'])
@@ -74,7 +74,7 @@ def test_complete_short_checkpoint_not_included_in_lag_for_catchup(
     # checkpoints from others
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
                                            pool_handle,
-                                           vdr_wallet_client,
+                                           wallet_client,
                                            Replica.STASHED_CHECKPOINTS_BEFORE_CATCHUP *
                                            reqs_for_checkpoint)
 
@@ -92,7 +92,7 @@ def test_complete_short_checkpoint_not_included_in_lag_for_catchup(
     # checkpoints from others
     send_reqs_batches_and_get_suff_replies(looper, txnPoolNodeSet,
                                            pool_handle,
-                                           vdr_wallet_client,
+                                           wallet_client,
                                            reqs_for_checkpoint)
 
     waitNodeDataEquality(looper, new_node, *txnPoolNodeSet[:-1], exclude_from_check=['check_last_ordered_3pc_backup'])

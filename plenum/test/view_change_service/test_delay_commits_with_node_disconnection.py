@@ -11,7 +11,7 @@ from plenum.test.view_change_service.helper import get_next_primary_name, trigge
 
 
 def test_view_change_with_next_primary_stopped_and_one_node_lost_commit(looper, txnPoolNodeSet,
-                                                                        pool_handle, vdr_wallet_client,
+                                                                        pool_handle, wallet_client,
                                                                         limitTestRunningTime):
     current_view_no = checkViewNoForNodes(txnPoolNodeSet)
     next_primary = get_next_primary_name(txnPoolNodeSet, current_view_no + 1)
@@ -19,7 +19,7 @@ def test_view_change_with_next_primary_stopped_and_one_node_lost_commit(looper, 
     other_nodes = [n for n in txnPoolNodeSet if n.name != next_primary]
 
     with delay_rules_without_processing(delayed_node.nodeIbStasher, cDelay()):
-        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client, 2)
+        vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle, wallet_client, 2)
 
         disconnect_node_and_ensure_disconnected(looper, txnPoolNodeSet, next_primary)
         trigger_view_change(other_nodes)
@@ -27,5 +27,5 @@ def test_view_change_with_next_primary_stopped_and_one_node_lost_commit(looper, 
     ensureElectionsDone(looper, other_nodes,
                         instances_list=range(2), customTimeout=15)
     ensure_all_nodes_have_same_data(looper, other_nodes)
-    vdr_ensure_pool_functional(looper, other_nodes, vdr_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, other_nodes, wallet_client, pool_handle)
     ensure_all_nodes_have_same_data(looper, other_nodes)

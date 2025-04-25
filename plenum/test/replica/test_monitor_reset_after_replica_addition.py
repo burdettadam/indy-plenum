@@ -6,7 +6,7 @@ from plenum.common.util import getMaxFailures
 from plenum.test.helper import vdr_send_random_and_check, assertExp
 from plenum.test.node_catchup.helper import waitNodeDataEquality
 
-from plenum.test.pool_transactions.conftest import sdk_node_theta_added
+from plenum.test.pool_transactions.conftest import node_theta_added
 from stp_core.loop.eventually import eventually
 
 nodeCount = 6
@@ -37,7 +37,7 @@ def test_monitor_reset_after_replica_addition(looper, pool_handle, txnPoolNodeSe
     waitNodeDataEquality(looper, *txnPoolNodeSet)
     last_ordered = txnPoolNodeSet[-1].master_last_ordered_3PC
 
-    sdk_node_theta_added(looper, txnPoolNodeSet, tdir, tconf,
+    node_theta_added(looper, txnPoolNodeSet, tdir, tconf,
                          pool_handle, vdr_wallet_steward, allPluginsPath)
     looper.runFor(tconf.throughput_measurement_params['window_size'] *
                   tconf.throughput_measurement_params['min_cnt'])

@@ -6,7 +6,7 @@ from plenum.common.exceptions import RequestNackedException, CommonSdkIOExceptio
 from plenum.common.util import get_utc_epoch
 from plenum.test.delayers import req_delay
 from plenum.test.stasher import delay_rules
-from plenum.test.txn_author_agreement.helper import sdk_get_txn_author_agreement, check_state_proof
+from plenum.test.txn_author_agreement.helper import get_txn_author_agreement, check_state_proof
 
 whitelist = ['Unexpected combination of request parameters']
 
@@ -43,8 +43,8 @@ def nodeSetWithoutTaa(request, nodeSetWithoutTaaAlwaysResponding):
     ({'timestamp': TIMESTAMP_NONE}, '2:latest')
 ])
 def test_get_txn_author_agreement_works_on_clear_state(params, state_key, looper, nodeSetWithoutTaa,
-                                                       pool_handle, vdr_wallet_client):
-    reply = sdk_get_txn_author_agreement(looper, pool_handle, vdr_wallet_client, **params)[1]
+                                                       pool_handle, wallet_client):
+    reply = get_txn_author_agreement(looper, pool_handle, wallet_client, **params)[1]
     assert reply['op'] == REPLY
 
     result = reply['result']
@@ -59,6 +59,6 @@ def test_get_txn_author_agreement_works_on_clear_state(params, state_key, looper
     {'digest': 'some_digest', 'version': 'some_version', 'timestamp': 374273}
 ])
 def test_get_txn_author_agreement_cannot_have_more_than_one_parameter(params, looper, nodeSetWithoutTaa,
-                                                                      pool_handle, vdr_wallet_client):
+                                                                      pool_handle, wallet_client):
     with pytest.raises(VdrError(code=VdrErrorCode.UNEXPECTED)) as e:
-        sdk_get_txn_author_agreement(looper, pool_handle, vdr_wallet_client, **params)
+        get_txn_author_agreement(looper, pool_handle, wallet_client, **params)

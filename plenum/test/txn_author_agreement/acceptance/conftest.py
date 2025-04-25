@@ -33,7 +33,7 @@ class ValidationType(Enum):
 @pytest.fixture(scope='module')
 def activate_taa(
     set_txn_author_agreement_aml, set_txn_author_agreement,
-    vdr_wallet_trustee, vdr_wallet_new_steward, vdr_wallet_client
+    vdr_wallet_trustee, vdr_wallet_new_steward, wallet_client
 ):
     return set_txn_author_agreement()
 

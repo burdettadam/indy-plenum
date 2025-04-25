@@ -8,7 +8,7 @@ from plenum.test.test_node import getPrimaryReplica
 def test_revert_pp_from_malicious(looper,
                                   txnPoolNodeSet,
                                   pool_handle,
-                                  vdr_wallet_client):
+                                  wallet_client):
     def raise_invalid_ex():
         raise InvalidClientMessageException(1, 2, "3")
     malicious_primary = getPrimaryReplica(txnPoolNodeSet).node
@@ -19,5 +19,5 @@ def test_revert_pp_from_malicious(looper,
         vdr_send_random_and_check(looper,
                                   txnPoolNodeSet,
                                   pool_handle,
-                                  vdr_wallet_client,
+                                  wallet_client,
                                   1)

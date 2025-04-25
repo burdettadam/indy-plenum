@@ -23,7 +23,7 @@ def make_node_slow(node):
     node.serviceReplicas = serviceReplicas
 
 
-def test_dirty_read(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
+def test_dirty_read(looper, txnPoolNodeSet, pool_handle, wallet_client):
     """
     Tests the case when read request comes before write request is
     not executed on some nodes
@@ -36,13 +36,13 @@ def test_dirty_read(looper, txnPoolNodeSet, pool_handle, vdr_wallet_client):
 
     received_replies = vdr_send_random_and_check(looper, txnPoolNodeSet,
                                                  pool_handle,
-                                                 vdr_wallet_client,
+                                                 wallet_client,
                                                  1)
     result = received_replies[0][1]["result"]
     seq_no = get_seq_no(result)
-    _, did = vdr_wallet_client
+    _, did = wallet_client
     req = vdr_build_get_txn_request(looper, did, seq_no)
-    request = vdr_sign_and_send_prepared_request(looper, vdr_wallet_client,
+    request = vdr_sign_and_send_prepared_request(looper, wallet_client,
                                                  pool_handle, req)
     received_replies = vdr_get_and_check_replies(looper, [request])
     results = [str(get_payload_data(reply['result'][DATA])) for _, reply in received_replies]

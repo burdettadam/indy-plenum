@@ -21,8 +21,8 @@ def looper(txnPoolNodesLooper):
 
 def changeNodeHa(looper, txnPoolNodeSet,
                  tconf, shouldBePrimary, tdir,
-                 pool_handle, sdk_wallet_stewards,
-                 sdk_wallet_client):
+                 pool_handle, wallet_stewards,
+                 wallet_client):
     # prepare new ha for node and client stack
     subjectedNode = None
     node_index = None
@@ -38,9 +38,9 @@ def changeNodeHa(looper, txnPoolNodeSet,
         subjectedNode.name, (nodeStackNewHA, clientStackNewHA)))
 
     # change HA
-    sdk_wallet_steward = sdk_wallet_stewards[node_index]
+    wallet_steward = wallet_stewards[node_index]
     node_dest = hexToFriendly(subjectedNode.nodestack.verhex)
-    vdr_send_update_node(looper, sdk_wallet_steward,
+    vdr_send_update_node(looper, wallet_steward,
                          pool_handle,
                          node_dest, subjectedNode.name,
                          nodeStackNewHA[0], nodeStackNewHA[1],
@@ -73,5 +73,5 @@ def changeNodeHa(looper, txnPoolNodeSet,
     vdr_pool_refresh(looper, pool_handle)
     vdr_send_random_and_check(looper, txnPoolNodeSet,
                               pool_handle,
-                              sdk_wallet_client,
+                              wallet_client,
                               8)

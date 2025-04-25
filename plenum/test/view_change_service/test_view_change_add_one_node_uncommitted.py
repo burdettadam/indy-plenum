@@ -30,7 +30,7 @@ def check_node_txn_propagated(nodes):
 def test_view_change_add_one_node_uncommitted_by_next_primary(looper, tdir, tconf, allPluginsPath,
                                                               txnPoolNodeSet,
                                                               pool_handle,
-                                                              vdr_wallet_client,
+                                                              wallet_client,
                                                               vdr_wallet_steward):
     # 1. Pre-requisites: viewNo=2, Primary is Node3
     for viewNo in range(1, 3):
@@ -90,4 +90,4 @@ def test_view_change_add_one_node_uncommitted_by_next_primary(looper, tdir, tcon
     trigger_view_change(txnPoolNodeSet)
     waitForViewChange(looper, txnPoolNodeSet, 4)
     ensureElectionsDone(looper, txnPoolNodeSet, customTimeout=35)
-    vdr_ensure_pool_functional(looper, txnPoolNodeSet, vdr_wallet_client, pool_handle)
+    vdr_ensure_pool_functional(looper, txnPoolNodeSet, wallet_client, pool_handle)

@@ -45,7 +45,7 @@ def test_large_catchup(tdir, tconf,
                        testNodeClass,
                        txnPoolNodeSet,
                        pool_handle,
-                       vdr_wallet_client,
+                       wallet_client,
                        allPluginsPath):
     """
     Checks that node can catchup large ledgers
@@ -57,7 +57,7 @@ def test_large_catchup(tdir, tconf,
 
     # Check that requests executed well
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 10)
+                              wallet_client, 10)
 
     # Stop one node
     waitNodeDataEquality(looper, lagging_node, *rest_nodes)
@@ -69,7 +69,7 @@ def test_large_catchup(tdir, tconf,
 
     # Send more requests to active nodes
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, 100)
+                              wallet_client, 100)
     waitNodeDataEquality(looper, *rest_nodes)
 
     # Make message size limit smaller to ensure that catchup response is

@@ -12,12 +12,12 @@ CHK_FREQ = 5
 
 def test_upper_bound_of_checkpoint_after_catchup_is_divisible_by_chk_freq(
         chkFreqPatched, looper, txnPoolNodeSet,
-        pool_handle, vdr_wallet_steward, vdr_wallet_client, tdir,
+        pool_handle, vdr_wallet_steward, wallet_client, tdir,
         tconf, allPluginsPath):
     lagging_node = txnPoolNodeSet[-1]
     with delay_rules_without_processing(lagging_node.nodeIbStasher, cDelay()):
         vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                                  vdr_wallet_client, tconf.Max3PCBatchSize * CHK_FREQ * 2 + 1)
+                                  wallet_client, tconf.Max3PCBatchSize * CHK_FREQ * 2 + 1)
     ensure_all_nodes_have_same_data(looper, txnPoolNodeSet)
     waitNodeDataEquality(looper, lagging_node, *txnPoolNodeSet[:-1],
                          exclude_from_check=['check_last_ordered_3pc_backup'])
@@ -26,7 +26,7 @@ def test_upper_bound_of_checkpoint_after_catchup_is_divisible_by_chk_freq(
     # Epsilon got these transactions via catch-up.
 
     vdr_send_random_and_check(looper, txnPoolNodeSet, pool_handle,
-                              vdr_wallet_client, (CHK_FREQ - 1) * tconf.Max3PCBatchSize)
+                              wallet_client, (CHK_FREQ - 1) * tconf.Max3PCBatchSize)
 
     for replica in txnPoolNodeSet[0].replicas.values():
         check_stable_checkpoint(replica, CHK_FREQ * 3)

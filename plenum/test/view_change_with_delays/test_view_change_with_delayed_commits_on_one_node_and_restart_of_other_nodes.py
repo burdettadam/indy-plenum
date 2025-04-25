@@ -14,7 +14,7 @@ def tconf(tconf):
 
 
 def test_view_change_with_delayed_commits_on_one_node_and_restart_of_other_nodes(txnPoolNodeSet, looper,
-                                                                                 pool_handle, vdr_wallet_client,
+                                                                                 pool_handle, wallet_client,
                                                                                  tconf, tdir, allPluginsPath):
     """
     Order transactions on all but one node by delaying commits on it
@@ -34,7 +34,7 @@ def test_view_change_with_delayed_commits_on_one_node_and_restart_of_other_nodes
         old_last_ordered=slow_nodes[0].master_replica.last_ordered_3pc,
         looper=looper,
         pool_handle=pool_handle,
-        sdk_wallet_client=vdr_wallet_client,
+        wallet_client=wallet_client,
         tconf=tconf,
         tdir=tdir,
         all_plugins_path=allPluginsPath,
