@@ -1,4 +1,4 @@
-from plenum.test.bls.helper import sdk_check_bls_multi_sig_after_send
+from plenum.test.bls.helper import check_bls_multi_sig_after_send
 
 nodeCount = 7
 nodes_wth_bls = 7
@@ -12,6 +12,6 @@ def test_each_node_has_bls(txnPoolNodeSet):
 
 def test_send_txns_full_bls(looper, txnPoolNodeSet,
                             pool_handle, wallet_client):
-    sdk_check_bls_multi_sig_after_send(looper, txnPoolNodeSet,
+    check_bls_multi_sig_after_send(looper, txnPoolNodeSet,
                                        pool_handle, wallet_client,
                                        saved_multi_sigs_count=nodeCount)

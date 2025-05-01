@@ -5,7 +5,7 @@ from plenum.bls.bls_key_register_pool_manager import BlsKeyRegisterPoolManager
 from plenum.common.constants import NODE, BLS_KEY, DATA
 from plenum.common.keygen_utils import init_bls_keys
 from plenum.common.txn_util import get_type, get_payload_data
-from plenum.test.bls.helper import sdk_change_bls_key
+from plenum.test.bls.helper import change_bls_key
 
 nodeCount = 4
 
@@ -64,7 +64,7 @@ def test_get_key_for_old_root_keys_changed(bls_key_register_ledger,
 
     # change BLS keys
 
-    sdk_change_bls_key(looper, txnPoolNodeSet,
+    change_bls_key(looper, txnPoolNodeSet,
                        node,
                        pool_handle,
                        vdr_wallet_steward,

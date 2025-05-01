@@ -2,14 +2,10 @@ import base58
 import json
 import os
 
-from indy_vdr import ledger, open_pool, set_protocol_version
-from indy_vdr.bindings import do_call_async
-from aries_askar import Store, Key, KeyAlg, AskarError, AskarErrorCode
-from indy_credx import Schema, CredentialDefinition, RevocationRegistryDefinition
-from indy_vdr.error import VdrError
-
-# TODO: This code is copied from indy-test-automation, we should move it to a common place
-# and use it from there in both places
+from indy_vdr import open_pool, set_protocol_version
+# Updated imports to use askar module
+from aries_askar import Store
+from aries_askar.key import KeyAlg, Key
 
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 POOL_GENESIS_PATH = os.path.join(MODULE_PATH, 'docker_genesis')
@@ -19,9 +15,9 @@ def key_helper(seed=None):
     """
     Generate a new keypair and DID
     """
-    alg = KeyAlg.ED25519
+    alg = KeyAlg.ED25519 #"ed25519"
     if seed:
-        keypair = Key.from_secret_bytes(alg, seed)
+        keypair = Key.from_seed(alg, seed)
     else:
         keypair = Key.generate(alg)
     verkey_bytes = keypair.get_public_bytes()
@@ -34,13 +30,11 @@ async def key_insert_helper(wallet_handle, keypair, did, verkey):
     '''
     Insert a keypair into the wallet
     '''
-    try:
+    # Check if key exists before attempting to insert it
+    existing_key = await wallet_handle.fetch_key(verkey)
+    if not existing_key:
         await wallet_handle.insert_key(verkey, keypair, metadata=json.dumps({}))
-    except AskarError as err:
-        if err.code == AskarErrorCode.DUPLICATE:
-            pass
-        else:
-            raise err
+    
     item = await wallet_handle.fetch("did", did, for_update=True)
     if item:
         did_info = item.value_json
@@ -78,7 +72,7 @@ async def vdr_create_and_store_did(wallet_handle, seed=None):
 async def vdr_wallet_helper(wallet_key='', wallet_key_derivation_method='kdf:argon2i:mod'):
     wuri = "sqlite://:memory:"
     wallet_h = await Store.provision(wuri, wallet_key_derivation_method, wallet_key, recreate=False)
-    session_handle = await wallet_h.session()
+    session_handle = wallet_h.session()
     wallet_config = json.dumps({"id": wuri})
     wallet_credentials = json.dumps({"key": wallet_key, "key_derivation_method": wallet_key_derivation_method})
 

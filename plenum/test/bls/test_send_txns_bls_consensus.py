@@ -1,5 +1,5 @@
 from plenum.server.quorums import Quorum
-from plenum.test.bls.helper import sdk_check_bls_multi_sig_after_send
+from plenum.test.bls.helper import check_bls_multi_sig_after_send
 
 nodeCount = 7
 nodes_wth_bls = 5
@@ -21,6 +21,6 @@ def test_send_txns_bls_consensus(looper, txnPoolNodeSet,
             r._consensus_data.quorums.commit = Quorum(nodeCount)
     # we expect that although not all nodes can sign with BLS (because not all nodes have BLS keys),
     # we get multi-sig on all nodes (since all nodes can verify signatures)
-    sdk_check_bls_multi_sig_after_send(looper, txnPoolNodeSet,
+    check_bls_multi_sig_after_send(looper, txnPoolNodeSet,
                                        pool_handle, wallet_client,
                                        saved_multi_sigs_count=nodeCount)

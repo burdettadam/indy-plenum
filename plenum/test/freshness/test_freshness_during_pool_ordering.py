@@ -1,7 +1,7 @@
 import pytest
 
 from plenum.common.constants import DOMAIN_LEDGER_ID, POOL_LEDGER_ID
-from plenum.test.bls.helper import sdk_change_bls_key
+from plenum.test.bls.helper import change_bls_key
 from plenum.test.freshness.helper import check_update_bls_multi_sig_during_ordering
 from plenum.test.helper import freshness
 
@@ -18,7 +18,7 @@ def test_update_bls_multi_sig_during_pool_ordering(looper, tconf, txnPoolNodeSet
                                                    pool_handle,
                                                    vdr_wallet_stewards):
     def send_txn():
-        sdk_change_bls_key(looper, txnPoolNodeSet,
+        change_bls_key(looper, txnPoolNodeSet,
                            txnPoolNodeSet[3],
                            pool_handle,
                            vdr_wallet_stewards[3],
