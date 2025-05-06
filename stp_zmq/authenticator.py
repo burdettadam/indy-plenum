@@ -4,8 +4,20 @@ import asyncio
 import zmq
 import zmq.asyncio
 from zmq.auth import Authenticator
-from zmq.auth.thread import _inherit_docstrings, ThreadAuthenticator, \
-    AuthenticationThread
+from zmq.auth.thread import ThreadAuthenticator, AuthenticationThread
+
+# Create our own version of _inherit_docstrings since it's no longer in newer pyzmq versions
+def _inherit_docstrings(cls):
+    """Inherit docstrings from parent class"""
+    for name, method in cls.__dict__.items():
+        if name.startswith('_'):
+            continue
+        parent = cls.__mro__[1]  # parent class
+        if hasattr(parent, name):
+            parent_method = getattr(parent, name)
+            if not method.__doc__:
+                method.__doc__ = parent_method.__doc__
+    return cls
 
 
 # Copying code from zqm classes since no way to inject these dependencies
