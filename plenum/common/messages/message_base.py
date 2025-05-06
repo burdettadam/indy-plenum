@@ -108,6 +108,13 @@ class MessageBase(Mapping, MessageValidator):
             for name, _ in self.schema
             if name in input_as_dict)
 
+    def to_dict(self):
+        """
+        Return a dictionary representation of the message.
+        This is required by the message_req_processor when processing responses.
+        """
+        return self.__dict__
+
     def _join_with_schema(self, args):
         return dict(zip(map(itemgetter(0), self.schema), args))
 

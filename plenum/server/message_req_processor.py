@@ -2,6 +2,7 @@ from typing import Dict, List
 
 from plenum.common.constants import LEDGER_STATUS, CONSISTENCY_PROOF, PROPAGATE
 from plenum.common.messages.node_messages import MessageReq, MessageRep
+from plenum.common.messages.message_base import MessageBase
 from plenum.common.metrics_collector import measure_time, MetricsName, NullMetricsCollector
 from plenum.common.types import f
 from stp_core.common.log import getlogger
@@ -31,6 +32,9 @@ class MessageReqProcessor:
 
         if not resp:
             return
+
+        if isinstance(resp, MessageBase):
+            resp = resp.to_dict()
 
         with self.metrics.measure_time(MetricsName.SEND_MESSAGE_REP_TIME):
             self.sendToNodes(MessageRep(**{
